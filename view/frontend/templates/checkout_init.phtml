@@ -1,0 +1,223 @@
+<script>
+    require([
+        'jquery',
+        'underscore',
+        'Magento_Checkout/js/model/quote',
+        'Magento_Checkout/js/action/set-shipping-information',
+        'Magento_Checkout/js/action/select-billing-address',
+        'Magento_Checkout/js/model/step-navigator'
+    ], function ($, _, quote, setShippingInformationAction, selectBillingAddress, stepNavigator) {
+        'use strict';
+
+        var saving = false,
+            lastSavedFingerprint = null,
+            shippingInfoSaved = false;
+
+        // Expose flag so get-payment-information-mixin and set-payment-info-mixin
+        // can gate their API calls until shipping is saved on the server.
+        window.panthShippingInfoSaved = function () { return shippingInfoSaved; };
+
+        var isLoggedIn = !!(window.checkoutConfig && window.checkoutConfig.isCustomerLoggedIn);
+
+        // ---- BILLING REAL-TIME SYNC ----
+        // When "same as shipping" is checked, Magento's billing component
+        // subscribes to quote.shippingAddress but the subscription may not
+        // always fire for plain-object updates. Force-sync by directly calling
+        // selectBillingAddress whenever shipping address changes.
+        quote.shippingAddress.subscribe(function (newAddress) {
+            if (!newAddress) return;
+            // Build the checkbox selector dynamically from the active payment method code.
+            // Falls back to the generic Magento class that all payment methods share.
+            var method = quote.paymentMethod();
+            var $checkbox = method
+                ? $('[name="billing-address-same-as-shipping-' + method.method + '"]')
+                : $();
+            if (!$checkbox.length) {
+                $checkbox = $('.billing-address-same-as-shipping-block input[type="checkbox"]').first();
+            }
+            if (!$checkbox.length || $checkbox.is(':checked')) {
+                selectBillingAddress(newAddress);
+            }
+        });
+
+        function buildFingerprint() {
+            var method = quote.shippingMethod(),
+                address = quote.shippingAddress();
+            if (!method || !address) return null;
+            return [
+                method.carrier_code, method.method_code,
+                address.countryId || '', address.postcode || '',
+                address.regionId || '', address.city || '',
+                (address.street && address.street[0]) || '',
+                address.firstname || '', address.lastname || '',
+                address.telephone || ''
+            ].join('|');
+        }
+
+        function saveShippingInfo() {
+            if (saving) return;
+
+            var method = quote.shippingMethod();
+            if (!method || !method.carrier_code) return;
+
+            var address = quote.shippingAddress();
+            if (!address || !address.countryId || !address.firstname || !address.telephone) return;
+
+            // Sanitize regionId: must be int or null — empty string causes a 400
+            // "int type expected" error. Addresses restored from localStorage may
+            // carry regionId: "" if the country has no region dropdown.
+            if (address.regionId === '' || address.regionId === undefined) {
+                var sanitized = _.extend({}, address, { regionId: null });
+                quote.shippingAddress(sanitized);
+            }
+
+            var fp = buildFingerprint();
+            if (fp === lastSavedFingerprint) return;
+
+            saving = true;
+
+            setShippingInformationAction().done(function () {
+                shippingInfoSaved = true;
+                lastSavedFingerprint = buildFingerprint();
+                _.each(stepNavigator.steps(), function (step) {
+                    step.isVisible(true);
+                });
+            }).fail(function () {
+                lastSavedFingerprint = null;
+            }).always(function () {
+                saving = false;
+            });
+        }
+
+        var debouncedSave = _.debounce(saveShippingInfo, 1200);
+
+        // ---- AUTO-SAVE ON PAGE LOAD (guests + logged-in) ----
+        // checkoutDataResolver restores address + shipping method from localStorage.
+        // We poll until both are available, then save once to the server.
+        var autoSaveAttempts = 0;
+        var autoSaveInterval = setInterval(function () {
+            autoSaveAttempts++;
+            if (autoSaveAttempts > 40) { clearInterval(autoSaveInterval); return; }
+
+            var method  = quote.shippingMethod();
+            var address = quote.shippingAddress();
+
+            if (!method  || !method.carrier_code)                    return;
+            if (!address || !address.countryId || !address.firstname) return;
+            if (!isLoggedIn && !address.telephone)                    return;
+
+            clearInterval(autoSaveInterval);
+            saveShippingInfo();
+        }, 500);
+
+        // ---- SHIPPING METHOD RADIO CLICK ----
+        $(document).on('click', '.table-checkout-shipping-method input[type="radio"]', function () {
+            setTimeout(debouncedSave, 500);
+        });
+
+        // ---- SHIPPING FORM FIELD CHANGES (guest checkout) ----
+        // `input`  → update quote.shippingAddress() immediately so billing
+        //            address (same-as-shipping) reflects changes while typing.
+        // `change` → also trigger the debounced server save (on blur/select).
+        // Both handlers build a NEW object reference so KO subscribers fire.
+        var formWatchAttempts = 0;
+        var formWatchInterval = setInterval(function () {
+            formWatchAttempts++;
+            if (formWatchAttempts > 60) { clearInterval(formWatchInterval); return; }
+
+            var $form = $('#co-shipping-form');
+            if (!$form.length) return;
+            clearInterval(formWatchInterval);
+
+            function readFormIntoQuote() {
+                var current = quote.shippingAddress() || {};
+                var updated = _.extend({}, current);
+
+                var fields = {
+                    'firstname':  'firstname',
+                    'lastname':   'lastname',
+                    'company':    'company',
+                    'city':       'city',
+                    'postcode':   'postcode',
+                    'telephone':  'telephone',
+                    'country_id': 'countryId',
+                    'region_id':  'regionId',
+                    'region':     'region'
+                };
+                $.each(fields, function (formName, addrKey) {
+                    var $el = $form.find('[name="' + formName + '"]');
+                    if (!$el.length) return;
+                    var val = $el.val();
+                    if (addrKey === 'regionId') {
+                        // API expects int or null — empty string causes "int type expected" 400 error
+                        updated[addrKey] = val ? (parseInt(val, 10) || null) : null;
+                    } else {
+                        updated[addrKey] = val || updated[addrKey] || '';
+                    }
+                });
+
+                var $s0 = $form.find('[name="street[0]"]');
+                var $s1 = $form.find('[name="street[1]"]');
+                updated.street = updated.street ? updated.street.slice() : ['', ''];
+                if ($s0.length) updated.street[0] = $s0.val() || '';
+                if ($s1.length) updated.street[1] = $s1.val() || '';
+
+                // New reference triggers all KO subscribers (billing same-as-shipping, etc.)
+                quote.shippingAddress(updated);
+            }
+
+            // Real-time: update quote model while user types (no save)
+            $form.on('input', 'input[type="text"], input[type="tel"], input[type="email"], textarea', function () {
+                readFormIntoQuote();
+            });
+
+            // On blur / select change: update quote + trigger debounced server save
+            $form.on('change', 'input, select', function () {
+                if (!quote.shippingMethod()) return;
+                setTimeout(function () {
+                    readFormIntoQuote();
+                    debouncedSave();
+                }, 100);
+            });
+        }, 500);
+
+        // ---- SAVED ADDRESS SELECTION (logged-in customer) ----
+        $(document).on('click', '.shipping-address-item.selected, .action-select-shipping-item', function () {
+            setTimeout(debouncedSave, 1000);
+        });
+
+        // ---- "SHIP HERE" BUTTON ----
+        $(document).on('click', '.action-save-address, [data-action="select-shipping-address"]', function () {
+            setTimeout(debouncedSave, 1000);
+        });
+
+        // ---- AUTO-EXPAND ITEMS IN CART ----
+        var itemsAttempts = 0;
+        var itemsInterval = setInterval(function () {
+            itemsAttempts++;
+            if (itemsAttempts > 40) { clearInterval(itemsInterval); return; }
+            var $toggle = $('.items-in-cart .title[data-role="title"]');
+            if (!$toggle.length) return;
+            clearInterval(itemsInterval);
+            var $content = $('.items-in-cart .content.minicart-items');
+            if ($content.length && !$content.is(':visible')) {
+                $toggle.trigger('click');
+            }
+        }, 400);
+
+        // ---- AUTO-EXPAND DISCOUNT CODE ----
+        var discountAttempts = 0;
+        var discountInterval = setInterval(function () {
+            discountAttempts++;
+            if (discountAttempts > 50) { clearInterval(discountInterval); return; }
+            var $discount = $('.opc-block-summary .discount-code');
+            if (!$discount.length) return;
+            clearInterval(discountInterval);
+            $discount.addClass('_active');
+            var $content = $discount.find('[data-role="content"]');
+            $content.show().removeAttr('aria-hidden');
+            $discount.find('[data-role="title"]').attr('aria-expanded', 'true');
+        }, 600);
+
+    });
+</script>

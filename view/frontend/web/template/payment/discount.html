@@ -1,0 +1,44 @@
+<!--
+/**
+ * Panth CheckoutExtended — Discount Code Template Override
+ * Renders input + button on a single line, always expanded.
+ */
+-->
+<div class="panth-discount-block">
+    <!-- ko foreach: getRegion('messages') -->
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <!--/ko-->
+    <div class="panth-discount-title">
+        <!-- ko i18n: 'Apply Discount Code' --><!-- /ko -->
+    </div>
+    <form class="panth-discount-form" id="discount-form" novalidate="novalidate">
+        <div class="panth-discount-row">
+            <input class="input-text panth-discount-input"
+                   type="text"
+                   id="discount-code"
+                   name="discount_code"
+                   data-bind="value: couponCode,
+                              attr: {
+                                  disabled: isApplied(),
+                                  placeholder: $t('Enter discount code')
+                              }" />
+            <!-- ko ifnot: isApplied() -->
+            <button class="panth-discount-btn"
+                    type="submit"
+                    data-bind="click: apply, enable: couponCode().length > 0">
+                <span><!-- ko i18n: 'Apply' --><!-- /ko --></span>
+            </button>
+            <!-- /ko -->
+            <!-- ko if: isApplied() -->
+            <button class="panth-discount-btn panth-discount-btn--cancel"
+                    type="submit"
+                    data-bind="click: cancel">
+                <span><!-- ko i18n: 'Remove' --><!-- /ko --></span>
+            </button>
+            <!-- /ko -->
+        </div>
+        <!-- ko foreach: getRegion('captcha') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!-- /ko -->
+    </form>
+</div>

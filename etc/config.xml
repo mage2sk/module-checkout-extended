@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <panth_checkout_extended>
+            <general>
+                <enabled>1</enabled>
+            </general>
+            <newsletter>
+                <enabled>1</enabled>
+                <field_label>Subscribe to our newsletter</field_label>
+                <default_checked>1</default_checked>
+            </newsletter>
+        </panth_checkout_extended>
+    </default>
+</config>

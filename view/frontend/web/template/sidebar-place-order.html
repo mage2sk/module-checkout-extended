@@ -1,0 +1,26 @@
+<div class="panth-sidebar-place-order">
+    <!-- Full-page overlay while placing order — blocks all interaction -->
+    <!-- ko if: isPlacingOrder() -->
+    <div class="panth-order-overlay" aria-live="polite" aria-busy="true" role="status">
+        <div class="panth-order-overlay-inner">
+            <div class="panth-order-spinner"></div>
+            <p class="panth-order-overlay-title" data-bind="i18n: 'Placing Your Order'"></p>
+            <p class="panth-order-overlay-sub" data-bind="i18n: 'Please wait and do not close or refresh this page...'"></p>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <button type="button"
+            class="action primary checkout"
+            data-bind="click: placeOrder,
+                       css: { 'disabled': !isReady() || isPlacingOrder() },
+                       attr: { disabled: !isReady() || isPlacingOrder() }">
+        <!-- ko if: !isPlacingOrder() -->
+        <span data-bind="i18n: 'Place Order'"></span>
+        <!-- /ko -->
+        <!-- ko if: isPlacingOrder() -->
+        <span class="panth-btn-spinner"></span>
+        <span data-bind="i18n: 'Processing...'"></span>
+        <!-- /ko -->
+    </button>
+</div>

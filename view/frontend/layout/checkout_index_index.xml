@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="checkout"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Panth_CheckoutExtended::css/checkout-extended.css"/>
+    </head>
+    <body>
+        <!-- Back to Cart placed inside checkout's div.header.content for flex alignment -->
+        <referenceContainer name="checkout.header.wrapper">
+            <block class="Panth\CheckoutExtended\Block\DynamicStyles"
+                   name="panth.checkout.header.links"
+                   template="Panth_CheckoutExtended::checkout_header.phtml"
+                   before="-"
+                   ifconfig="panth_checkout_extended/general/enabled"/>
+        </referenceContainer>
+
+        <referenceContainer name="before.body.end">
+            <block class="Panth\CheckoutExtended\Block\DynamicStyles"
+                   name="panth.checkout.dynamic.styles"
+                   template="Panth_CheckoutExtended::dynamic_styles.phtml"
+                   ifconfig="panth_checkout_extended/general/enabled"/>
+            <block class="Panth\CheckoutExtended\Block\DynamicStyles"
+                   name="panth.checkout.init"
+                   template="Panth_CheckoutExtended::checkout_init.phtml"
+                   ifconfig="panth_checkout_extended/general/enabled"/>
+        </referenceContainer>
+
+        <!-- jsLayout components added via CheckoutLayoutProcessor (only when enabled) -->
+    </body>
+</page>

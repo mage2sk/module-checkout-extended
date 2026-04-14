@@ -1,0 +1,39 @@
+<?php
+/** @var \Panth\CheckoutExtended\Block\DynamicStyles $block */
+if (!$block->isEnabled()) {
+    return;
+}
+$borderRadius = $block->getBorderRadius();
+$bodyClass = $block->getCheckoutBodyClass();
+$customCss = $block->getCustomCss();
+$customJs = $block->getCustomJs();
+
+// Sanitize accent color: allow only valid hex (#rrggbb or #rgb) or named CSS colors
+// (letters only). Anything else is stripped to prevent CSS injection.
+$rawAccent = $block->getAccentColor();
+$accentColor = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawAccent)
+    ? $rawAccent
+    : '#1a1a2e'; // safe fallback
+?>
+<style>
+    :root {
+        --panth-checkout-accent: <?= /* @noEscape */ $accentColor ?>;
+        --panth-checkout-accent-hover: <?= /* @noEscape */ $accentColor ?>dd;
+        --panth-checkout-radius: <?= (int) $borderRadius ?>px;
+        --panth-checkout-radius-sm: <?= /* @noEscape */ max(4, (int) $borderRadius - 4) ?>px;
+    }
+</style>
+<?php if ($customCss): ?>
+<style>
+    /* Panth Checkout Extended - Custom CSS */
+    <?= /** @noEscape */ $customCss ?>
+</style>
+<?php endif; ?>
+<!-- Body classes added server-side via panth_checkout_extended_active layout handle -->
+<?php if ($customJs): ?>
+<script>
+    require([], function() {
+        <?= /** @noEscape */ $customJs ?>
+    });
+</script>
+<?php endif; ?>
