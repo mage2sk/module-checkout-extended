@@ -66,6 +66,18 @@ body.panth-checkout-extended .panth-checkout-header {
     transform: translateY(-50%);
     padding: 0;
     margin: 0;
+    z-index: 10;
+}
+
+/* Ensure header content has relative positioning and logo is centred with enough padding */
+body.panth-checkout-extended .page-header .header.content {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 60px !important;
+    padding-left: 160px !important;
+    padding-right: 160px !important;
 }
 
 body.panth-checkout-extended .panth-checkout-header a {
@@ -210,17 +222,18 @@ body.panth-checkout-extended .field .control input[type="number"],
 body.panth-checkout-extended .field .control textarea,
 body.panth-checkout-extended .field .control select {
     width: 100%;
-    padding: 10px 14px;
+    padding: 10px 36px 10px 14px;
     border: 1.5px solid #e2e8f0;
     border-radius: 8px;
     font-size: 14px;
     font-family: inherit;
     color: #0f172a;
-    background: #ffffff;
+    background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;
     box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     -webkit-appearance: none;
     appearance: none;
+    min-height: 42px;
 }
 
 body.panth-checkout-extended .field .control input:focus,
@@ -248,12 +261,18 @@ body.panth-checkout-extended .fieldset > .field[name="shippingAddress.postcode"]
     display: inline-block;
     width: 48%;
     vertical-align: top;
+    margin-bottom: 12px;
 }
 
 body.panth-checkout-extended .fieldset > .field[name="shippingAddress.firstname"],
 body.panth-checkout-extended .fieldset > .field[name="shippingAddress.country_id"],
 body.panth-checkout-extended .fieldset > .field[name="shippingAddress.city"] {
     margin-right: 3%;
+}
+
+/* Fix dropdown option padding inside select */
+body.panth-checkout-extended .field .control select option {
+    padding: 8px 14px;
 }
 
 /* ----------------------------------------------------------
