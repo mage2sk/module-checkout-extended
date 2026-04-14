@@ -69,15 +69,22 @@ body.panth-checkout-extended .panth-checkout-header {
     z-index: 10;
 }
 
-/* Ensure header content has relative positioning and logo is centred with enough padding */
+/* Ensure header content has relative positioning and logo is truly centred */
 body.panth-checkout-extended .page-header .header.content {
     position: relative !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     min-height: 60px !important;
-    padding-left: 160px !important;
-    padding-right: 160px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}
+
+/* Logo: force absolute center regardless of siblings */
+body.panth-checkout-extended .page-header .header.content .logo {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
 }
 
 body.panth-checkout-extended .panth-checkout-header a {
