@@ -3,6 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="Panth_CheckoutExtended" setup_version="1.0.0">
         <sequence>
+            <module name="Panth_Core"/>
             <module name="Magento_Checkout"/>
         </sequence>
     </module>
