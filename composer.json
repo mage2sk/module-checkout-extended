@@ -2,7 +2,7 @@
     "name": "mage2kishan/module-checkout-extended",
     "description": "Enhanced one-page checkout for Magento 2 with configurable multi-column layouts (1/2/3 columns), sticky sidebar, newsletter subscription at checkout, quantity increment controls, coupon code in sidebar, sidebar place-order button, custom CSS/JS injection, and modern card-style UI options. Fully admin-configurable with no code changes required.",
     "type": "magento2-module",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "proprietary",
     "keywords": [
         "magento2",
