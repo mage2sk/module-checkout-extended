@@ -1,6 +1,6 @@
 <!--
 /**
- * Panth CheckoutExtended — Summary Item Details Template Override
+ * Panth CheckoutExtended - Summary Item Details Template Override
  * Name + Qty + Price on one line. Options as collapsible compact list.
  * Uses text bindings only (never html) to prevent rendered image cards.
  */
@@ -10,7 +10,7 @@
 <!-- /ko -->
 
 <div class="panth-item-details">
-    <!-- Single row: Name | Qty · Price — qty and after_details are direct flex siblings, no wrapper div -->
+    <!-- Single row: Name | Qty · Price - qty and after_details are direct flex siblings, no wrapper div -->
     <div class="panth-item-row">
         <strong class="panth-item-name" data-bind="html: getNameUnsanitizedHtml($parent)"></strong>
         <span class="panth-item-qty" data-bind="text: $parent.qty"></span>
@@ -19,7 +19,7 @@
         <!-- /ko -->
     </div>
 
-    <!-- Options — collapsed by default, toggle on click -->
+    <!-- Options - collapsed by default, toggle on click -->
     <!-- ko if: (JSON.parse($parent.options).length > 0) -->
     <div class="panth-item-options-wrap">
         <button type="button" class="panth-options-toggle"
@@ -30,7 +30,7 @@
         <div class="panth-options-list">
             <!-- ko foreach: JSON.parse($parent.options) -->
 
-            <!-- Attachment: full_view has img or href — show "1 file attached" indicator -->
+            <!-- Attachment: full_view has img or href - show "1 file attached" indicator -->
             <!-- ko if: ($data.full_view && ($data.full_view.toLowerCase().indexOf('<img') >= 0 || $data.full_view.toLowerCase().indexOf('href=') >= 0 || $data.full_view.toLowerCase().indexOf('<a ') >= 0 || $data.full_view.toLowerCase().indexOf('<a>') >= 0)) -->
             <div class="panth-option-row">
                 <span class="panth-opt-label" data-bind="text: label"></span><span class="panth-opt-sep">:</span>
@@ -52,7 +52,7 @@
             </div>
             <!-- /ko -->
 
-            <!-- Regular option with full_view — always text binding, never html (prevents image card rendering) -->
+            <!-- Regular option with full_view - always text binding, never html (prevents image card rendering) -->
             <!-- ko if: ($data.full_view && $data.full_view.toLowerCase().indexOf('<img') < 0 && $data.full_view.toLowerCase().indexOf('href=') < 0 && $data.full_view.toLowerCase().indexOf('<a ') < 0 && $data.full_view.toLowerCase().indexOf('<a>') < 0) -->
             <div class="panth-option-row">
                 <span class="panth-opt-label" data-bind="text: label"></span><span class="panth-opt-sep">:</span>
