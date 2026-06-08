@@ -63,7 +63,7 @@
             var address = quote.shippingAddress();
             if (!address || !address.countryId || !address.firstname || !address.telephone) return;
 
-            // Sanitize regionId: must be int or null — empty string causes a 400
+            // Sanitize regionId: must be int or null - empty string causes a 400
             // "int type expected" error. Addresses restored from localStorage may
             // carry regionId: "" if the country has no region dropdown.
             if (address.regionId === '' || address.regionId === undefined) {
@@ -149,7 +149,7 @@
                     if (!$el.length) return;
                     var val = $el.val();
                     if (addrKey === 'regionId') {
-                        // API expects int or null — empty string causes "int type expected" 400 error
+                        // API expects int or null - empty string causes "int type expected" 400 error
                         updated[addrKey] = val ? (parseInt(val, 10) || null) : null;
                     } else {
                         updated[addrKey] = val || updated[addrKey] || '';
