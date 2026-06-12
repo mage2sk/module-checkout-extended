@@ -45,9 +45,8 @@ class InstallReporter
     private const ENDPOINT_INSTALL   = 'https://kishansavaliya.com/panth/notifications/install';
     private const ENDPOINT_HEARTBEAT = 'https://kishansavaliya.com/panth/notifications/heartbeat';
 
-    /** Shared HTTP Basic credentials for the receiver. */
-    private const AUTH_USER = 'Kishan';
-    private const AUTH_PASS = 'kishan123#';
+    // The receiver endpoint is public and credential-free; this package is
+    // distributed openly, so no secret is shipped in source.
 
     public function __construct(
         private readonly StoreManagerInterface $storeManager,
@@ -231,7 +230,6 @@ class InstallReporter
             CURLOPT_POSTFIELDS => $body,
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
-                'Authorization: Basic ' . base64_encode(self::AUTH_USER . ':' . self::AUTH_PASS),
                 'User-Agent: Panth-Module-Reporter/1.0',
             ],
             CURLOPT_TIMEOUT => 3,

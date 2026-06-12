@@ -1,10 +1,28 @@
 <?php
 /** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
 $cartUrl = $block->getUrl('checkout/cart');
 ?>
 <div class="panth-checkout-header">
-    <a href="<?= $block->escapeUrl($cartUrl) ?>" class="panth-back-to-store">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <a href="<?= $block->escapeUrl($cartUrl) ?>" class="panth-back-to-store panth-checkout-header__back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         <?= $block->escapeHtml(__('Back to Cart')) ?>
     </a>
+    <nav class="panth-checkout-header__progress" aria-label="<?= $block->escapeHtmlAttr(__('Checkout progress')) ?>">
+        <ol class="panth-checkout-header__steps">
+            <li class="panth-checkout-header__step panth-checkout-header__step--done">
+                <?= $block->escapeHtml(__('Cart')) ?>
+            </li>
+            <li class="panth-checkout-header__step panth-checkout-header__step--current" aria-current="step">
+                <?= $block->escapeHtml(__('Checkout')) ?>
+            </li>
+            <li class="panth-checkout-header__step">
+                <?= $block->escapeHtml(__('Confirmation')) ?>
+            </li>
+        </ol>
+    </nav>
+    <span class="panth-checkout-header__secure">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <?= $block->escapeHtml(__('Secure checkout')) ?>
+    </span>
 </div>

@@ -1,8 +1,8 @@
 <!-- SEO Meta -->
 <!--
   Title: Panth Checkout Extended - One Page Checkout for Magento 2 | Panth Infotech
-  Description: Panth Checkout Extended is a premium one-page checkout extension for Magento 2 with configurable 1/2/3 multi-column layouts, sticky sidebar, newsletter subscription, qty increment controls, sidebar place-order button, coupon code in sidebar, custom CSS/JS injection, and a modern card-style UI. Compatible with Magento 2.4.4 - 2.4.8 and PHP 8.1 - 8.4. Built by Top Rated Plus Magento developer Kishan Savaliya.
-  Keywords: magento 2 one page checkout, magento 2 checkout extension, magento 2 multi column checkout, magento 2 sticky sidebar checkout, magento 2 newsletter at checkout, magento 2 qty increment, magento 2 sidebar place order, magento 2 coupon in sidebar, magento 2 checkout optimization, magento 2 conversion rate, panth checkout extended, panth infotech, hire magento developer, top rated plus upwork
+  Description: Panth Checkout Extended is a premium one-page checkout extension for Magento 2 with configurable 1/2/3 multi-column layouts, left/right sticky sidebar, 4 card styles (Elevated, Bordered, Flat, Glassmorphism), accent color picker, border radius control, step indicators, newsletter subscription at checkout, qty increment controls, SKU display, product links, compact/full-width form modes, placeholders, tooltips, default shipping & payment method pre-selection, hide-single-shipping-method, sort-shipping-by-price, billing title toggle, and custom CSS/JS injection. Compatible with Magento 2.4.4 - 2.4.8 and PHP 8.1 - 8.4. Built by Top Rated Plus Magento developer Kishan Savaliya.
+  Keywords: magento 2 one page checkout, magento 2 checkout extension, magento 2 multi column checkout, magento 2 sticky sidebar checkout, magento 2 newsletter at checkout, magento 2 qty increment, magento 2 sidebar place order, magento 2 coupon in sidebar, magento 2 default shipping method, magento 2 preselect payment method, magento 2 hide single shipping method, magento 2 sort shipping methods by price, magento 2 checkout placeholders, magento 2 checkout tooltips, magento 2 checkout custom css js, magento 2 checkout optimization, magento 2 conversion rate, panth checkout extended, panth infotech, hire magento developer, top rated plus upwork
   Author: Kishan Savaliya (Panth Infotech)
   Canonical: https://github.com/mage2sk/module-checkout-extended
 -->
@@ -79,6 +79,7 @@ Performance • SEO • Adobe Commerce Cloud
 - [Newsletter Subscription](#newsletter-subscription)
 - [Qty Increment Controls](#qty-increment-controls)
 - [Custom CSS & JS Injection](#custom-css--js-injection)
+- [Developer Reference: Body Classes & CSS Variables](#developer-reference-body-classes--css-variables)
 - [Troubleshooting](#troubleshooting)
 - [FAQ](#faq)
 - [Support](#support)
@@ -167,6 +168,7 @@ The result is a faster, cleaner, higher-converting checkout — with zero custom
 - **MEQP compliant** — passes Adobe's Magento Extension Quality Program
 - **No core file modifications** — clean plugin and observer architecture
 - **Luma compatible** — works with the native Luma checkout components
+- **Hyva friendly** — works on Hyva stores running the standard Magento checkout
 - **Composer-installable** — standard Magento 2 package
 
 ---
@@ -199,6 +201,7 @@ The result is a faster, cleaner, higher-converting checkout — with zero custom
 | MySQL | 8.0+ |
 | MariaDB | 10.4+ |
 | Luma Theme | Native support |
+| Hyva Theme | Supported when the store uses the standard Magento checkout |
 | Required dependency | `mage2kishan/module-core` ^1.0 (free, installed automatically) |
 
 Tested on:
@@ -244,81 +247,91 @@ Admin → Stores → Configuration → Panth Extensions → Checkout Extended
 
 ## Configuration
 
-Open **Stores → Configuration → Panth Extensions → Checkout Extended**. All settings are per-store-view and require a cache flush to take effect.
+Open **Stores → Configuration → Panth Extensions → Checkout Extended**. Every setting below is scoped per store view (default → website → store view), so a multi-store setup like `acme.example.com` and `acme.example.com/eu` can run different layouts, colors, and newsletter copy. Flush the cache after saving (`bin/magento cache:flush`).
+
+All values live under the config path prefix `panth_checkout_extended/` — handy for `bin/magento config:set` and CI/CD pipelines:
+
+```bash
+# Example: switch a store to a 2-column layout with a sticky left sidebar
+bin/magento config:set panth_checkout_extended/layout/columns 2
+bin/magento config:set panth_checkout_extended/layout/sidebar_position left
+bin/magento config:set panth_checkout_extended/layout/sidebar_sticky 1
+bin/magento cache:flush
+```
 
 ### General
 
-| Setting | Default | Description |
-|---|---|---|
-| Enable Checkout Extended | Yes | Master switch. Set to No to revert to the default Magento checkout. |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Enable Checkout Extended | `general/enabled` | **Yes** | Master switch. When **Yes**, the multi-column layout, sidebar components, body classes, and dynamic styles are applied at checkout. When **No**, the storefront reverts to the stock Magento checkout — no traces left behind. |
 
 ### Layout
 
-| Setting | Default | Description |
-|---|---|---|
-| Columns | 3 | 1 (stacked), 2 (content + sidebar), or 3 (shipping / payment / summary) |
-| Sidebar Position | Right | Place the order summary sidebar on the left or right |
-| Sticky Sidebar | No | Keep the sidebar visible as the customer scrolls |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Columns | `layout/columns` | **3** | **1 Column (Stacked)** — sections stack vertically, ideal for mobile-heavy stores. **2 Columns (Content + Sidebar)** — shipping + payment in the main column, order summary beside it. **3 Columns (Shipping \| Payment \| Summary)** — everything visible at once on desktop. Adds a `panth-checkout-{n}col` body class; layouts collapse gracefully on smaller screens. |
+| Sidebar Position | `layout/sidebar_position` | **Right** | Renders the order summary sidebar on the **Left** or **Right** of the main content (`panth-sidebar-left` / `panth-sidebar-right`). |
+| Sticky Sidebar | `layout/sidebar_sticky` | **No** | When **Yes**, the order summary — including the place-order button and coupon field — stays pinned in the viewport as the customer scrolls (`panth-sidebar-sticky`). |
 
 ### Style
 
-| Setting | Default | Description |
-|---|---|---|
-| Card Style | Elevated (Shadow) | Elevated / Bordered / Flat / Glassmorphism |
-| Accent Color | #1a1a2e | Primary color for buttons, links, highlights (hex, server-validated) |
-| Border Radius | 12px | Corner radius for cards and form elements |
-| Step Indicators | No | Show numbered step badges |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Card Style | `style/card_style` | **Elevated (Shadow)** | Visual treatment for every checkout card: **Elevated (Shadow)** — soft drop shadows; **Bordered** — clean 1px outlines; **Flat (No Border)** — minimal, background-only; **Glassmorphism** — frosted translucent panels. Applied via the `panth-card-{style}` body class. |
+| Accent Color | `style/accent_color` | **#1a1a2e** | HTML5 color picker in admin. Drives buttons, links, and highlights through the `--panth-checkout-accent` CSS variable (a `--panth-checkout-accent-hover` shade is derived automatically). The value is sanitized server-side — anything that is not valid hex falls back to the default, so CSS injection is impossible. |
+| Border Radius (px) | `style/border_radius` | **12** | Corner radius for cards and form elements, in pixels (digits only, ≥ 0). Output as `--panth-checkout-radius`, with a smaller `--panth-checkout-radius-sm` derived for inner elements. Use `0` for a sharp, editorial look. |
+| Step Indicators | `style/step_indicators` | **No** | When **Yes**, numbered step badges appear above each checkout section so customers always know where they are (`panth-step-indicators`). |
 
-### Cart
+### Cart & Order Summary
 
-| Setting | Default | Description |
-|---|---|---|
-| Qty Increment | No | Show +/- buttons in order summary |
-| Show SKU | No | Display product SKU below item name |
-| Product Link | No | Link item names to the product page |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Qty Increment Controls | `cart/qty_increment_enabled` | **No** | When **Yes**, +/− quantity buttons appear next to each item in the order summary. Steps respect each product's `qty_increments` (e.g. 0.5 or 5), updates happen via AJAX with totals refreshing in place, and the **+** button disables at max available stock. |
+| Show SKU | `cart/product_sku_enabled` | **No** | When **Yes**, the product SKU is displayed below each item name in the order summary — a favorite for B2B buyers who order by part number. |
+| Product Link | `cart/product_link_enabled` | **No** | When **Yes**, item names in the order summary link back to their product page, letting customers double-check details without abandoning checkout. |
 
-### Newsletter
+### Newsletter Subscription
 
-| Setting | Default | Description |
-|---|---|---|
-| Enable Newsletter Checkbox | Yes | Show the newsletter subscription checkbox in the sidebar |
-| Checkbox Label | "Subscribe to our newsletter" | Label text |
-| Checked by Default | Yes | Pre-check the box |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Enable Newsletter Checkbox | `newsletter/enabled` | **Yes** | When **Yes**, a newsletter opt-in checkbox is rendered in the order summary sidebar. On order placement the choice is transported via payment extension attributes and the customer (guest by email, or logged-in by customer ID) is subscribed. Duplicates are skipped; failures are logged and never block the order. |
+| Checkbox Label | `newsletter/field_label` | **Subscribe to our newsletter** | The label shown next to the checkbox. Fully translatable — e.g. "Get Acme Store offers in your inbox". *(Shown in admin only when the checkbox is enabled.)* |
+| Checked by Default | `newsletter/default_checked` | **Yes** | When **Yes**, the box is pre-ticked. Set to **No** for strict opt-in markets (GDPR-friendly explicit consent). *(Shown in admin only when the checkbox is enabled.)* |
 
 ### Form Styles
 
-| Setting | Default | Description |
-|---|---|---|
-| Field Mode | Compact | Compact (multi-field rows) or Full Width (one field per row) |
-| Use Placeholders | No | Show placeholder text inside fields |
-| Show Tooltips | No | Show tooltip icons with help text |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Field Mode | `form_styles/field_mode` | **Compact** | **Compact (Multiple Fields Per Row)** — related fields (e.g. city / postcode) share a row for a shorter form; **Full Width (One Field Per Row)** — each field gets its own row for maximum clarity. Applied via `panth-form-{mode}`. |
+| Use Placeholders | `form_styles/use_placeholders` | **No** | When **Yes**, each address field's label is mirrored into its placeholder — across shipping, shared billing, and per-payment-method billing forms — for a lighter, modern form feel. |
+| Show Tooltips | `form_styles/show_tooltips` | **No** | When **Yes**, tooltip icons with contextual help text appear next to form fields. When **No**, they are hidden for a cleaner form. |
 
 ### Shipping
 
-| Setting | Default | Description |
-|---|---|---|
-| Default Shipping Method | (none) | Pre-select a method by code, e.g. `flatrate_flatrate` |
-| Hide Single Method | No | Hide the radio when only one method is available |
-| Sort by Price | No | Sort methods low-to-high by price |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Default Shipping Method | `shipping/default_method` | *(empty)* | Pre-selects a shipping method by composite code (`carrier_method`, e.g. `flatrate_flatrate`) as soon as rates load — the customer can still change it. Leave empty for no pre-selection. |
+| Hide Single Method | `shipping/hide_single_method` | **No** | When **Yes** and exactly one shipping method is available, it is auto-selected and the radio selector is hidden — one less decision, one less click. |
+| Sort by Price | `shipping/sort_by_price` | **No** | When **Yes**, shipping methods are sorted cheapest-first, putting the most attractive rate at the top. |
 
 ### Payment
 
-| Setting | Default | Description |
-|---|---|---|
-| Default Payment Method | (none) | Pre-select a method by code, e.g. `checkmo` |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Default Payment Method | `payment/default_method` | *(empty)* | Pre-selects a payment method by code (e.g. `checkmo`) when the payment list renders. All other methods remain available — nothing is removed. Leave empty for no pre-selection. |
 
 ### Billing
 
-| Setting | Default | Description |
-|---|---|---|
-| Show Billing Title | Yes | Show/hide the "Billing Address" section title |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Show Billing Title | `billing/show_title` | **Yes** | When **No**, the "Billing Address" section title is hidden (`panth-billing-title-hidden`) for a tighter, less repetitive payment column. |
 
 ### Custom Code
 
-| Setting | Default | Description |
-|---|---|---|
-| Custom CSS | (empty) | Injected as an inline `<style>` block at checkout |
-| Custom JS | (empty) | Injected via `require([], function() { ... })` at checkout |
+| Setting | Config Path | Default | Frontend Behavior |
+|---|---|---|---|
+| Custom CSS | `custom_code/custom_css` | *(empty)* | Injected as an inline `<style>` block on the checkout page only. Enter raw CSS — do **not** include `<style>` tags (closing tags are neutralized automatically). |
+| Custom JS | `custom_code/custom_js` | *(empty)* | Injected on checkout via `require([], function () { ... })` and wrapped in `try/catch` — a typo logs to the console but can never break order placement. Enter raw JavaScript — do **not** include `<script>` tags. |
 
 ---
 
@@ -392,16 +405,56 @@ Common use cases:
 
 ---
 
+## Developer Reference: Body Classes & CSS Variables
+
+Every admin option translates into a predictable body class or CSS custom property on the checkout page, so theme developers can target any configuration state without touching templates.
+
+**Body classes** (applied when the extension is enabled):
+
+| Class | Driven by |
+|---|---|
+| `panth-checkout-extended` | Always present when enabled |
+| `panth-checkout-1col` / `panth-checkout-2col` / `panth-checkout-3col` | Layout → Columns |
+| `panth-sidebar-left` / `panth-sidebar-right` | Layout → Sidebar Position |
+| `panth-sidebar-sticky` | Layout → Sticky Sidebar = Yes |
+| `panth-card-elevated` / `panth-card-bordered` / `panth-card-flat` / `panth-card-glass` | Style → Card Style |
+| `panth-step-indicators` | Style → Step Indicators = Yes |
+| `panth-form-compact` / `panth-form-full` | Form Styles → Field Mode |
+| `panth-form-placeholders` | Form Styles → Use Placeholders = Yes |
+| `panth-form-tooltips` | Form Styles → Show Tooltips = Yes |
+| `panth-billing-title-hidden` | Billing → Show Billing Title = No |
+
+**CSS custom properties** (emitted on `:root` at checkout):
+
+| Variable | Driven by |
+|---|---|
+| `--panth-checkout-accent` | Style → Accent Color (sanitized hex) |
+| `--panth-checkout-accent-hover` | Derived hover shade of the accent color |
+| `--panth-checkout-radius` | Style → Border Radius (px) |
+| `--panth-checkout-radius-sm` | Derived smaller radius for inner elements |
+
+Example — restyle only the 3-column glassmorphism configuration on `example.com`:
+
+```css
+body.panth-checkout-3col.panth-card-glass .opc-block-summary {
+    backdrop-filter: blur(18px);
+    border-radius: var(--panth-checkout-radius);
+}
+```
+
+---
+
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Checkout looks unchanged after enabling | Cache not flushed | `bin/magento cache:flush` and hard-refresh |
 | Layout handle not applied | Observer not firing | `bin/magento module:status Panth_CheckoutExtended` |
-| Newsletter checkbox missing | Disabled in config | Configuration → Newsletter → Enable = Yes |
-| Qty +/- buttons missing | Cart feature disabled | Configuration → Cart → Qty Increment = Yes |
+| Newsletter checkbox missing | Disabled in config | Configuration → Newsletter Subscription → Enable Newsletter Checkbox = Yes |
+| Qty +/- buttons missing | Cart feature disabled | Configuration → Cart & Order Summary → Qty Increment Controls = Yes |
 | Shipping info not auto-saving | JS error | Check browser console; redeploy static content |
-| Accent color not applying | Invalid hex | Use color picker or valid hex (#rgb / #rrggbb) |
+| Accent color reverts to default | Invalid hex value | Non-hex values are sanitized server-side to the default; use the color picker or valid hex (#rgb / #rrggbb) |
+| Default shipping/payment not pre-selected | Wrong method code | Use the composite code, e.g. `flatrate_flatrate` for shipping, `checkmo` for payment |
 | Custom CSS/JS not appearing | FPC or browser cache | Flush full page cache and browser cache |
 | Coupon not in sidebar | Extension disabled | Enable extension in General settings |
 | `Class Panth\Core\Helper\Theme not found` | Core not installed | `composer require mage2kishan/module-core` |
@@ -412,7 +465,7 @@ Common use cases:
 
 ### Is Panth Checkout Extended compatible with Hyva?
 
-This extension targets the **Luma** checkout (the default Magento 2 checkout built on KnockoutJS). Hyva uses a completely different React-based checkout and requires a separate implementation. For Hyva checkout customization, [get a quote](https://kishansavaliya.com/get-quote).
+Yes — on Hyva stores that use the **standard Magento checkout** (the default Luma/KnockoutJS checkout, which is the most common Hyva setup). The extension targets that checkout, so it works on both Luma themes and Hyva storefronts running the standard checkout. It does not apply to the separate React-based Hyva Checkout product — for that, [get a quote](https://kishansavaliya.com/get-quote).
 
 ### Does it work with Adobe Commerce (paid edition)?
 
@@ -440,7 +493,19 @@ Yes. All user-facing strings use Magento's `__()` translation function. English 
 
 ### Does it support multi-store?
 
-Yes. All settings respect Magento's standard scope hierarchy (default → website → store view), so you can configure different layouts, colors, and newsletter copy per store view.
+Yes. All settings respect Magento's standard scope hierarchy (default → website → store view), so you can configure different layouts, colors, and newsletter copy per store view — e.g. a 3-column desktop-first checkout for `example.com` and a stacked 1-column layout for a mobile-heavy regional store.
+
+### How do I switch the checkout to a 2-column layout?
+
+Go to **Stores → Configuration → Panth Extensions → Checkout Extended → Layout** and set **Columns** to *2 Columns (Content + Sidebar)*, or run `bin/magento config:set panth_checkout_extended/layout/columns 2` followed by a cache flush.
+
+### How do I pre-select a default shipping or payment method?
+
+Enter the method code in **Shipping → Default Shipping Method** (composite `carrier_method` code, e.g. `flatrate_flatrate`) or **Payment → Default Payment Method** (e.g. `checkmo`). The method is selected automatically when the checkout loads; customers can still pick any other available method.
+
+### Can I change the checkout colors and corner radius without code?
+
+Yes. **Style → Accent Color** is an HTML5 color picker that drives buttons, links, and highlights via a CSS variable, and **Style → Border Radius (px)** controls card and field corners. Combined with the four card styles (Elevated, Bordered, Flat, Glassmorphism), most rebrands need zero CSS.
 
 ### Is the source code available?
 
@@ -543,4 +608,4 @@ Browse the full extension catalog on the [Adobe Commerce Marketplace](https://co
 
 ---
 
-**SEO Keywords:** magento 2 one page checkout, magento 2 checkout extension, magento 2 one step checkout, magento 2 multi column checkout, magento 2 sticky sidebar checkout, magento 2 newsletter at checkout, magento 2 qty increment in cart, magento 2 sidebar place order, magento 2 coupon code in sidebar, magento 2 checkout optimization, magento 2 conversion rate optimization, magento 2 cart abandonment, magento 2 modern checkout ui, magento 2 glassmorphism checkout, magento 2 custom css checkout, magento 2 custom js checkout, magento 2 checkout auto save, magento 2 billing sync, magento 2 luma checkout, panth checkout extended, panth infotech, mage2kishan checkout, mage2sk, kishan savaliya magento, top rated plus magento freelancer, hire magento developer upwork, magento 2.4.8 checkout module, php 8.4 checkout module, magento checkout reduce cart abandonment, magento 2 b2b checkout, magento 2 guest checkout newsletter, adobe commerce checkout extension, magento 2 checkout card style, magento 2 checkout accent color, magento 2 checkout step indicators, magento 2 shipping auto save
+**SEO Keywords:** magento 2 one page checkout, magento 2 checkout extension, magento 2 one step checkout, magento 2 multi column checkout, magento 2 sticky sidebar checkout, magento 2 newsletter at checkout, magento 2 qty increment in cart, magento 2 sidebar place order, magento 2 coupon code in sidebar, magento 2 default shipping method checkout, magento 2 preselect payment method, magento 2 hide single shipping method, magento 2 sort shipping methods by price, magento 2 checkout placeholders, magento 2 checkout tooltips, magento 2 show sku in order summary, magento 2 checkout product link, magento 2 hide billing address title, magento 2 checkout optimization, magento 2 conversion rate optimization, magento 2 cart abandonment, magento 2 modern checkout ui, magento 2 glassmorphism checkout, magento 2 checkout border radius, magento 2 custom css checkout, magento 2 custom js checkout, magento 2 checkout auto save, magento 2 billing sync, magento 2 luma checkout, magento 2 hyva standard checkout, panth checkout extended, panth infotech, mage2kishan checkout, mage2sk, kishan savaliya magento, top rated plus magento freelancer, hire magento developer upwork, magento 2.4.8 checkout module, php 8.4 checkout module, magento checkout reduce cart abandonment, magento 2 b2b checkout, magento 2 guest checkout newsletter, adobe commerce checkout extension, magento 2 checkout card style, magento 2 checkout accent color, magento 2 checkout step indicators, magento 2 shipping auto save

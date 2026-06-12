@@ -6,10 +6,23 @@
  * of a full-page blocking overlay.
  */
 define([
-    'jquery',
-    'Magento_Checkout/js/model/quote'
-], function ($, quote) {
+    'jquery'
+], function ($) {
     'use strict';
+
+    // Do NOT require Magento_Checkout/js/model/quote at define time:
+    // full-screen-loader (the mixin target) loads on EVERY page including
+    // catalog, where window.checkoutConfig is undefined and quote.js throws on
+    // load ("Cannot read properties of undefined (reading 'quoteData')"). The
+    // mixin only touches quote during checkout (body has panth-checkout-extended
+    // and quote is already loaded), so resolve it lazily and safely.
+    function getQuote() {
+        try {
+            return require('Magento_Checkout/js/model/quote');
+        } catch (e) {
+            return {};
+        }
+    }
 
     var SECTION_LOADING_CLASS = '_block-content-loading',
         sectionSelectors      = {
@@ -22,6 +35,8 @@ define([
      * Ensure the panthCheckout state namespace exists on quote.
      */
     function ensureState() {
+        var quote = getQuote();
+
         if (!quote.panthCheckout) {
             quote.panthCheckout = {};
         }

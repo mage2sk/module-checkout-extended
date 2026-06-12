@@ -33,10 +33,15 @@ define([
         var body  = document.body,
             classes = body.className.match(/panth-step-\S+/g);
 
-        // Remove any previous panth-step-* class
+        // Remove any previous active-step class. NOTE: the regex also matches
+        // the config-driven 'panth-step-indicators' class (set server-side when
+        // the Step Indicators option is on) — it must be preserved, otherwise
+        // the numbered badges disappear on the first step change.
         if (classes) {
             $.each(classes, function (_, cls) {
-                body.classList.remove(cls);
+                if (cls !== 'panth-step-indicators') {
+                    body.classList.remove(cls);
+                }
             });
         }
 

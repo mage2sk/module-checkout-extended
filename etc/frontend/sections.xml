@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Panth CheckoutExtended — customer-data section invalidation.
+ *
+ * The one-step checkout places the order through Magento's standard place-order
+ * REST action (rest/<store>/V1/(guest-)carts/<id>/payment-information). When that
+ * POST completes, customer-data.js invalidates the 'cart' section so the success
+ * page minicart shows 0.
+ *
+ * Magento core already maps these routes, so the entries below are intentionally
+ * a SUPERSET-SAFE reinforcement only:
+ *   - The guest payment-information route is mapped to invalidate 'last-ordered-items'
+ *     in addition to 'cart' (core maps only 'cart' for guests), keeping the guest
+ *     post-order state consistent with the logged-in route.
+ * Routes that core already covers identically are NOT redeclared here to avoid
+ * duplicating core behaviour. The redirect-payment edge case (a method that leaves
+ * the page without a jQuery ajaxComplete, so no route-based invalidation fires) is
+ * handled client-side in js/view/sidebar-place-order.js, which forces the 'cart'
+ * section to refresh on detected success.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
+    <action name="rest/*/V1/guest-carts/*/payment-information">
+        <section name="cart"/>
+        <section name="last-ordered-items"/>
+    </action>
+</config>

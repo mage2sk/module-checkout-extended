@@ -4,6 +4,46 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.6] — 2026-06-12
+
+### Added
+- Previously missing admin configuration groups so every documented
+  option is now actually configurable: **Layout** (columns, sidebar
+  position, sticky sidebar), **Style** (card style, accent colour,
+  border radius, step indicators), **Cart & Order Summary** (qty
+  increment controls, show SKU, product link), **Form Styles** (field
+  mode, placeholders, tooltips), **Shipping** (default method, hide
+  single method, sort by price), **Payment** (default method),
+  **Billing** (show title), and **Custom Code** (custom CSS/JS)
+
+### Changed
+- Every configuration option is now wired through to the frontend:
+  - Multi-column checkout layout (1/2/3 columns), sidebar position
+    (left/right), and sticky sidebar
+  - Card styles (Elevated, Bordered, Flat, Glassmorphism) plus accent
+    colour and border radius exposed as CSS variables
+    (`--panth-checkout-accent`, `--panth-checkout-radius`)
+  - Step indicator badges on checkout sections
+  - Qty +/- controls, SKU display, and product links in the order
+    summary
+  - Form field mode (Compact/Full Width), placeholders, and tooltips
+  - Shipping method pre-selection, sort-by-price, and hide-single-method
+  - Payment method pre-selection
+  - Billing address title visibility toggle
+  - Admin-defined custom CSS and JS injection at checkout
+- Modern responsive redesign of the checkout — multi-column on desktop,
+  collapsing cleanly to a single column on mobile
+
+### Fixed
+- Order summary item template override now loads correctly (corrected
+  RequireJS map path)
+- Load error for the relocated discount/coupon template in the sidebar
+- Newsletter double-subscribe: no subscription is created when the
+  checkbox is disabled, and logged-in customers' existing subscriptions
+  are linked instead of duplicated
+
+---
+
 ## [1.0.0] — Initial release
 
 ### Added — layout

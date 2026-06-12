@@ -23,19 +23,38 @@ define([
 
             var self = this;
 
-            // Logged-in user already subscribed — pre-set true and hide the checkbox
-            var loggedIn  = window.checkoutConfig && window.checkoutConfig.isCustomerLoggedIn;
-            var subStatus = window.checkoutConfig && window.checkoutConfig.panthNewsletterSubscribed;
-
-            if (loggedIn && subStatus) {
-                this.alreadySubscribed(true);
-                sharedIsSubscribed(true);
+            // Feature disabled via admin config — never subscribe, never pre-check.
+            if (this.enabled === false) {
+                this.isSubscribed(false);
             } else {
-                this.isSubscribed(this.defaultChecked);
+                // Logged-in user already subscribed — pre-set true and hide the checkbox
+                var loggedIn  = window.checkoutConfig && window.checkoutConfig.isCustomerLoggedIn;
+                var subStatus = window.checkoutConfig && window.checkoutConfig.panthNewsletterSubscribed;
+
+                if (loggedIn && subStatus) {
+                    this.alreadySubscribed(true);
+                    sharedIsSubscribed(true);
+                } else {
+                    this.isSubscribed(this.defaultChecked);
+                }
             }
 
-            // Expose for newsletter-assigner via window
-            window.panthCheckoutNewsletter = this.isSubscribed;
+            // Whenever the box is not actually visible (feature disabled, already-subscribed
+            // customer, or guest email belongs to a registered account), the published flag
+            // must be false so the place-order mixin / assigner never send true for a hidden
+            // box. This computed is the single source of truth for the gated value.
+            this.gatedSubscription = ko.computed(function () {
+                if (!self.isVisible()) {
+                    return false;
+                }
+                return !!self.isSubscribed();
+            });
+
+            // Expose the GATED value (not the raw checkbox observable) so consumers always
+            // read false when the box is hidden/disabled/already-subscribed. A ko.computed
+            // is a function and passes ko.isObservable(), satisfying both consumers
+            // (place-order-mixin calls it directly; newsletter-assigner ko.unwraps it).
+            window.panthCheckoutNewsletter = this.gatedSubscription;
 
             // Track whether the entered email belongs to a registered account
             registry.get(

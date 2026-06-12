@@ -4,7 +4,6 @@ if (!$block->isEnabled()) {
     return;
 }
 $borderRadius = $block->getBorderRadius();
-$bodyClass = $block->getCheckoutBodyClass();
 $customCss = $block->getCustomCss();
 $customJs = $block->getCustomJs();
 
@@ -14,11 +13,15 @@ $rawAccent = $block->getAccentColor();
 $accentColor = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawAccent)
     ? $rawAccent
     : '#1a1a2e'; // safe fallback
+
+// Append alpha only to a full 6-digit hex; otherwise fall back to the base color
+// so non-6-digit values (e.g. #rgb) don't produce invalid 4/5-digit hex.
+$accentHover = strlen($accentColor) === 7 ? $accentColor . 'dd' : $accentColor;
 ?>
 <style>
     :root {
         --panth-checkout-accent: <?= /* @noEscape */ $accentColor ?>;
-        --panth-checkout-accent-hover: <?= /* @noEscape */ $accentColor ?>dd;
+        --panth-checkout-accent-hover: <?= /* @noEscape */ $accentHover ?>;
         --panth-checkout-radius: <?= (int) $borderRadius ?>px;
         --panth-checkout-radius-sm: <?= /* @noEscape */ max(4, (int) $borderRadius - 4) ?>px;
     }
@@ -26,14 +29,17 @@ $accentColor = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawAccent)
 <?php if ($customCss): ?>
 <style>
     /* Panth Checkout Extended - Custom CSS */
-    <?= /** @noEscape */ $customCss ?>
+    <?= /* @noEscape */ str_ireplace('</style', '<\/style', $customCss) ?>
 </style>
 <?php endif; ?>
-<!-- Body classes added server-side via panth_checkout_extended_active layout handle -->
 <?php if ($customJs): ?>
 <script>
-    require([], function() {
-        <?= /** @noEscape */ $customJs ?>
+    require([], function () {
+        try {
+            <?= /* @noEscape */ str_ireplace('</script', '<\/script', $customJs) ?>
+        } catch (e) {
+            console.error('[Panth Checkout custom JS]', e);
+        }
     });
 </script>
 <?php endif; ?>

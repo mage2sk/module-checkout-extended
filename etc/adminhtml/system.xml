@@ -17,6 +17,71 @@
                 </field>
             </group>
 
+            <!-- Layout -->
+            <group id="layout" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Layout</label>
+                <field id="columns" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Columns</label>
+                    <source_model>Panth\CheckoutExtended\Model\Config\Source\ColumnLayout</source_model>
+                    <comment>Number of checkout columns: 1 (stacked), 2 (content + sidebar), or 3 (shipping | payment | summary)</comment>
+                </field>
+                <field id="sidebar_position" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sidebar Position</label>
+                    <source_model>Panth\CheckoutExtended\Model\Config\Source\SidebarPosition</source_model>
+                    <comment>Place the order summary sidebar on the left or right</comment>
+                </field>
+                <field id="sidebar_sticky" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sticky Sidebar</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Keep the order summary sidebar visible as the customer scrolls</comment>
+                </field>
+            </group>
+
+            <!-- Style -->
+            <group id="style" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Style</label>
+                <field id="card_style" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Card Style</label>
+                    <source_model>Panth\CheckoutExtended\Model\Config\Source\CardStyle</source_model>
+                    <comment>Visual treatment for checkout cards: Elevated, Bordered, Flat, or Glassmorphism</comment>
+                </field>
+                <field id="accent_color" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Accent Color</label>
+                    <frontend_model>Panth\CheckoutExtended\Block\Adminhtml\System\Config\ColorPicker</frontend_model>
+                    <comment>Primary color for buttons, links and highlights (hex, e.g. #1a1a2e)</comment>
+                </field>
+                <field id="border_radius" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Border Radius (px)</label>
+                    <validate>validate-digits validate-zero-or-greater</validate>
+                    <comment>Corner radius for cards and form elements, in pixels</comment>
+                </field>
+                <field id="step_indicators" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Step Indicators</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show numbered step badges above each checkout section</comment>
+                </field>
+            </group>
+
+            <!-- Cart / Order Summary -->
+            <group id="cart" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cart &amp; Order Summary</label>
+                <field id="qty_increment_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Qty Increment Controls</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show +/- quantity buttons in the order summary</comment>
+                </field>
+                <field id="product_sku_enabled" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show SKU</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Display the product SKU below each item name</comment>
+                </field>
+                <field id="product_link_enabled" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Link</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Link order summary item names to their product page</comment>
+                </field>
+            </group>
+
             <!-- Newsletter Subscription -->
             <group id="newsletter" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Newsletter Subscription</label>
@@ -40,6 +105,76 @@
                 </field>
             </group>
 
+            <!-- Form Styles -->
+            <group id="form_styles" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Form Styles</label>
+                <field id="field_mode" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Mode</label>
+                    <source_model>Panth\CheckoutExtended\Model\Config\Source\FieldMode</source_model>
+                    <comment>Compact (multiple fields per row) or Full Width (one field per row)</comment>
+                </field>
+                <field id="use_placeholders" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use Placeholders</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show placeholder text inside form fields</comment>
+                </field>
+                <field id="show_tooltips" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Tooltips</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show tooltip icons with help text next to fields</comment>
+                </field>
+            </group>
+
+            <!-- Shipping -->
+            <group id="shipping" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Shipping</label>
+                <field id="default_method" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Shipping Method</label>
+                    <comment>Pre-select a shipping method by code, e.g. flatrate_flatrate. Leave empty for none.</comment>
+                </field>
+                <field id="hide_single_method" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hide Single Method</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Hide the radio selector when only one shipping method is available</comment>
+                </field>
+                <field id="sort_by_price" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sort by Price</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Sort shipping methods low-to-high by price</comment>
+                </field>
+            </group>
+
+            <!-- Payment -->
+            <group id="payment" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Payment</label>
+                <field id="default_method" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Payment Method</label>
+                    <comment>Pre-select a payment method by code, e.g. checkmo. Leave empty for none.</comment>
+                </field>
+            </group>
+
+            <!-- Billing -->
+            <group id="billing" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Billing</label>
+                <field id="show_title" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Billing Title</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show or hide the "Billing Address" section title</comment>
+                </field>
+            </group>
+
+            <!-- Custom Code -->
+            <group id="custom_code" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Custom Code</label>
+                <field id="custom_css" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom CSS</label>
+                    <comment>Extra CSS added to the checkout page. Enter CSS rules only, without style tags.</comment>
+                </field>
+                <field id="custom_js" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom JS</label>
+                    <comment>Extra JavaScript added to the checkout page. It runs inside a RequireJS callback, so enter statements only, without script tags.</comment>
+                </field>
+            </group>
 
         </section>
     </system>

@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Panth\CheckoutExtended\Block\DynamicStyles">
-        <arguments>
-            <argument name="data" xsi:type="array">
-                <item name="cache_lifetime" xsi:type="number">3600</item>
-            </argument>
-        </arguments>
-    </type>
+    <!-- DynamicStyles is intentionally NOT block-cached: it emits config-driven
+         CSS variables (accent color, radius) plus custom CSS/JS, so any Style or
+         Custom Code change must reflect on the next request. The block only does
+         a few (config-cached) scopeConfig reads, so caching it buys nothing and
+         would stale admin changes for up to an hour. -->
 
     <type name="Magento\Checkout\Api\GuestPaymentInformationManagementInterface">
         <plugin name="panth_checkout_newsletter_guest"

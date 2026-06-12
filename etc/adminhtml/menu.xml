@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Panth Checkout Extended — backend menu entry.
+ *
+ * Matches the convention used by every other Panth_* module: a group node
+ * under "Panth Infotech" (Panth_Core::panth_extensions) carrying the module's
+ * display name, with a "Configuration" child that jumps straight to the
+ * module's System > Configuration section.
+ *
+ *   Panth Infotech
+ *     └── Checkout Extended
+ *           └── Configuration  → Stores > Configuration > panth_checkout_extended
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Panth_CheckoutExtended::group"
+             title="Checkout Extended"
+             translate="title"
+             module="Panth_CheckoutExtended"
+             sortOrder="70"
+             parent="Panth_Core::panth_extensions"
+             resource="Panth_CheckoutExtended::config"/>
+
+        <add id="Panth_CheckoutExtended::settings"
+             title="Configuration"
+             translate="title"
+             module="Panth_CheckoutExtended"
+             sortOrder="10"
+             parent="Panth_CheckoutExtended::group"
+             action="adminhtml/system_config/edit/section/panth_checkout_extended"
+             resource="Panth_CheckoutExtended::config"/>
+    </menu>
+</config>

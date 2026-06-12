@@ -64,6 +64,77 @@ class CheckoutLayoutProcessor implements LayoutProcessorInterface
             'sortOrder' => 50,
         ];
 
+        // Placeholder injection for checkout address fields
+        if ($this->helper->usePlaceholders()) {
+            // Shipping address fieldset
+            if (isset($jsLayout['components']['checkout']['children']['steps']['children']
+                ['shipping-step']['children']['shippingAddress']['children']
+                ['shipping-address-fieldset']['children'])) {
+                $this->applyPlaceholders($jsLayout['components']['checkout']['children']['steps']['children']
+                    ['shipping-step']['children']['shippingAddress']['children']
+                    ['shipping-address-fieldset']['children']);
+            }
+
+            // Global billing address fieldset (shared, when shown)
+            if (isset($jsLayout['components']['checkout']['children']['steps']['children']
+                ['billing-step']['children']['payment']['children']
+                ['afterMethods']['children']['billing-address-form']['children']
+                ['form-fields']['children'])) {
+                $this->applyPlaceholders($jsLayout['components']['checkout']['children']['steps']['children']
+                    ['billing-step']['children']['payment']['children']
+                    ['afterMethods']['children']['billing-address-form']['children']
+                    ['form-fields']['children']);
+            }
+
+            // Per-payment-method billing address fieldsets (generated at runtime)
+            if (isset($jsLayout['components']['checkout']['children']['steps']['children']
+                ['billing-step']['children']['payment']['children']
+                ['payments-list']['children'])
+                && is_array($jsLayout['components']['checkout']['children']['steps']['children']
+                    ['billing-step']['children']['payment']['children']
+                    ['payments-list']['children'])) {
+                foreach ($jsLayout['components']['checkout']['children']['steps']['children']
+                    ['billing-step']['children']['payment']['children']
+                    ['payments-list']['children'] as &$paymentMethod) {
+                    if (isset($paymentMethod['children']['form-fields']['children'])) {
+                        $this->applyPlaceholders($paymentMethod['children']['form-fields']['children']);
+                    }
+                }
+                unset($paymentMethod);
+            }
+        }
+
         return $jsLayout;
+    }
+
+    /**
+     * Recursively walk a fieldset's children and set placeholder text on input fields.
+     *
+     * For each leaf field that carries a 'label', the label is copied into both
+     * 'placeholder' and 'config.placeholder' so the uiComponent renders placeholder
+     * text. The original label is preserved. Children containers are recursed into.
+     */
+    private function applyPlaceholders(array &$fields): void
+    {
+        foreach ($fields as &$field) {
+            if (!is_array($field)) {
+                continue;
+            }
+
+            // Recurse into nested children containers (e.g. region/grouped fields)
+            if (isset($field['children']) && is_array($field['children'])) {
+                $this->applyPlaceholders($field['children']);
+            }
+
+            // Input fields expose a 'label'; copy it into the placeholder slots.
+            if (isset($field['label']) && is_string($field['label']) && $field['label'] !== '') {
+                $field['placeholder'] = $field['label'];
+                if (!isset($field['config']) || !is_array($field['config'])) {
+                    $field['config'] = [];
+                }
+                $field['config']['placeholder'] = $field['label'];
+            }
+        }
+        unset($field);
     }
 }

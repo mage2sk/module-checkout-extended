@@ -31,10 +31,10 @@ body.panth-checkout-extended .opc > li {
     visibility: visible !important;
     opacity: 1 !important;
     background: #ffffff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
+    border: 1px solid #e6e8eb;
+    border-radius: var(--panth-checkout-radius, 8px);
     padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.08);
 }
 
 /* items-in-cart: allow Magento's collapsible JS to toggle normally.
@@ -46,12 +46,16 @@ body.panth-checkout-extended .items-in-cart .content.minicart-items {
 /* ----------------------------------------------------------
    3. PAGE CONTAINER
    ---------------------------------------------------------- */
+body.panth-checkout-extended.checkout-index-index {
+    background-color: #f6f7f9;
+}
+
 body.panth-checkout-extended #checkout.checkout-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0;
+    padding: 0 24px;
     font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
-    color: #0f172a;
+    color: #111827;
 }
 
 /* ----------------------------------------------------------
@@ -61,12 +65,42 @@ body.panth-checkout-extended #checkout.checkout-container {
    Use position:absolute so the logo (justify-content:center) stays centred. */
 body.panth-checkout-extended .panth-checkout-header {
     position: absolute;
-    left: 24px;
+    left: 0;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 24px;
     margin: 0;
     z-index: 10;
+    pointer-events: none; /* let the absolutely-centred logo stay clickable */
+}
+/* Re-enable interaction only on the actual controls (back link / secure note) */
+body.panth-checkout-extended .panth-checkout-header > * {
+    pointer-events: auto;
+}
+/* The 3-step progress nav is hidden: it would collide with Luma's
+   absolutely-centred logo, and this is a single-page checkout. Back-to-Cart
+   (left) and the Secure-checkout note (right) frame the centred logo. */
+body.panth-checkout-extended .panth-checkout-header__progress {
+    display: none;
+}
+body.panth-checkout-extended .panth-checkout-header__secure {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    white-space: nowrap;
+}
+@media screen and (max-width: 640px) {
+    body.panth-checkout-extended .panth-checkout-header__secure {
+        display: none; /* keep room for logo + back link on small screens */
+    }
 }
 
 /* Ensure header content has relative positioning and logo is truly centred */
@@ -100,7 +134,7 @@ body.panth-checkout-extended .panth-checkout-header a {
 }
 
 body.panth-checkout-extended .panth-checkout-header a:hover {
-    color: #1a1a2e;
+    color: var(--panth-checkout-accent, #1a1a2e);
 }
 
 /* ----------------------------------------------------------
@@ -120,27 +154,29 @@ body.panth-checkout-extended .action.action-show-popup {
     margin-top: 12px;
     padding: 9px 16px;
     background: transparent;
-    color: #0D9488;
-    border: 1.5px solid #0D9488;
-    border-radius: 8px;
+    color: var(--panth-checkout-accent, #1a1a2e);
+    border: 1px solid var(--panth-checkout-accent, #1a1a2e);
+    border-radius: var(--panth-checkout-radius-sm, 8px);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 body.panth-checkout-extended .action.action-show-popup:hover {
-    background: #0D9488;
+    background: var(--panth-checkout-accent, #1a1a2e);
     color: #ffffff;
 }
 
 /* ----------------------------------------------------------
    5. LAYOUT — Main wrapper + Sidebar (floats)
    ---------------------------------------------------------- */
+/* 72% + 28% = 100%; the 24px padding-right IS the column gutter,
+   so steps↔summary gap matches the 24px grid gap inside .opc. */
 body.panth-checkout-extended .opc-wrapper {
     float: left;
-    width: 70%;
+    width: 72%;
     box-sizing: border-box;
     padding-right: 24px;
     margin: 0;
@@ -171,7 +207,8 @@ body.panth-checkout-extended .opc#checkoutSteps {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-    gap: 20px;
+    gap: 24px;
+    align-items: start;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -200,12 +237,12 @@ body.panth-checkout-extended .checkout-shipping-method > .step-title,
 body.panth-checkout-extended .checkout-payment-method > .step-title,
 body.panth-checkout-extended li#payment > .step-title,
 body.panth-checkout-extended .step-title {
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    color: #0f172a !important;
-    padding-bottom: 14px !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+    padding-bottom: 12px !important;
     margin-bottom: 20px !important;
-    border-bottom: 2px solid #e2e8f0 !important;
+    border-bottom: 1px solid #eceef1 !important;
     letter-spacing: -0.01em !important;
 }
 
@@ -229,51 +266,76 @@ body.panth-checkout-extended .field .control input[type="number"],
 body.panth-checkout-extended .field .control textarea,
 body.panth-checkout-extended .field .control select {
     width: 100%;
-    padding: 10px 36px 10px 14px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
+    padding: 0 12px;
+    border: 1px solid #d6d9de;
+    border-radius: var(--panth-checkout-radius-sm, 8px);
     font-size: 14px;
     font-family: inherit;
-    color: #0f172a;
-    background: #ffffff;
+    color: #111827;
+    background-color: #ffffff;
     box-sizing: border-box;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
     -webkit-appearance: none;
     appearance: none;
-    min-height: 42px;
+    height: 44px;
+}
+
+/* Textarea: natural height, comfortable inner padding */
+body.panth-checkout-extended .field .control textarea {
+    height: auto;
+    min-height: 88px;
+    padding: 10px 12px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+/* Select: restore a chevron (appearance:none strips the native one) */
+body.panth-checkout-extended .field .control select {
+    padding-right: 36px;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%236b7280' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px 8px;
+    cursor: pointer;
 }
 
 body.panth-checkout-extended .field .control input:focus,
 body.panth-checkout-extended .field .control textarea:focus,
 body.panth-checkout-extended .field .control select:focus {
     outline: none;
-    border-color: #1a1a2e;
-    box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.08);
+    border-color: var(--panth-checkout-accent, #1a1a2e);
+    box-shadow: 0 0 0 3px rgba(16, 24, 40, 0.08);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 14%, transparent);
 }
 
-body.panth-checkout-extended .field .control input::placeholder {
-    color: #94a3b8;
+body.panth-checkout-extended .field .control input::placeholder,
+body.panth-checkout-extended .field .control textarea::placeholder {
+    color: #9aa1ab;
     font-weight: 400;
 }
 
 /* ----------------------------------------------------------
    9. COMPACT FIELD PAIRS (side-by-side)
+   Re-keyed to body.panth-form-compact so the "full" field mode
+   (single column) works by absence of the class. Covers BOTH
+   shipping and billing address fields via attribute-suffix match.
    ---------------------------------------------------------- */
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.firstname"],
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.lastname"],
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.country_id"],
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.region_id"],
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.city"],
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.postcode"] {
+body.panth-form-compact .fieldset > .field[name$=".firstname"],
+body.panth-form-compact .fieldset > .field[name$=".lastname"],
+body.panth-form-compact .fieldset > .field[name$=".country_id"],
+body.panth-form-compact .fieldset > .field[name$=".region_id"],
+body.panth-form-compact .fieldset > .field[name$=".region"],
+body.panth-form-compact .fieldset > .field[name$=".city"],
+body.panth-form-compact .fieldset > .field[name$=".postcode"] {
     display: inline-block;
     width: 48%;
     vertical-align: top;
     margin-bottom: 12px;
 }
 
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.firstname"],
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.country_id"],
-body.panth-checkout-extended .fieldset > .field[name="shippingAddress.city"] {
+body.panth-form-compact .fieldset > .field[name$=".firstname"],
+body.panth-form-compact .fieldset > .field[name$=".country_id"],
+body.panth-form-compact .fieldset > .field[name$=".city"] {
     margin-right: 3%;
 }
 
@@ -320,9 +382,9 @@ body.panth-checkout-extended table.table-checkout-shipping-method {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 8px;
+    border-radius: var(--panth-checkout-radius-sm, 8px);
     overflow: hidden;
-    border: 1.5px solid #e2e8f0;
+    border: 1px solid #e6e8eb;
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method thead {
@@ -330,19 +392,20 @@ body.panth-checkout-extended table.table-checkout-shipping-method thead {
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr {
-    transition: background-color 0.15s ease;
-}
-
-body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:hover {
-    background-color: #f8fafc;
+    cursor: pointer;
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td {
-    padding: 14px 16px;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 15px 16px;
+    border-bottom: 1px solid #eef0f3;
     font-size: 14px;
-    color: #0f172a;
+    color: #111827;
     vertical-align: middle;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:hover td {
+    background-color: #f8f9fb;
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:last-child td {
@@ -350,25 +413,52 @@ body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:last-
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td input[type="radio"] {
-    accent-color: #1a1a2e;
+    accent-color: var(--panth-checkout-accent, #1a1a2e);
     width: 16px;
     height: 16px;
     cursor: pointer;
+}
+
+/* Selected shipping row — faint accent tint + 3px left accent bar */
+body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:has(input[type="radio"]:checked) td {
+    background-color: rgba(16, 24, 40, 0.035);
+    background-color: color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 5%, #ffffff);
+}
+
+body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:has(input[type="radio"]:checked) td:first-child {
+    box-shadow: inset 3px 0 0 var(--panth-checkout-accent, #1a1a2e);
+}
+
+body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:has(input[type="radio"]:checked) td .price {
+    font-weight: 700;
+}
+
+/* Price column reads as a value */
+body.panth-checkout-extended table.table-checkout-shipping-method .col-price {
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 /* ----------------------------------------------------------
    13. PAYMENT METHODS
    ---------------------------------------------------------- */
 body.panth-checkout-extended .payment-methods .payment-method {
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e6e8eb;
+    border-radius: var(--panth-checkout-radius-sm, 8px);
     margin-bottom: 10px;
     overflow: visible;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+body.panth-checkout-extended .payment-methods .payment-method:hover {
+    border-color: #c9ced6;
+}
+
+/* Active payment method — accent ring + faint tint */
 body.panth-checkout-extended .payment-methods .payment-method._active {
-    border-color: #1a1a2e;
+    border-color: var(--panth-checkout-accent, #1a1a2e);
+    box-shadow: 0 0 0 1px var(--panth-checkout-accent, #1a1a2e);
 }
 
 body.panth-checkout-extended .payment-method-title {
@@ -379,18 +469,27 @@ body.panth-checkout-extended .payment-method-title {
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
-    color: #0f172a;
+    color: #111827;
+    border-radius: calc(var(--panth-checkout-radius-sm, 8px) - 1px);
+    transition: background-color 0.15s ease;
+}
+
+body.panth-checkout-extended .payment-method._active > .payment-method-title {
+    background-color: rgba(16, 24, 40, 0.03);
+    background-color: color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 4%, #ffffff);
+    box-shadow: inset 3px 0 0 var(--panth-checkout-accent, #1a1a2e);
+    border-radius: calc(var(--panth-checkout-radius-sm, 8px) - 1px) calc(var(--panth-checkout-radius-sm, 8px) - 1px) 0 0;
 }
 
 body.panth-checkout-extended .payment-method-title input[type="radio"] {
-    accent-color: #1a1a2e;
+    accent-color: var(--panth-checkout-accent, #1a1a2e);
     width: 16px;
     height: 16px;
 }
 
 body.panth-checkout-extended .payment-method._active .payment-method-content {
     padding: 0 16px 16px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid #eceef1;
 }
 
 /* ----------------------------------------------------------
@@ -406,7 +505,7 @@ body.panth-checkout-extended .billing-address-same-as-shipping-block {
 }
 
 body.panth-checkout-extended .billing-address-same-as-shipping-block input[type="checkbox"] {
-    accent-color: #1a1a2e;
+    accent-color: var(--panth-checkout-accent, #1a1a2e);
     width: 16px;
     height: 16px;
 }
@@ -421,6 +520,13 @@ body.panth-checkout-extended .billing-address-details {
     margin: 10px 0;
 }
 
+/* Hide the read-only "same as shipping" billing preview until the shipping
+   address is actually filled — otherwise it shows an empty ", United States"
+   box. Class is toggled by checkout_init.phtml. */
+body.panth-billing-preview-empty .billing-address-details {
+    display: none;
+}
+
 /* Billing address form Update / Cancel buttons */
 body.panth-checkout-extended .billing-address-form .actions-toolbar,
 body.panth-checkout-extended .payment-method-content .actions-toolbar:not(:has(.action.primary.checkout)) {
@@ -433,16 +539,16 @@ body.panth-checkout-extended .payment-method-content .actions-toolbar:not(:has(.
 body.panth-checkout-extended .payment-method-content .action.action-update,
 body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-update,
 body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-update-address {
-    background-color: #0D9488 !important;
+    background-color: var(--panth-checkout-accent, #1a1a2e) !important;
     color: #ffffff !important;
-    border: 1.5px solid #0D9488 !important;
+    border: 1px solid var(--panth-checkout-accent, #1a1a2e) !important;
     padding: 0 18px !important;
-    border-radius: 8px !important;
+    border-radius: var(--panth-checkout-radius-sm, 8px) !important;
     font-size: 13px !important;
     font-weight: 600 !important;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    height: 38px !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    height: 40px !important;
     box-sizing: border-box !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -452,22 +558,22 @@ body.panth-checkout-extended .billing-address-form .actions-toolbar .action.acti
 body.panth-checkout-extended .payment-method-content .action.action-update:hover,
 body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-update:hover,
 body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-update-address:hover {
-    background-color: #0F766E !important;
-    border-color: #0F766E !important;
+    background-color: var(--panth-checkout-accent-hover, #16213e) !important;
+    border-color: var(--panth-checkout-accent-hover, #16213e) !important;
 }
 
 body.panth-checkout-extended .payment-method-content .action.action-cancel,
 body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-cancel {
     background-color: transparent !important;
-    color: #0D9488 !important;
-    border: 1.5px solid #0D9488 !important;
+    color: #374151 !important;
+    border: 1px solid #d6d9de !important;
     padding: 0 18px !important;
-    border-radius: 8px !important;
+    border-radius: var(--panth-checkout-radius-sm, 8px) !important;
     font-size: 13px !important;
     font-weight: 600 !important;
     cursor: pointer;
-    transition: all 0.2s ease;
-    height: 38px !important;
+    transition: all 0.15s ease;
+    height: 40px !important;
     box-sizing: border-box !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -476,7 +582,9 @@ body.panth-checkout-extended .billing-address-form .actions-toolbar .action.acti
 
 body.panth-checkout-extended .payment-method-content .action.action-cancel:hover,
 body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-cancel:hover {
-    background-color: #f0fdfa !important;
+    background-color: #f3f4f6 !important;
+    border-color: #c9ced6 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
 /* Actions toolbar row for billing form buttons */
@@ -522,10 +630,10 @@ body.panth-checkout-extended aside.opc-sidebar .modal-content {
    ---------------------------------------------------------- */
 body.panth-checkout-extended .opc-block-summary {
     background: #ffffff !important;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    border: 1px solid #e6e8eb;
+    border-radius: var(--panth-checkout-radius, 8px);
+    padding: 24px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.08);
     display: flex;
     flex-direction: column;
 }
@@ -537,12 +645,13 @@ body.panth-checkout-extended .opc-block-summary > * {
 
 body.panth-checkout-extended .opc-block-summary > span.title {
     display: block;
-    font-size: 18px;
-    font-weight: 700;
-    color: #0f172a;
-    padding-bottom: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+    letter-spacing: -0.01em;
+    padding-bottom: 12px;
     margin-bottom: 16px;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 1px solid #eceef1;
 }
 
 body.panth-checkout-extended .items-in-cart > .title[data-role="title"] {
@@ -679,33 +788,65 @@ body.panth-checkout-extended .table-totals tr.grand.totals td {
    19. PLACE ORDER — SIDEBAR BUTTON
    ---------------------------------------------------------- */
 body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout {
-    display: block !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     visibility: visible !important;
     width: 100%;
-    padding: 14px 24px;
+    height: 48px;
+    padding: 0 24px;
     margin-top: 16px;
-    background-color: #0D9488;
+    background-color: var(--panth-checkout-accent, #1a1a2e);
     color: #ffffff;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--panth-checkout-radius-sm, 8px);
     font-size: 15px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
 body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout:hover {
-    background-color: #0F766E;
+    background-color: var(--panth-checkout-accent-hover, #16213e);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.18);
+}
+
+body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout:active {
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
 body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout:disabled,
 body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout[disabled] {
-    background-color: #94a3b8;
+    background-color: var(--panth-checkout-accent, #1a1a2e);
+    opacity: 0.5;
     cursor: not-allowed;
-    opacity: 1;
+    box-shadow: none;
+    transform: none;
+}
+
+/* "Secure checkout" reassurance note below the Place Order button.
+   It was unstyled and sat flush against (overlapping) the button — give it
+   clear separation, centring and muted styling. */
+body.panth-checkout-extended .panth-secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    line-height: 1.2;
+}
+body.panth-checkout-extended .panth-secure-note .panth-secure-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 /* ----------------------------------------------------------
@@ -736,9 +877,12 @@ body.panth-checkout-extended .panth-registration-wrap label {
 
 body.panth-checkout-extended .panth-newsletter-wrap input[type="checkbox"],
 body.panth-checkout-extended .panth-registration-wrap input[type="checkbox"] {
-    accent-color: #1a1a2e;
+    accent-color: var(--panth-checkout-accent, #1a1a2e);
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
 }
 
 body.panth-checkout-extended .panth-registration-wrap .field {
@@ -779,7 +923,7 @@ body.panth-checkout-extended .panth-pw-half .input-text {
 }
 
 body.panth-checkout-extended .panth-pw-half .input-text:focus {
-    border-color: #1a1a2e !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
     outline: none !important;
     box-shadow: none !important;
 }
@@ -796,100 +940,66 @@ body.panth-checkout-extended .panth-pw-half .field-error {
 }
 
 /* ----------------------------------------------------------
-   21. DISCOUNT CODE — custom panth template (input + btn inline)
+   21. DISCOUNT CODE — Magento CORE template relocated into the
+   order summary. Force-expanded by JS; rendered as a small
+   section title + a single input/button row (see DISCOUNT FORM
+   section further down for the form itself).
    ---------------------------------------------------------- */
-/* Ensure discount code wrapper is always visible — our template renders panth-discount-block inside it */
 body.panth-checkout-extended .payment-option._collapsible.discount-code,
 body.panth-checkout-extended .payment-option.discount-code {
     display: block !important;
     overflow: visible !important;
 }
 
-/* Hide core collapsible title/toggle — our template already has its own heading */
-body.panth-checkout-extended .payment-option.discount-code > .payment-option-title {
-    display: none !important;
+/* Wrapper inside the summary card — separated by a hairline */
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code {
+    margin: 16px 0 0;
+    padding: 16px 0 0;
+    border-top: 1px solid #eef0f3;
 }
 
-body.panth-checkout-extended .panth-discount-block {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #e2e8f0;
-}
-
-body.panth-checkout-extended .panth-discount-title {
+/* Title ("Apply Discount Code") — small static section title.
+   Block appears always-expanded (JS force-expands), so the title
+   must not read as a collapsible toggle. */
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code > .payment-option-title,
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code [data-role="title"] {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 0 10px !important;
+    border: none !important;
+    background: none !important;
+    cursor: default !important;
+    pointer-events: none;
     font-size: 13px;
     font-weight: 600;
     color: #475569;
-    margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
-body.panth-checkout-extended .panth-discount-form {
-    margin: 0;
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code [data-role="title"] .action-toggle,
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code .payment-option-title span,
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code .payment-option-title a {
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    color: inherit !important;
+    text-decoration: none !important;
+    cursor: default !important;
 }
 
-body.panth-checkout-extended .panth-discount-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+/* Kill Luma's collapsible arrow glyph */
+body.panth-checkout-extended .payment-option.discount-code .payment-option-title .action-toggle::after,
+body.panth-checkout-extended .payment-option.discount-code [data-role="title"]::after {
+    display: none !important;
+    content: none !important;
 }
 
-body.panth-checkout-extended .panth-discount-input {
-    flex: 1;
-    min-width: 0;
-    padding: 9px 12px !important;
-    border: 1.5px solid #e2e8f0 !important;
-    border-radius: 8px !important;
-    font-size: 13px !important;
-    font-family: inherit;
-    color: #0f172a !important;
-    background: #ffffff !important;
-    box-sizing: border-box;
-    height: 38px;
-    transition: border-color 0.2s ease;
-}
-
-body.panth-checkout-extended .panth-discount-input:focus {
-    outline: none !important;
-    border-color: #1a1a2e !important;
-    box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.08) !important;
-}
-
-body.panth-checkout-extended .panth-discount-input::placeholder {
-    color: #94a3b8;
-    font-size: 13px;
-}
-
-body.panth-checkout-extended .panth-discount-btn {
-    flex-shrink: 0;
-    height: 38px;
-    padding: 0 16px;
-    background-color: #1a1a2e;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    font-family: inherit;
-    transition: background-color 0.2s ease;
-}
-
-body.panth-checkout-extended .panth-discount-btn:hover {
-    background-color: #16213e;
-}
-
-body.panth-checkout-extended .panth-discount-btn--cancel {
-    background-color: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
-}
-
-body.panth-checkout-extended .panth-discount-btn--cancel:hover {
-    background-color: #e2e8f0;
-    color: #1a1a2e;
+/* Content stays visible even if the collapsible tries to close */
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code .payment-option-content,
+body.panth-checkout-extended .opc-block-summary .payment-option.discount-code [data-role="content"] {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 /* ----------------------------------------------------------
@@ -930,39 +1040,56 @@ body.panth-checkout-extended .message.message-success {
    23. GENERIC BUTTON OVERRIDES
    ---------------------------------------------------------- */
 body.panth-checkout-extended .action.primary {
-    display: inline-block !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
     visibility: visible !important;
-    background-color: #1a1a2e;
+    background-color: var(--panth-checkout-accent, #1a1a2e);
     color: #ffffff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
+    border-radius: var(--panth-checkout-radius-sm, 8px);
+    min-height: 44px;
+    padding: 0 20px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
-    transition: background-color 0.2s ease;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease;
 }
 
 body.panth-checkout-extended .action.primary:hover {
-    background-color: #16213e;
+    background-color: var(--panth-checkout-accent-hover, #16213e);
+}
+
+body.panth-checkout-extended .action.primary:disabled,
+body.panth-checkout-extended .action.primary[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 body.panth-checkout-extended .action.secondary {
-    background-color: #f1f5f9;
-    color: #1a1a2e;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d6d9de;
+    border-radius: var(--panth-checkout-radius-sm, 8px);
+    min-height: 44px;
+    padding: 0 20px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.2s ease;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
 }
 
 body.panth-checkout-extended .action.secondary:hover {
-    background-color: #e2e8f0;
+    background-color: #f3f4f6;
+    border-color: #c9ced6;
+    color: var(--panth-checkout-accent, #1a1a2e);
 }
 
 /* ----------------------------------------------------------
@@ -1029,7 +1156,16 @@ body.panth-checkout-extended .action.secondary:hover {
     }
 
     body.panth-checkout-extended .opc > li {
-        padding: 15px !important;
+        padding: 20px !important;
+    }
+
+    /* Comfortable tap targets for the qty stepper on touch (≥36px) */
+    body.panth-checkout-extended .panth-item-qty-stepper {
+        height: 36px;
+    }
+    body.panth-checkout-extended .panth-qty-btn {
+        width: 36px;
+        height: 34px;
     }
 
     body.panth-checkout-extended .opc-wrapper .action-show-popup {
@@ -1049,32 +1185,54 @@ body.panth-checkout-extended .action.secondary:hover {
         margin: 0 !important;
     }
 
-    body.panth-checkout-extended .fieldset > .field[name="shippingAddress.firstname"],
-    body.panth-checkout-extended .fieldset > .field[name="shippingAddress.lastname"],
-    body.panth-checkout-extended .fieldset > .field[name="shippingAddress.country_id"],
-    body.panth-checkout-extended .fieldset > .field[name="shippingAddress.region_id"],
-    body.panth-checkout-extended .fieldset > .field[name="shippingAddress.city"],
-    body.panth-checkout-extended .fieldset > .field[name="shippingAddress.postcode"] {
+    body.panth-form-compact .fieldset > .field[name$=".firstname"],
+    body.panth-form-compact .fieldset > .field[name$=".lastname"],
+    body.panth-form-compact .fieldset > .field[name$=".country_id"],
+    body.panth-form-compact .fieldset > .field[name$=".region_id"],
+    body.panth-form-compact .fieldset > .field[name$=".region"],
+    body.panth-form-compact .fieldset > .field[name$=".city"],
+    body.panth-form-compact .fieldset > .field[name$=".postcode"] {
         display: block;
         width: 100%;
         margin-right: 0;
     }
 
+    /* Header: Back-to-Cart stays LEFT, logo stays centred
+       (the Secure-checkout note already hides ≤640px, section 4) */
     body.panth-checkout-extended .panth-checkout-header {
-        left: auto !important;
-        right: 16px !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 0 16px;
     }
 
     body.panth-checkout-extended .logo {
-        padding-left: 16px !important;
+        padding-left: 0 !important;
         margin-left: 0 !important;
     }
 
-    body.panth-checkout-extended .form-discount .payment-option-inner {
-        flex-direction: column;
+    /* Touch-friendly fields — ≥16px font prevents iOS zoom-on-focus.
+       Heights are already 44px from the base rules; only the compact
+       registration password inputs need a bump. */
+    body.panth-checkout-extended .field .control input[type="text"],
+    body.panth-checkout-extended .field .control input[type="email"],
+    body.panth-checkout-extended .field .control input[type="tel"],
+    body.panth-checkout-extended .field .control input[type="password"],
+    body.panth-checkout-extended .field .control input[type="number"],
+    body.panth-checkout-extended .field .control textarea,
+    body.panth-checkout-extended .field .control select,
+    body.panth-checkout-extended .form-discount input[name="discount_code"],
+    body.panth-checkout-extended #discount-code,
+    body.panth-checkout-extended .panth-order-note-textarea,
+    body.panth-checkout-extended .panth-pw-half .input-text {
+        font-size: 16px !important;
     }
+    body.panth-checkout-extended .panth-pw-half .input-text {
+        height: 44px !important;
+    }
+    /* Discount row stays inline at this size (input keeps flex:1 room);
+       it stacks fully on phones — see Section 24D (≤480px). */
 
-    /* Modal popup/slide — 70% height, vertically centred */
+    /* Modal popup/slide — content height capped at 75vh, vertically centred */
     body.panth-checkout-extended .modal-popup.modal-slide {
         display: flex !important;
         align-items: center !important;
@@ -1083,8 +1241,8 @@ body.panth-checkout-extended .action.secondary:hover {
     }
 
     body.panth-checkout-extended .modal-popup.modal-slide .modal-inner-wrap {
-        height: 70vh !important;
-        max-height: 70vh !important;
+        height: auto !important;
+        max-height: 75vh !important;
         width: 92% !important;
         max-width: 480px !important;
         margin: auto !important;
@@ -1169,9 +1327,10 @@ body.panth-checkout-extended .field-tooltip .field-tooltip-content::before,
 body.panth-checkout-extended .field-tooltip .field-tooltip-content::after {
     display: none !important;
 }
-/* Ensure tooltip input doesn't overlap with the ? icon */
-body.panth-checkout-extended .field._with-tooltip .control input {
-    padding-right: 32px !important;
+/* Ensure tooltip input doesn't overlap with the ? icon —
+   only when tooltips are enabled via config (panth-form-tooltips) */
+body.panth-form-tooltips .field._with-tooltip .control input {
+    padding-right: 36px !important;
 }
 
 /* ORDER TOTALS — Force visible in sidebar with proper styling */
@@ -1342,70 +1501,192 @@ body.panth-checkout-extended .payment-method-content .field:last-child {
 
 /* ----------------------------------------------------------
    SUMMARY ITEM DETAILS — panth custom template
+   Structure: [thumbnail] [.panth-item-info column]
+     .panth-item-info = name -> sku -> options -> .panth-item-meta (qty + price)
+   min-width:0 on the flex children lets the name WRAP instead of forcing
+   horizontal overflow (was the 375px scrollWidth>viewport bug).
    ---------------------------------------------------------- */
 body.panth-checkout-extended .panth-item-details {
     flex: 1 !important;
-    min-width: 0;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 3px;
-}
-
-/* Single row: Name (flex:1) + Qty · Price (right) — !important overrides any Luma block rules */
-body.panth-checkout-extended .panth-item-row {
+    min-width: 0 !important;
     display: flex !important;
     flex-direction: row !important;
-    align-items: baseline !important;
-    flex-wrap: nowrap !important;
-    gap: 6px;
-    min-width: 0;
     width: 100%;
 }
 
+/* Main info column — flex:1 + min-width:0 is what allows the name to wrap */
+body.panth-checkout-extended .panth-item-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px;
+    width: 100%;
+}
+
+/* Product name — wraps up to 2 lines, NEVER truncates to just the SKU */
 body.panth-checkout-extended .panth-item-name {
-    flex: 1 !important;
-    font-size: 12px;
+    width: 100%;
+    font-size: 13px;
     font-weight: 600;
-    color: #0f172a;
-    line-height: 1.4;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #111827;
+    line-height: 1.35;
     min-width: 0;
-    display: block !important;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal !important;
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
-body.panth-checkout-extended .panth-item-right {
-    display: inline-flex !important;
+/* Name rendered as a link (or strong) — text-styled, accent on hover */
+body.panth-checkout-extended .panth-item-name a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+body.panth-checkout-extended a.panth-item-name {
+    color: #111827;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+body.panth-checkout-extended .panth-item-name a:hover,
+body.panth-checkout-extended a.panth-item-name:hover {
+    color: var(--panth-checkout-accent, #1a1a2e);
+    text-decoration: none;
+}
+
+body.panth-checkout-extended .panth-item-name strong {
+    font-weight: inherit;
+}
+
+/* Tiny muted SKU under the name */
+body.panth-checkout-extended .panth-item-sku {
+    display: block;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 400;
+    color: #6b7280;
+    line-height: 1.3;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Meta row — qty control on the left, row subtotal/price on the right */
+body.panth-checkout-extended .panth-item-meta {
+    display: flex !important;
     flex-direction: row !important;
-    align-items: baseline !important;
-    gap: 4px;
-    flex-shrink: 0 !important;
-    white-space: nowrap;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    margin-top: 4px;
+    flex-wrap: wrap;
 }
 
-body.panth-checkout-extended .panth-item-qty {
-    font-size: 11px;
-    color: #94a3b8;
+/* Static qty (no stepper) — small muted "Qty: N" */
+body.panth-checkout-extended .panth-item-meta > .panth-item-qty {
+    font-size: 12px;
+    color: #6b7280;
+    flex-shrink: 0;
 }
 
-body.panth-checkout-extended .panth-item-qty::before {
+body.panth-checkout-extended .panth-item-meta > .panth-item-qty::before {
     content: "Qty: ";
 }
 
-/* Subtotal price — right side of item row */
-body.panth-checkout-extended .panth-item-right .subtotal,
-body.panth-checkout-extended .panth-item-right .price {
-    font-size: 12px;
-    font-weight: 700;
-    color: #0f172a;
+/* Price block (after_details subtotal) — right-aligned, weight 600 */
+body.panth-checkout-extended .panth-item-price {
+    margin-left: auto;
+    text-align: right;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
-/* Separator dot between qty and price */
-body.panth-checkout-extended .panth-item-right .panth-item-qty + .subtotal::before,
-body.panth-checkout-extended .panth-item-right .panth-item-qty + span::before {
-    content: " · ";
-    color: #cbd5e1;
+body.panth-checkout-extended .panth-item-price .subtotal,
+body.panth-checkout-extended .panth-item-price .price {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+}
+
+/* ----------------------------------------------------------
+   QTY STEPPER — compact modern pill (summary item row)
+   .panth-item-qty-stepper > .panth-qty-dec | .panth-item-qty | .panth-qty-inc
+   ---------------------------------------------------------- */
+body.panth-checkout-extended .panth-item-qty-stepper {
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 28px;
+    border: 1px solid #e2e6ea;
+    border-radius: 999px;
+    background: #ffffff;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+body.panth-checkout-extended .panth-qty-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 26px;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+body.panth-checkout-extended .panth-qty-btn:hover {
+    background-color: #f3f4f6;
+    color: var(--panth-checkout-accent, #1a1a2e);
+}
+
+body.panth-checkout-extended .panth-qty-btn:active {
+    background-color: #eceef1;
+}
+
+body.panth-checkout-extended .panth-qty-btn:disabled,
+body.panth-checkout-extended .panth-qty-btn[disabled] {
+    opacity: 0.35;
+    cursor: default;
+    background-color: transparent;
+    color: #475569;
+}
+
+/* Qty number between the buttons — no "Qty:" prefix inside the pill */
+body.panth-checkout-extended .panth-item-qty-stepper .panth-item-qty {
+    min-width: 22px;
+    padding: 0 2px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1;
+}
+
+body.panth-checkout-extended .panth-item-qty-stepper .panth-item-qty::before {
+    content: none;
 }
 
 /* ----------------------------------------------------------
@@ -1433,7 +1714,7 @@ body.panth-checkout-extended .panth-options-toggle {
 }
 
 body.panth-checkout-extended .panth-options-toggle:hover {
-    color: #475569;
+    color: var(--panth-checkout-accent, #1a1a2e);
 }
 
 /* Arrow indicator */
@@ -1587,65 +1868,58 @@ body.panth-checkout-extended .checkout-payment-method .payment-method + .payment
 }
 
 /* ----------------------------------------------------------
-   THEME COLORS — override all #1a1a2e primary references to teal
-   Primary: #0D9488  Dark: #0F766E  Light: #f0fdfa
+   THEME COLORS — interactive accents now driven by the
+   configurable accent var (--panth-checkout-accent, default #1a1a2e).
+   Previously hardcoded teal #0D9488; re-keyed to var so the
+   admin "accent" setting controls buttons / links / highlights.
    ---------------------------------------------------------- */
-/* Focus ring on inputs — teal instead of dark navy */
+/* Focus ring on inputs — accent border + matching soft ring */
 body.panth-checkout-extended .field .control input:focus,
 body.panth-checkout-extended .field .control textarea:focus,
 body.panth-checkout-extended .field .control select:focus {
-    border-color: #0D9488 !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12) !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
+    box-shadow: 0 0 0 3px rgba(16, 24, 40, 0.08) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 14%, transparent) !important;
 }
 
 /* Checkbox + radio accent color */
 body.panth-checkout-extended input[type="radio"],
 body.panth-checkout-extended input[type="checkbox"] {
-    accent-color: #0D9488 !important;
+    accent-color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
 /* Active payment method border */
 body.panth-checkout-extended .payment-methods .payment-method._active {
-    border-color: #0D9488 !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
 /* Payment method radio accent */
 body.panth-checkout-extended .payment-method-title input[type="radio"] {
-    accent-color: #0D9488 !important;
+    accent-color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
-/* Selected shipping address — replace Luma orange border with teal */
+/* Selected shipping address — accent border + indicator */
 body.panth-checkout-extended .shipping-address-item.selected-item {
-    border-color: #0D9488 !important;
-    box-shadow: 0 0 0 1px #0D9488 !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
+    box-shadow: 0 0 0 1px var(--panth-checkout-accent, #1a1a2e) !important;
 }
 body.panth-checkout-extended .shipping-address-item.selected-item::after {
-    background: #0D9488 !important;
-    border-color: #0D9488 !important;
+    background: var(--panth-checkout-accent, #1a1a2e) !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 body.panth-checkout-extended .shipping-address-item.selected-item .action-select-shipping-item {
-    background: #0D9488 !important;
-    border-color: #0D9488 !important;
+    background: var(--panth-checkout-accent, #1a1a2e) !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
 /* Payment method active content top border */
 body.panth-checkout-extended .payment-method._active .payment-method-content {
-    border-top-color: #0D9488 !important;
+    border-top-color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
-/* Discount input focus */
-body.panth-checkout-extended .panth-discount-input:focus {
-    border-color: #0D9488 !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12) !important;
-}
-
-/* Discount Apply button */
-body.panth-checkout-extended .panth-discount-btn {
-    background-color: #0D9488 !important;
-}
-body.panth-checkout-extended .panth-discount-btn:hover {
-    background-color: #0F766E !important;
-}
+/* Discount accent styling lives in the DISCOUNT FORM section
+   (core .action.action-apply / .action.action-cancel selectors).
+   Old fixed-size .panth-discount-* button rules removed. */
 
 /* ----------------------------------------------------------
    LUMA ITEM STRUCTURE — flex layout since template override
@@ -1745,7 +2019,7 @@ body.panth-checkout-extended .product.options .toggle {
     user-select: none !important;
 }
 body.panth-checkout-extended .product.options .toggle:hover {
-    color: #475569 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 /* Hide arrow that Luma adds */
 body.panth-checkout-extended .product.options .toggle::after {
@@ -1831,17 +2105,25 @@ body.panth-checkout-extended .item-options .values img {
 }
 
 /* ----------------------------------------------------------
-   DISCOUNT FORM — inline input + button
-   The core Luma discount template (form.form-discount) is used
+   DISCOUNT FORM — single row: input grows, button at its right
+   Core Luma selectors: form#discount-coupon-form (.form-discount),
+   input#discount-code / [name="discount_code"],
+   buttons .action.action-apply / .action.action-cancel.
+   Knockout's visible binding (inline style) decides which button
+   shows — never force display with !important on the buttons, so
+   exactly ONE labeled button is visible at a time.
    ---------------------------------------------------------- */
-body.panth-checkout-extended .form-discount {
+body.panth-checkout-extended .form-discount,
+body.panth-checkout-extended #discount-coupon-form {
     display: flex !important;
-    align-items: flex-start !important; /* flex-start keeps button at input level even when error message appears */
+    align-items: flex-start !important; /* button stays level with input when an error message appears */
     gap: 8px !important;
     margin: 0 !important;
 }
-body.panth-checkout-extended .form-discount .payment-option-inner {
+body.panth-checkout-extended .form-discount .payment-option-inner,
+body.panth-checkout-extended #discount-coupon-form .payment-option-inner {
     flex: 1 !important;
+    min-width: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
 }
@@ -1849,64 +2131,152 @@ body.panth-checkout-extended .form-discount .payment-option-inner .field {
     margin: 0 !important;
     padding: 0 !important;
 }
+/* Visually hide the input label, keep it for screen readers */
 body.panth-checkout-extended .form-discount .payment-option-inner .field .label {
-    display: none !important;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    border: 0 !important;
 }
 body.panth-checkout-extended .form-discount .payment-option-inner .field .control {
     margin: 0 !important;
 }
-body.panth-checkout-extended .form-discount .payment-option-inner .field .control input {
-    height: 38px !important;
-    padding: 9px 12px !important;
-    font-size: 13px !important;
-    border: 1.5px solid #e2e8f0 !important;
-    border-radius: 8px !important;
+body.panth-checkout-extended .form-discount input[name="discount_code"],
+body.panth-checkout-extended #discount-code {
+    width: 100% !important;
+    height: 44px !important;
+    padding: 0 12px !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    color: #111827 !important;
+    border: 1px solid #d6d9de !important;
+    border-radius: var(--panth-checkout-radius-sm, 8px) !important;
+    background-color: #ffffff !important;
     box-sizing: border-box !important;
     margin: 0 !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+body.panth-checkout-extended .form-discount input[name="discount_code"]:focus,
+body.panth-checkout-extended #discount-code:focus {
+    outline: none !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
+    box-shadow: 0 0 0 3px rgba(16, 24, 40, 0.08) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 14%, transparent) !important;
+}
+body.panth-checkout-extended .form-discount input[name="discount_code"]::placeholder,
+body.panth-checkout-extended #discount-code::placeholder {
+    color: #9aa1ab !important;
+}
+body.panth-checkout-extended .form-discount input[name="discount_code"]:disabled,
+body.panth-checkout-extended #discount-code:disabled {
+    background-color: #f6f7f9 !important;
+    color: #6b7280 !important;
+    cursor: not-allowed;
 }
 body.panth-checkout-extended .form-discount .actions-toolbar {
     display: block !important;
     flex-shrink: 0 !important;
+    width: auto !important;
     margin: 0 !important;
     padding: 0 !important;
 }
-body.panth-checkout-extended .form-discount .actions-toolbar .primary {
+body.panth-checkout-extended .form-discount .actions-toolbar .primary,
+body.panth-checkout-extended .form-discount .actions-toolbar .secondary {
     display: block !important;
     margin: 0 !important;
+    padding: 0 !important;
     float: none !important;
 }
-body.panth-checkout-extended .form-discount .action.action-apply {
-    height: 38px !important;
-    padding: 0 16px !important;
-    background-color: #0D9488 !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 0 !important; /* hide "Apply Discount" text */
-    font-family: inherit !important;
-    cursor: pointer !important;
-    white-space: nowrap !important;
-    display: inline-flex !important;
-    align-items: center !important;
+/* Apply — accent button, real visible label (no font-size:0 / ::after hacks) */
+body.panth-checkout-extended .form-discount .action.action-apply,
+body.panth-checkout-extended #discount-coupon-form .action.action-apply {
+    display: inline-flex; /* no !important — Knockout toggles inline display */
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 18px;
+    margin: 0;
+    width: auto;
+    min-width: 0;
+    background-color: var(--panth-checkout-accent, #1a1a2e);
+    background-image: none;
+    color: #ffffff;
+    border: 1px solid var(--panth-checkout-accent, #1a1a2e);
+    border-radius: var(--panth-checkout-radius-sm, 8px);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 }
-body.panth-checkout-extended .form-discount .action.action-apply::after {
-    content: 'Apply' !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #ffffff !important;
+body.panth-checkout-extended .form-discount .action.action-apply span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1;
 }
-body.panth-checkout-extended .form-discount .action.action-apply:hover {
-    background-color: #0F766E !important;
+body.panth-checkout-extended .form-discount .action.action-apply:hover,
+body.panth-checkout-extended #discount-coupon-form .action.action-apply:hover {
+    background-color: var(--panth-checkout-accent-hover, #16213e);
+    border-color: var(--panth-checkout-accent-hover, #16213e);
 }
+/* Cancel / Remove — same size, outline secondary */
+body.panth-checkout-extended .form-discount .action.action-cancel,
+body.panth-checkout-extended #discount-coupon-form .action.action-cancel,
 body.panth-checkout-extended .form-discount .action.action-cancel-coupon {
-    margin-top: 6px !important;
-    font-size: 11px !important;
-    color: #94a3b8 !important;
-    background: none !important;
-    border: none !important;
-    cursor: pointer !important;
-    display: block !important;
-    padding: 0 !important;
+    display: inline-flex; /* no !important — Knockout toggles inline display */
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 18px;
+    margin: 0;
+    width: auto;
+    min-width: 0;
+    background: transparent;
+    color: #374151;
+    border: 1px solid #d6d9de;
+    border-radius: var(--panth-checkout-radius-sm, 8px);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+body.panth-checkout-extended .form-discount .action.action-cancel span,
+body.panth-checkout-extended .form-discount .action.action-cancel-coupon span {
+    font-size: 14px;
+    font-weight: 600;
+    color: inherit;
+    line-height: 1;
+}
+body.panth-checkout-extended .form-discount .action.action-cancel:hover,
+body.panth-checkout-extended #discount-coupon-form .action.action-cancel:hover,
+body.panth-checkout-extended .form-discount .action.action-cancel-coupon:hover {
+    background-color: #f3f4f6;
+    border-color: #c9ced6;
+    color: var(--panth-checkout-accent, #1a1a2e);
+}
+/* Disabled (while a request is in flight) — reduced opacity, same colors */
+body.panth-checkout-extended .form-discount .action.action-apply:disabled,
+body.panth-checkout-extended .form-discount .action.action-apply[disabled],
+body.panth-checkout-extended .form-discount .action.action-cancel:disabled,
+body.panth-checkout-extended .form-discount .action.action-cancel[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+/* Coupon validation message under the input */
+body.panth-checkout-extended .form-discount .payment-option-inner div.mage-error {
+    margin-top: 4px !important;
 }
 
 /* ----------------------------------------------------------
@@ -1925,20 +2295,22 @@ body.panth-checkout-extended .form-discount .action.action-cancel-coupon {
     padding: 0 20px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
-    border-radius: 8px !important;
-    border: 1.5px solid #0D9488 !important;
-    color: #0D9488 !important;
+    border-radius: var(--panth-checkout-radius-sm, 8px) !important;
+    border: 1px solid #d6d9de !important;
+    color: #374151 !important;
     background: transparent !important;
     cursor: pointer !important;
     display: inline-flex !important;
     align-items: center !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.15s ease !important;
     box-sizing: border-box !important;
     margin: 0 !important;
 }
 .modal-popup.new-shipping-address-modal .modal-footer .action-hide-popup:hover,
 .modal-popup.new-shipping-address-modal .modal-footer .action.secondary:hover {
-    background: #f0fdfa !important;
+    background: #f3f4f6 !important;
+    border-color: #c9ced6 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 .modal-popup.new-shipping-address-modal .modal-footer .action.primary,
 .modal-popup.new-shipping-address-modal .modal-footer button.action-save-address {
@@ -1946,9 +2318,9 @@ body.panth-checkout-extended .form-discount .action.action-cancel-coupon {
     padding: 0 20px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
-    border-radius: 8px !important;
+    border-radius: var(--panth-checkout-radius-sm, 8px) !important;
     border: none !important;
-    background-color: #0D9488 !important;
+    background-color: var(--panth-checkout-accent, #1a1a2e) !important;
     color: #ffffff !important;
     cursor: pointer !important;
     display: inline-flex !important;
@@ -1958,7 +2330,7 @@ body.panth-checkout-extended .form-discount .action.action-cancel-coupon {
 }
 .modal-popup.new-shipping-address-modal .modal-footer .action.primary:hover,
 .modal-popup.new-shipping-address-modal .modal-footer button.action-save-address:hover {
-    background-color: #0F766E !important;
+    background-color: var(--panth-checkout-accent-hover, #16213e) !important;
 }
 
 /* ----------------------------------------------------------
@@ -2001,29 +2373,17 @@ body.panth-checkout-extended .payment-method-title label {
 }
 
 /* ----------------------------------------------------------
-   BACK TO CART — theme teal color
-   ---------------------------------------------------------- */
-.checkout-index-index .action.back,
-.checkout-index-index a.action.back {
-    color: #0D9488 !important;
-    text-decoration: none !important;
-}
-.checkout-index-index .action.back:hover {
-    color: #0F766E !important;
-}
-.checkout-index-index .action.back::before {
-    color: #0D9488 !important;
-}
-
-/* ----------------------------------------------------------
    ORDER SUMMARY ITEMS — max 3 visible, then scrollbar
    Each item ~75px; 3 items ≈ 225px + a bit of breathing room
    ---------------------------------------------------------- */
 body.panth-checkout-extended .opc-block-summary .minicart-items-wrapper {
-    max-height: 245px !important;
+    /* Generous bound so a single item with expanded options (e.g. a bundle with
+       4 selections ~311px tall) does not clip its qty stepper + price below the
+       fold, while long multi-item carts still scroll. */
+    max-height: min(60vh, 460px) !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    padding-right: 4px !important;
+    padding-right: 8px !important; /* room so the scrollbar never overlaps the price column */
 }
 body.panth-checkout-extended .opc-block-summary .minicart-items-wrapper::-webkit-scrollbar {
     width: 4px !important;
@@ -2058,14 +2418,6 @@ body.panth-checkout-extended .item-options dd > a {
 }
 
 /* ----------------------------------------------------------
-   MINICART ITEMS WRAPPER — extra right padding so scrollbar
-   does not overlap the price column
-   ---------------------------------------------------------- */
-body.panth-checkout-extended .opc-block-summary .minicart-items-wrapper {
-    padding-right: 8px !important;
-}
-
-/* ----------------------------------------------------------
    SHIPPING ADDRESS CARDS — not-selected vs selected
    ---------------------------------------------------------- */
 /* Not-selected card: light border, subtle bg, extra bottom for button */
@@ -2079,28 +2431,29 @@ body.panth-checkout-extended .shipping-address-item.not-selected-item {
     box-shadow: none !important;
 }
 
-/* "Ship Here" button — teal outline, bottom-right of card */
+/* "Ship Here" button — accent outline, bottom-right of card */
 body.panth-checkout-extended .shipping-address-item .action.action-select-shipping-item {
     position: absolute !important;
     bottom: 10px !important;
     right: 10px !important;
-    height: 30px !important;
+    height: 32px !important;
+    min-height: 32px !important;
     padding: 0 14px !important;
     font-size: 12px !important;
     font-weight: 600 !important;
-    color: #0D9488 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
     background: transparent !important;
-    border: 1.5px solid #0D9488 !important;
-    border-radius: 6px !important;
+    border: 1px solid var(--panth-checkout-accent, #1a1a2e) !important;
+    border-radius: var(--panth-checkout-radius-sm, 6px) !important;
     cursor: pointer !important;
     display: inline-flex !important;
     align-items: center !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.15s ease !important;
 }
 body.panth-checkout-extended .shipping-address-item .action.action-select-shipping-item:hover {
-    background: #f0fdfa !important;
-    border-color: #0F766E !important;
-    color: #0F766E !important;
+    background: var(--panth-checkout-accent, #1a1a2e) !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
+    color: #ffffff !important;
 }
 
 /* ----------------------------------------------------------
@@ -2117,7 +2470,7 @@ body.panth-checkout-extended .billing-address-details {
 /* Phone link */
 body.panth-checkout-extended .shipping-address-item a[href^="tel"],
 body.panth-checkout-extended .billing-address-details a[href^="tel"] {
-    color: #0D9488 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
     text-decoration: none !important;
 }
 
@@ -2138,7 +2491,7 @@ body.panth-checkout-extended .shipping-address-item.selected-item .action.edit-a
     padding: 0 !important;
     background: none !important;
     border: none !important;
-    color: #0D9488 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
     font-size: 12px !important;
     font-weight: 600 !important;
     cursor: pointer !important;
@@ -2147,20 +2500,23 @@ body.panth-checkout-extended .shipping-address-item.selected-item .action.edit-a
 }
 
 /* ----------------------------------------------------------
-   BACK TO CART — teal color (stronger selectors)
+   BACK TO CART — accent-driven link color
    ---------------------------------------------------------- */
 body.checkout-index-index .action.back,
 body.checkout-index-index a.action.back,
 .checkout-index-index .action.back {
-    color: #0D9488 !important;
+    color: #475569 !important;
     text-decoration: none !important;
 }
-body.checkout-index-index .action.back:hover {
-    color: #0F766E !important;
+body.checkout-index-index .action.back:hover,
+body.checkout-index-index .action.back:hover::before,
+body.checkout-index-index .action.back:hover span {
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 body.checkout-index-index .action.back::before,
 body.checkout-index-index .action.back span {
-    color: #0D9488 !important;
+    color: #475569 !important;
+    transition: color 0.15s ease;
 }
 
 /* ----------------------------------------------------------
@@ -2212,7 +2568,7 @@ body.panth-checkout-extended .billing-address-details .action.action-edit-addres
     padding: 0 !important;
     background: none !important;
     border: none !important;
-    color: #0D9488 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
     font-size: 12px !important;
     font-weight: 600 !important;
     cursor: pointer !important;
@@ -2221,7 +2577,7 @@ body.panth-checkout-extended .billing-address-details .action.action-edit-addres
     transition: color 0.15s ease !important;
 }
 body.panth-checkout-extended .billing-address-details .action.action-edit-address:hover {
-    color: #0F766E !important;
+    color: var(--panth-checkout-accent-hover, #16213e) !important;
 }
 
 /* ----------------------------------------------------------
@@ -2271,7 +2627,7 @@ body.panth-checkout-extended .field-tooltip-toggle {
 }
 body.panth-checkout-extended .field-tooltip-toggle:hover,
 body.panth-checkout-extended .field-tooltip-toggle._active {
-    color: #0D9488 !important;
+    color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
 /* ----------------------------------------------------------
@@ -2305,8 +2661,9 @@ body.panth-checkout-extended .panth-order-note-textarea {
     outline: none !important;
 }
 body.panth-checkout-extended .panth-order-note-textarea:focus {
-    border-color: #0D9488 !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1) !important;
+    border-color: var(--panth-checkout-accent, #1a1a2e) !important;
+    box-shadow: 0 0 0 3px rgba(16, 24, 40, 0.08) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 14%, transparent) !important;
 }
 body.panth-checkout-extended .panth-order-note-textarea::placeholder {
     color: #94a3b8 !important;
@@ -2358,7 +2715,7 @@ body.panth-checkout-extended .field-note span {
     width: 52px;
     height: 52px;
     border: 4px solid #e5e7eb;
-    border-top-color: var(--panth-checkout-accent, #0D9488);
+    border-top-color: var(--panth-checkout-accent, #1a1a2e);
     border-radius: 50%;
     animation: panthSpin 0.75s linear infinite;
     margin: 0 auto 1.25rem;
@@ -2391,4 +2748,769 @@ body.panth-checkout-extended .field-note span {
 }
 @keyframes panthSpin {
     to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   DYNAMIC CONFIG CLASSES
+   Body receives runtime classes that drive layout / cards /
+   form mode / accent. Base (.panth-checkout-extended) rules
+   above remain the safe default (3col, right sidebar, elevated,
+   compact, tooltips-via-config). These sections layer the
+   per-config variations on top WITHOUT regressing the default.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   25. LAYOUT — column count (1col / 2col / 3col)
+   Default (no class) keeps the 3col grid defined in section 5.
+   Re-scope the 3col grid additionally to .panth-checkout-3col,
+   then override for 1col / 2col.
+   ---------------------------------------------------------- */
+/* 3col: explicit class mirrors the base default (section 5). */
+body.panth-checkout-3col .opc#checkoutSteps {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+}
+body.panth-checkout-3col li#shipping.checkout-shipping-address {
+    grid-column: 1;
+    grid-row: 1 / 3;
+}
+body.panth-checkout-3col li#opc-shipping_method.checkout-shipping-method {
+    grid-column: 2;
+    grid-row: 1;
+}
+body.panth-checkout-3col li#payment.checkout-payment-method {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+/* 1col + 2col: single column grid, reset all grid placements. */
+body.panth-checkout-1col .opc#checkoutSteps,
+body.panth-checkout-2col .opc#checkoutSteps {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+}
+body.panth-checkout-1col li#shipping.checkout-shipping-address,
+body.panth-checkout-2col li#shipping.checkout-shipping-address,
+body.panth-checkout-1col li#opc-shipping_method.checkout-shipping-method,
+body.panth-checkout-2col li#opc-shipping_method.checkout-shipping-method,
+body.panth-checkout-1col li#payment.checkout-payment-method,
+body.panth-checkout-2col li#payment.checkout-payment-method {
+    grid-column: auto;
+    grid-row: auto;
+}
+
+/* 1col: stack wrapper + sidebar full width so summary sits below. */
+body.panth-checkout-1col .opc-wrapper {
+    float: none;
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+}
+body.panth-checkout-1col aside.opc-sidebar {
+    float: none;
+    width: 100%;
+    margin-top: 20px !important;
+}
+
+/* ----------------------------------------------------------
+   26. SIDEBAR POSITION (left / right)
+   Default (section 5) is right. Left flips the floats + padding.
+   ---------------------------------------------------------- */
+body.panth-sidebar-left .opc-wrapper {
+    float: right;
+    padding-right: 0;
+    padding-left: 24px;
+}
+body.panth-sidebar-left aside.opc-sidebar {
+    float: left;
+}
+
+/* ----------------------------------------------------------
+   27. STICKY SIDEBAR (desktop only)
+   The inner summary block sticks; aside.opc-sidebar keeps its
+   static reset (section 5) which targets the aside, NOT the
+   summary, so this rule wins for .opc-block-summary.
+   Disabled inside the mobile breakpoint (section 24 addendum).
+   ---------------------------------------------------------- */
+body.panth-sidebar-sticky aside.opc-sidebar .opc-block-summary {
+    position: sticky;
+    top: 24px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+/* ----------------------------------------------------------
+   28. CARD STYLES (elevated / bordered / flat / glass)
+   Applies to each checkout section card (.opc > li) and the
+   sidebar summary. Default base look (section 2 / 17) stays as
+   a sensible fallback; these refine per config.
+   ---------------------------------------------------------- */
+body.panth-card-elevated .opc > li,
+body.panth-card-elevated aside.opc-sidebar .opc-block-summary {
+    border: 1px solid #eceef1;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.08), 0 8px 24px rgba(16, 24, 40, 0.05);
+}
+body.panth-card-bordered .opc > li,
+body.panth-card-bordered aside.opc-sidebar .opc-block-summary {
+    border: 1px solid #e6e8eb;
+    box-shadow: none;
+}
+body.panth-card-flat .opc > li,
+body.panth-card-flat aside.opc-sidebar .opc-block-summary {
+    border: 0;
+    box-shadow: none;
+}
+body.panth-card-glass .opc > li,
+body.panth-card-glass aside.opc-sidebar .opc-block-summary {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 16px rgba(16, 24, 40, 0.06);
+}
+
+/* ----------------------------------------------------------
+   29. STEP INDICATORS (numbered section headings)
+   Only when enabled; prepends an accent circle counter to each
+   section's .step-title.
+   ---------------------------------------------------------- */
+body.panth-step-indicators .opc {
+    counter-reset: panth-step;
+}
+/* Descendant (not child) combinator: the shipping-method and payment .step-title
+   elements are nested deeper than the shipping-address one, so a `>` combinator
+   only numbered step 1. Descendant numbers all three section titles 1/2/3. */
+body.panth-step-indicators .opc .step-title::before {
+    counter-increment: panth-step;
+    content: counter(panth-step);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: var(--panth-checkout-accent, #1a1a2e);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.18);
+    flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------
+   30. TOOLTIPS (field-tooltip) — config-gated
+   Default config is OFF: hide native tooltip icons unless the
+   .panth-form-tooltips class is present. The tooltip styling in
+   sections 10/11 and below still applies when enabled.
+   ---------------------------------------------------------- */
+body.panth-checkout-extended:not(.panth-form-tooltips) .field-tooltip {
+    display: none !important;
+}
+
+/* ----------------------------------------------------------
+   31. PLACEHOLDERS — config-gated label de-emphasis
+   Placeholder attributes are injected via jsLayout by another
+   agent. When enabled, visually-hide the field labels (kept in
+   the DOM for a11y — never display:none). Default unaffected.
+   ---------------------------------------------------------- */
+body.panth-form-placeholders .fieldset > .field > .label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* ----------------------------------------------------------
+   32. BILLING TITLE — config-gated hide
+   ---------------------------------------------------------- */
+body.panth-billing-title-hidden .checkout-billing-address .step-title,
+body.panth-billing-title-hidden .billing-address-form .step-title,
+body.panth-billing-title-hidden .payment-method-billing-address .step-title {
+    display: none;
+}
+
+/* ----------------------------------------------------------
+   24B. MOBILE ADDENDUM — disable sticky sidebar under 768px
+   ---------------------------------------------------------- */
+@media screen and (max-width: 768px) {
+    body.panth-sidebar-sticky aside.opc-sidebar .opc-block-summary {
+        position: static;
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+/* ----------------------------------------------------------
+   24C. MID BREAKPOINT (769–1100px) — 3col gracefully degrades:
+   the two step columns collapse into one, summary stays beside
+   and gets a little more room. 1col/2col are already single
+   column so this only reshapes the 3col grid.
+   ---------------------------------------------------------- */
+@media screen and (min-width: 769px) and (max-width: 1100px) {
+    body.panth-checkout-extended .opc-wrapper {
+        width: 62%;
+    }
+    body.panth-checkout-extended aside.opc-sidebar {
+        width: 38%;
+    }
+    body.panth-checkout-extended .opc#checkoutSteps,
+    body.panth-checkout-3col .opc#checkoutSteps {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    body.panth-checkout-extended li#shipping.checkout-shipping-address,
+    body.panth-checkout-3col li#shipping.checkout-shipping-address,
+    body.panth-checkout-extended li#opc-shipping_method.checkout-shipping-method,
+    body.panth-checkout-3col li#opc-shipping_method.checkout-shipping-method,
+    body.panth-checkout-extended li#payment.checkout-payment-method,
+    body.panth-checkout-3col li#payment.checkout-payment-method {
+        grid-column: auto;
+        grid-row: auto;
+    }
+    /* 1col config keeps its full-width stack at this size too */
+    body.panth-checkout-1col .opc-wrapper,
+    body.panth-checkout-1col aside.opc-sidebar {
+        width: 100%;
+    }
+    body.panth-checkout-extended #checkout.checkout-container {
+        padding: 0 16px;
+    }
+    /* A touch less card padding buys real form width beside the sidebar */
+    body.panth-checkout-extended .opc > li,
+    body.panth-checkout-extended .opc-block-summary {
+        padding: 20px;
+    }
+    /* Left-sidebar config: gutter flips with the float at this size too */
+    body.panth-sidebar-left .opc-wrapper {
+        padding-right: 0;
+        padding-left: 24px;
+    }
+}
+
+/* ----------------------------------------------------------
+   24D. RESPONSIVE: PHONES (max-width 480px)
+   Section 24 (≤768px) already stacks everything single-column;
+   this tightens spacing and enlarges touch targets for the
+   320–480px range (360/375/390/414/430 targets).
+   ---------------------------------------------------------- */
+@media screen and (max-width: 480px) {
+    /* Guard rail — no horizontal scroll, ever */
+    body.panth-checkout-extended.checkout-index-index {
+        overflow-x: hidden;
+    }
+    body.panth-checkout-extended #checkout.checkout-container {
+        padding: 12px;
+        max-width: 100%;
+    }
+    body.panth-checkout-extended #checkout img {
+        max-width: 100%;
+    }
+
+    /* Tighter cards, comfortable vertical rhythm */
+    body.panth-checkout-extended .opc > li {
+        padding: 16px !important;
+    }
+    body.panth-checkout-extended .opc#checkoutSteps {
+        gap: 16px;
+    }
+    body.panth-checkout-extended .opc-block-summary {
+        padding: 16px;
+    }
+    body.panth-checkout-extended .opc-wrapper {
+        margin-bottom: 16px;
+    }
+    body.panth-checkout-extended aside.opc-sidebar {
+        margin-top: 0;
+    }
+
+    /* Order summary item — keep the two-column [thumb][info] layout but make
+       the meta row breathe: qty stepper left, price right, both ≥36px touch.
+       min-width:0 + name line-clamp already prevent any horizontal overflow. */
+    body.panth-checkout-extended .panth-item-meta {
+        margin-top: 6px;
+        gap: 10px;
+    }
+    body.panth-checkout-extended .panth-item-qty-stepper {
+        height: 36px;
+    }
+    body.panth-checkout-extended .panth-qty-btn {
+        width: 36px;
+        height: 34px;
+    }
+    body.panth-checkout-extended .panth-item-price .subtotal,
+    body.panth-checkout-extended .panth-item-price .price {
+        font-size: 14px;
+    }
+
+    /* Card titles + step-indicator badges stay legible, unbroken */
+    body.panth-checkout-extended .step-title {
+        font-size: 16px !important;
+        margin-bottom: 16px !important;
+    }
+    body.panth-step-indicators .opc > li > .step-title::before {
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+        font-size: 12px;
+    }
+
+    /* Header: compact back link + smaller logo so nothing collides */
+    body.panth-checkout-extended .panth-checkout-header {
+        padding: 0 12px;
+    }
+    body.panth-checkout-extended .panth-checkout-header a {
+        font-size: 13px;
+    }
+    .checkout-index-index .page-header .header.content .logo img {
+        max-height: 32px !important;
+        height: 32px !important;
+    }
+
+    /* Buttons — full-width, ≥44px tap targets */
+    body.panth-checkout-extended .action.primary,
+    body.panth-checkout-extended .action.secondary {
+        min-height: 44px;
+    }
+    body.panth-checkout-extended .action.action-show-popup {
+        width: 100%;
+        justify-content: center;
+        min-height: 44px;
+    }
+    body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout {
+        height: 52px;
+        font-size: 16px;
+    }
+
+    /* Billing form Update / Cancel — equal big targets sharing the row */
+    body.panth-checkout-extended .payment-method-content .action.action-update,
+    body.panth-checkout-extended .payment-method-content .action.action-cancel,
+    body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-update,
+    body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-update-address,
+    body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-cancel {
+        height: 44px !important;
+        flex: 1 1 auto !important;
+        justify-content: center !important;
+    }
+
+    /* "Ship Here" — bigger tap target, card reserves the room */
+    body.panth-checkout-extended .shipping-address-item.not-selected-item {
+        padding: 12px 14px 56px !important;
+    }
+    body.panth-checkout-extended .shipping-address-item .action.action-select-shipping-item {
+        height: 40px !important;
+        min-height: 40px !important;
+    }
+
+    /* Discount: stack the input above a full-width Apply/Cancel button so
+       neither the placeholder nor the button label is ever clipped.
+       NB: no display overrides — Knockout's visible binding decides
+       which button shows. */
+    body.panth-checkout-extended .form-discount,
+    body.panth-checkout-extended #discount-coupon-form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    body.panth-checkout-extended .form-discount .payment-option-inner,
+    body.panth-checkout-extended #discount-coupon-form .payment-option-inner {
+        flex: none !important;
+        width: 100% !important;
+    }
+    body.panth-checkout-extended .form-discount .actions-toolbar {
+        width: 100% !important;
+    }
+    body.panth-checkout-extended .form-discount .action.action-apply,
+    body.panth-checkout-extended #discount-coupon-form .action.action-apply,
+    body.panth-checkout-extended .form-discount .action.action-cancel,
+    body.panth-checkout-extended #discount-coupon-form .action.action-cancel,
+    body.panth-checkout-extended .form-discount .action.action-cancel-coupon {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    /* Shipping-method rows: radio col collapses to its 32px, method/carrier
+       text wraps, price never breaks — no overflow */
+    body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td {
+        padding: 12px 10px;
+        white-space: normal;
+        word-break: break-word;
+    }
+    body.panth-checkout-extended table.table-checkout-shipping-method td.col-method:first-child {
+        width: 32px;
+        padding-right: 0;
+    }
+    body.panth-checkout-extended table.table-checkout-shipping-method .col-price {
+        white-space: nowrap;
+        padding-right: 12px;
+    }
+
+    /* Billing "same as shipping" — checkbox tops the first line, text wraps */
+    body.panth-checkout-extended .billing-address-same-as-shipping-block {
+        align-items: flex-start;
+        line-height: 1.45;
+    }
+    body.panth-checkout-extended .billing-address-same-as-shipping-block input[type="checkbox"] {
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    /* Registration password pair stacks full-width */
+    body.panth-checkout-extended .panth-password-row {
+        flex-direction: column;
+    }
+
+    /* Order-placing overlay — centred and readable on small screens */
+    .panth-order-overlay {
+        padding: 16px;
+    }
+    .panth-order-overlay-inner {
+        padding: 1.75rem 1.25rem;
+        width: 100%;
+        max-width: 320px;
+    }
+}
+
+/* ----------------------------------------------------------
+   24E. RESPONSIVE: SHORT LANDSCAPE VIEWPORTS (max-height 480px)
+   Landscape phones: overlays/modals stay scrollable and centred
+   via auto margins — nothing fixed can trap the user.
+   ---------------------------------------------------------- */
+@media screen and (max-height: 480px) {
+    .panth-order-overlay {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: 12px;
+    }
+    .panth-order-overlay-inner {
+        margin: auto; /* centres when short, scrolls when tall */
+        padding: 1.25rem 1.5rem;
+    }
+    .panth-order-spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 3px;
+        margin-bottom: 0.75rem;
+    }
+    body.panth-checkout-extended .modal-popup.modal-slide .modal-inner-wrap,
+    .modal-popup.new-shipping-address-modal .modal-inner-wrap {
+        height: auto !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+    /* Sticky summary is pointless on short screens — let it flow */
+    body.panth-sidebar-sticky aside.opc-sidebar .opc-block-summary {
+        position: static;
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+/* =========================================================================
+   Section 33. HIDE SINGLE SHIPPING METHOD
+   Body class added by shipping-mixin.js when shipping/hide_single_method is
+   on and exactly one rate is available (the method is auto-selected in JS).
+   NB: Luma puts .col-method on BOTH the radio cell (1st td) and the method
+   title cell (3rd td) — only the radio cell may be hidden, or the method
+   name disappears. Collapse the radio column entirely (no dead gutter);
+   the row stays tinted/selected via the :checked rules in section 12.
+   ========================================================================= */
+body.panth-hide-single-shipping .table-checkout-shipping-method td.col-method:first-child {
+    width: 0 !important;
+    padding: 0 !important;
+    visibility: hidden;
+    overflow: hidden;
+}
+/* Radio still auto-checked by the mixin; display:none keeps the KO binding
+   working while letting the table cell truly collapse to zero width. */
+body.panth-hide-single-shipping .table-checkout-shipping-method td.col-method:first-child input[type="radio"] {
+    display: none !important;
+}
+
+/* =========================================================================
+   Section 34. MOBILE — kill horizontal overflow from off-screen modals
+   Magento's slide/popup modals sit translated off-screen to the right when
+   closed; at narrow widths that pushes documentElement scrollWidth past the
+   viewport (e.g. 424 > 375). Clip on the root AND drop closed modals from
+   layout on phones. Modals still open normally (Magento adds ._show, which
+   reverts display); the slide-in animation is simply skipped on mobile.
+   ========================================================================= */
+@media screen and (max-width: 767px) {
+    html.checkout-index-index,
+    body.checkout-index-index {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+    body.checkout-index-index .modal-slide:not(._show),
+    body.checkout-index-index .modal-popup:not(._show) {
+        display: none;
+    }
+}
+
+/* =========================================================================
+   Section 34B. TABLET/MID GUARD (768–1100px) — extend the Section 34
+   horizontal-overflow guard upward. Section 34 stops at 767px and the
+   phone guard (24D) at 480px, leaving exactly-768px and tablet widths
+   unprotected from the translated-off-screen closed modals. Clip only —
+   closed modals keep their layout (no display:none) so tablet behaves
+   exactly like desktop apart from the scrollbar guard. Desktop ≥1101px
+   untouched.
+   ========================================================================= */
+@media screen and (min-width: 768px) and (max-width: 1100px) {
+    html.checkout-index-index,
+    body.checkout-index-index {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+}
+
+/* =========================================================================
+   Section 35. SMOOTHNESS — micro-transitions & hover affordances
+   Additive polish only: every rule here animates color/border/shadow or a
+   1px translate — never width/height/margin — so there is zero layout
+   shift and desktop structure is untouched. 150–200ms throughout.
+   ========================================================================= */
+/* Shipping address cards animate their selected accent (border + ring) */
+body.panth-checkout-extended .shipping-address-item {
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+/* Resting → hover → focus affordance on text fields (focus ring already
+   styled in section 8); hover only when not focused/disabled */
+body.panth-checkout-extended .field .control input[type="text"]:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended .field .control input[type="email"]:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended .field .control input[type="tel"]:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended .field .control input[type="password"]:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended .field .control input[type="number"]:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended .field .control textarea:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended .field .control select:hover:not(:focus):not(:disabled) {
+    border-color: #b6bcc5;
+}
+/* Discount input + order note use !important borders — match them here */
+body.panth-checkout-extended .form-discount input[name="discount_code"]:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended #discount-code:hover:not(:focus):not(:disabled),
+body.panth-checkout-extended .panth-order-note-textarea:hover:not(:focus) {
+    border-color: #b6bcc5 !important;
+}
+
+/* "N Items in Cart" collapsible title — hover hints it is clickable */
+body.panth-checkout-extended .items-in-cart > .title[data-role="title"] {
+    transition: color 0.15s ease;
+}
+body.panth-checkout-extended .items-in-cart > .title[data-role="title"]:hover {
+    color: var(--panth-checkout-accent, #1a1a2e);
+}
+
+/* Options toggles ease their color change (open/close arrow already eased) */
+body.panth-checkout-extended .panth-options-toggle,
+body.panth-checkout-extended .product.options .toggle {
+    transition: color 0.15s ease !important;
+}
+
+/* Tactile 1px press feedback on the smaller action buttons
+   (Place Order already has its own :active treatment, section 19) */
+body.panth-checkout-extended .action.action-show-popup:active,
+body.panth-checkout-extended .action.secondary:active,
+body.panth-checkout-extended .form-discount .action.action-apply:active:not(:disabled),
+body.panth-checkout-extended .form-discount .action.action-cancel:active:not(:disabled),
+body.panth-checkout-extended .form-discount .action.action-cancel-coupon:active,
+body.panth-checkout-extended .shipping-address-item .action.action-select-shipping-item:active,
+body.panth-checkout-extended .payment-method-content .action.action-update:active,
+body.panth-checkout-extended .payment-method-content .action.action-cancel:active {
+    transform: translateY(1px);
+}
+
+/* Qty stepper buttons get the same gentle press */
+body.panth-checkout-extended .panth-qty-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+/* =========================================================================
+   Section 36. ACCESSIBLE FOCUS RINGS (:focus-visible)
+   Keyboard navigation gets an obvious accent ring on every interactive
+   element. :focus-visible never fires on mouse click for buttons/links,
+   so pointer users see zero visual change. Text inputs keep their own
+   soft box-shadow ring from section 8.
+   ========================================================================= */
+body.panth-checkout-extended button:focus-visible,
+body.panth-checkout-extended .action:focus-visible,
+body.panth-checkout-extended a:focus-visible,
+body.panth-checkout-extended input[type="radio"]:focus-visible,
+body.panth-checkout-extended input[type="checkbox"]:focus-visible,
+body.panth-checkout-extended .panth-qty-btn:focus-visible,
+body.panth-checkout-extended .panth-options-toggle:focus-visible,
+body.panth-checkout-extended .product.options .toggle:focus-visible,
+body.panth-checkout-extended .items-in-cart > .title[data-role="title"]:focus-visible {
+    outline: 2px solid var(--panth-checkout-accent, #1a1a2e) !important;
+    outline-offset: 2px !important;
+}
+/* Suppress legacy UA focus outlines for pointer interaction only */
+body.panth-checkout-extended button:focus:not(:focus-visible),
+body.panth-checkout-extended .action:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* =========================================================================
+   Section 37. REQUIRED FIELD MARKERS
+   Luma already injects the asterisk via .field._required > .label::after;
+   restate it here so it is consistent (color matches our validation red,
+   tight 4px offset) across shipping, billing and modal forms.
+   ========================================================================= */
+body.panth-checkout-extended .field.required > .label::after,
+body.panth-checkout-extended .field._required > .label::after {
+    content: '*';
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 0 0 4px;
+}
+
+/* =========================================================================
+   Section 38. ORDER SUMMARY ITEM META POLISH
+   The meta row = [qty stepper] ... [row price]. Tabular figures stop the
+   price/qty from jittering when values change, row-gap keeps wrapped lines
+   comfortable on narrow widths, and min-height matches the 28px stepper so
+   stepper-less rows align identically (no layout change on desktop).
+   ========================================================================= */
+body.panth-checkout-extended .panth-item-meta {
+    row-gap: 6px;
+    min-height: 28px;
+}
+body.panth-checkout-extended .panth-item-price .subtotal,
+body.panth-checkout-extended .panth-item-price .price,
+body.panth-checkout-extended .product-item-inner .subtotal .price,
+body.panth-checkout-extended .panth-item-qty-stepper .panth-item-qty,
+body.panth-checkout-extended .opc-block-summary .table-totals td,
+body.panth-checkout-extended .opc-block-summary .totals td {
+    font-variant-numeric: tabular-nums;
+}
+/* When the meta row wraps (very narrow widths / long prices) the price
+   keeps right alignment on its own line instead of gluing to the stepper */
+body.panth-checkout-extended .panth-item-meta > .panth-item-price {
+    margin-left: auto;
+}
+
+/* =========================================================================
+   Section 39. MOBILE ERGONOMICS — bigger tap targets + overflow hardening
+   Layered on top of sections 24/24B–24E. ≤768px: comfortable 44–48px
+   touch targets on row controls; ≤480px: belt-and-braces width clamps so
+   nothing can push scrollWidth past 320/360/375/390/414px viewports.
+   ========================================================================= */
+@media screen and (max-width: 768px) {
+    /* FIX: 3col config class must collapse to ONE column on phones.
+       Section 25 (source-order later than section 24's mobile reset, equal
+       specificity) was re-applying the 2-column "1fr 1fr" steps grid below
+       768px for body.panth-checkout-3col, squeezing shipping/payment into
+       half-width cards and overflowing 320–480px viewports. Mirror the
+       24C tablet override here — this block is last in the file, so it
+       wins for every column-config class. */
+    body.panth-checkout-extended .opc#checkoutSteps,
+    body.panth-checkout-3col .opc#checkoutSteps {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    body.panth-checkout-3col li#shipping.checkout-shipping-address,
+    body.panth-checkout-3col li#opc-shipping_method.checkout-shipping-method,
+    body.panth-checkout-3col li#payment.checkout-payment-method {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    /* Payment method rows — full-row 48px touch target */
+    body.panth-checkout-extended .payment-method-title.field.choice {
+        min-height: 48px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Radios/checkboxes slightly larger on touch (still vertically centred) */
+    body.panth-checkout-extended .payment-method-title input[type="radio"],
+    body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td input[type="radio"],
+    body.panth-checkout-extended .billing-address-same-as-shipping-block input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    /* Shipping method rows — a touch more vertical padding ≈48px rows */
+    body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td {
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    /* "Items in Cart" toggle + summary text links — ≥44px touch height */
+    body.panth-checkout-extended .items-in-cart > .title[data-role="title"] {
+        padding: 10px 0;
+        margin-bottom: 6px;
+    }
+    body.panth-checkout-extended .shipping-address-item.selected-item .action.edit-address-link,
+    body.panth-checkout-extended .billing-address-details .action.action-edit-address {
+        padding: 8px 0 !important;
+    }
+    body.panth-checkout-extended .panth-options-toggle,
+    body.panth-checkout-extended .product.options .toggle {
+        padding: 6px 0 !important;
+    }
+
+    /* Newsletter / create-account checkbox rows — taller touch rows */
+    body.panth-checkout-extended .panth-newsletter-wrap label,
+    body.panth-checkout-extended .panth-registration-wrap label {
+        padding: 6px 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Width clamps — no descendant may exceed the viewport */
+    body.panth-checkout-extended .opc-wrapper,
+    body.panth-checkout-extended aside.opc-sidebar,
+    body.panth-checkout-extended .opc > li,
+    body.panth-checkout-extended .opc-block-summary {
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+    body.panth-checkout-extended table.table-checkout-shipping-method {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Long unbroken strings (emails, URLs, refs) wrap inside address cards */
+    body.panth-checkout-extended .shipping-address-item,
+    body.panth-checkout-extended .billing-address-details {
+        overflow-wrap: anywhere;
+    }
+
+    /* Tooltip popup can never poke past the left edge of a 320px screen */
+    body.panth-checkout-extended .field-tooltip .field-tooltip-content {
+        max-width: calc(100vw - 88px) !important;
+    }
+}
+
+/* =========================================================================
+   Section 40. REDUCED MOTION
+   Users with prefers-reduced-motion get instant state changes. The order
+   spinners are kept (they communicate "in progress", removing them would
+   look frozen) — everything decorative stops animating.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+    body.panth-checkout-extended *:not(.panth-order-spinner):not(.panth-btn-spinner),
+    body.panth-checkout-extended *:not(.panth-order-spinner):not(.panth-btn-spinner)::before,
+    body.panth-checkout-extended *:not(.panth-order-spinner):not(.panth-btn-spinner)::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+    .panth-order-overlay-inner {
+        animation: none !important;
+    }
+    body.panth-checkout-extended .panth-order-spinner,
+    body.panth-checkout-extended .panth-btn-spinner {
+        animation-duration: 0.75s !important;
+    }
 }

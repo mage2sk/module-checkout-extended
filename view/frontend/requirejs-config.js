@@ -4,10 +4,14 @@ var config = {
     },
     map: {
         '*': {
-            'Magento_Checkout/summary/item/details':
-                'Panth_CheckoutExtended/template/summary/item/details',
-            'Magento_SalesRule/payment/discount':
-                'Panth_CheckoutExtended/template/payment/discount'
+            // Magento's KO template loader requests the full text-resource path
+            // (module/template/<path>.html), so the override must be keyed on
+            // that exact form. The summary item details template is overridden;
+            // the discount block is only RELOCATED (CheckoutLayoutProcessor) and
+            // keeps its core template, styled via CSS — so it is NOT mapped here
+            // (mapping it triggered a doubled-path load error).
+            'Magento_Checkout/template/summary/item/details.html':
+                'Panth_CheckoutExtended/template/summary/item/details.html'
         }
     },
     config: {
@@ -38,6 +42,12 @@ var config = {
             },
             'Magento_Checkout/js/action/set-payment-information-extended': {
                 'Panth_CheckoutExtended/js/mixin/set-payment-info-mixin': true
+            },
+            'Magento_Checkout/js/model/shipping-service': {
+                'Panth_CheckoutExtended/js/model/shipping-service-mixin': true
+            },
+            'Magento_Checkout/js/model/checkout-data-resolver': {
+                'Panth_CheckoutExtended/js/mixin/payment-preselect-mixin': true
             }
         }
     }

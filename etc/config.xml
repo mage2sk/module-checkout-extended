@@ -6,11 +6,47 @@
             <general>
                 <enabled>1</enabled>
             </general>
+            <layout>
+                <columns>3</columns>
+                <sidebar_position>right</sidebar_position>
+                <sidebar_sticky>0</sidebar_sticky>
+            </layout>
+            <style>
+                <card_style>elevated</card_style>
+                <accent_color>#1a1a2e</accent_color>
+                <border_radius>12</border_radius>
+                <step_indicators>0</step_indicators>
+            </style>
+            <cart>
+                <qty_increment_enabled>0</qty_increment_enabled>
+                <product_sku_enabled>0</product_sku_enabled>
+                <product_link_enabled>0</product_link_enabled>
+            </cart>
             <newsletter>
                 <enabled>1</enabled>
                 <field_label>Subscribe to our newsletter</field_label>
                 <default_checked>1</default_checked>
             </newsletter>
+            <form_styles>
+                <field_mode>compact</field_mode>
+                <use_placeholders>0</use_placeholders>
+                <show_tooltips>0</show_tooltips>
+            </form_styles>
+            <shipping>
+                <default_method></default_method>
+                <hide_single_method>0</hide_single_method>
+                <sort_by_price>0</sort_by_price>
+            </shipping>
+            <payment>
+                <default_method></default_method>
+            </payment>
+            <billing>
+                <show_title>1</show_title>
+            </billing>
+            <custom_code>
+                <custom_css></custom_css>
+                <custom_js></custom_js>
+            </custom_code>
         </panth_checkout_extended>
     </default>
 </config>
