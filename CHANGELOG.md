@@ -4,6 +4,15 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.7] - 2026-06-18
+
+### Changed
+- README rewritten to match the standard Panth Infotech template: gold-template section order, Quick Answer block, gold-template hire/agency promo, full configuration table sourced from system.xml, and FAQ updated with direct answers.
+- Canonical and product page links updated to kishansavaliya.com/magento-2-checkout-extended.html.
+- Removed link to commercemarketplace.adobe.com; marketplace reference now links to the live product page.
+
+---
+
 ## [1.0.6] — 2026-06-12
 
 ### Added
