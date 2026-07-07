@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Test\Unit\Plugin\Newsletter;
@@ -16,17 +15,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * Stand-in for the generated \Magento\Quote\Api\Data\PaymentExtensionInterface,
- * which only exists in generated/code and is not autoloadable in plain unit runs.
- * PaymentInterface::getExtensionAttributes() has no PHP return type, so any
- * object exposing getPanthSubscribeNewsletter() is a valid double.
- */
 interface GuestPaymentExtensionStubInterface
 {
-    /**
-     * @return bool|null
-     */
     public function getPanthSubscribeNewsletter();
 }
 
@@ -37,22 +27,16 @@ class GuestSubscriberTest extends TestCase
     private const CART_ID = 'masked-cart-id';
     private const ORDER_ID = '100000123';
 
-    /** @var SubscriptionManagerInterface&MockObject */
     private SubscriptionManagerInterface $subscriptionManager;
 
-    /** @var StoreManagerInterface&MockObject */
     private StoreManagerInterface $storeManager;
 
-    /** @var LoggerInterface&MockObject */
     private LoggerInterface $logger;
 
-    /** @var Data&MockObject */
     private Data $helper;
 
-    /** @var GuestPaymentInformationManagementInterface&MockObject */
     private GuestPaymentInformationManagementInterface $subject;
 
-    /** @var PaymentInterface&MockObject */
     private PaymentInterface $paymentMethod;
 
     private GuestSubscriber $plugin;
@@ -113,9 +97,6 @@ class GuestSubscriberTest extends TestCase
         $this->assertSame(self::ORDER_ID, $result);
     }
 
-    /**
-     * @dataProvider notOptedInProvider
-     */
     public function testDoesNotSubscribeWhenAttributeIsFalseOrAbsent(?bool $attributeValue): void
     {
         $this->helper->method('isNewsletterEnabled')->willReturn(true);
@@ -133,9 +114,6 @@ class GuestSubscriberTest extends TestCase
         $this->assertSame(self::ORDER_ID, $result);
     }
 
-    /**
-     * @return array<string, array{0: bool|null}>
-     */
     public static function notOptedInProvider(): array
     {
         return [

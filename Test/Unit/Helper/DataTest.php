@@ -9,19 +9,10 @@ use Magento\Store\Model\ScopeInterface;
 use Panth\CheckoutExtended\Helper\Data;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Unit tests for Panth\CheckoutExtended\Helper\Data
- */
 class DataTest extends TestCase
 {
-    /**
-     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
     private $scopeConfigMock;
 
-    /**
-     * @var Data
-     */
     private $helper;
 
     protected function setUp(): void
@@ -34,9 +25,6 @@ class DataTest extends TestCase
         $this->helper = new Data($contextMock);
     }
 
-    /**
-     * getConfigValue() must build path as panth_checkout_extended/<group>/<field> with SCOPE_STORE
-     */
     public function testGetConfigValueBuildsCorrectPath(): void
     {
         $this->scopeConfigMock->expects($this->once())
@@ -51,9 +39,6 @@ class DataTest extends TestCase
         $this->assertSame('1', $this->helper->getConfigValue('general', 'enabled'));
     }
 
-    /**
-     * getConfigValue() must pass the store id through to scopeConfig
-     */
     public function testGetConfigValuePassesStoreId(): void
     {
         $this->scopeConfigMock->expects($this->once())
@@ -68,9 +53,6 @@ class DataTest extends TestCase
         $this->assertSame('2', $this->helper->getConfigValue('layout', 'columns', 5));
     }
 
-    /**
-     * Typed getters must fall back to documented defaults when config is null
-     */
     public function testTypedGettersReturnDefaultsWhenConfigIsNull(): void
     {
         $this->scopeConfigMock->method('getValue')->willReturn(null);
@@ -101,9 +83,6 @@ class DataTest extends TestCase
         $this->assertSame('', $this->helper->getCustomJs());
     }
 
-    /**
-     * Typed getters must also default when config returns an empty string
-     */
     public function testTypedGettersReturnDefaultsWhenConfigIsEmptyString(): void
     {
         $this->scopeConfigMock->method('getValue')->willReturn('');
@@ -117,9 +96,6 @@ class DataTest extends TestCase
         $this->assertSame('Subscribe to Newsletter', $this->helper->getNewsletterLabel());
     }
 
-    /**
-     * Typed getters must return the configured values when set
-     */
     public function testTypedGettersReturnConfiguredValues(): void
     {
         $this->scopeConfigMock->method('getValue')->willReturnMap([
@@ -155,11 +131,6 @@ class DataTest extends TestCase
         $this->assertSame('alert(1);', $this->helper->getCustomJs());
     }
 
-    /**
-     * @dataProvider checkoutBodyClassDataProvider
-     * @param array $config map of config path => raw value
-     * @param string $expected expected class string
-     */
     public function testGetCheckoutBodyClass(array $config, string $expected): void
     {
         $this->scopeConfigMock->method('getValue')
@@ -172,9 +143,6 @@ class DataTest extends TestCase
         $this->assertSame($expected, $this->helper->getCheckoutBodyClass());
     }
 
-    /**
-     * @return array[]
-     */
     public function checkoutBodyClassDataProvider(): array
     {
         $prefix = 'panth_checkout_extended/';

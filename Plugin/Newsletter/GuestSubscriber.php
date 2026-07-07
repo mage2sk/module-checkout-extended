@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Plugin\Newsletter;
@@ -13,21 +12,8 @@ use Magento\Store\Model\StoreManagerInterface;
 use Panth\CheckoutExtended\Helper\Data;
 use Psr\Log\LoggerInterface;
 
-/**
- * Subscribes guest customers to the newsletter after order placement
- * when the checkout newsletter checkbox is checked.
- */
 class GuestSubscriber
 {
-    /**
-     * @param SubscriptionManagerInterface $subscriptionManager
-     * @param StoreManagerInterface $storeManager
-     * @param LoggerInterface $logger
-     * @param Data $helper
-     * @param GuestCartRepositoryInterface|null $guestCartRepository Optional (additive, DI-injected)
-     *        so the subscription is recorded against the QUOTE's store view rather than
-     *        the resolved current store (important for multi-store and REST/GraphQL API calls).
-     */
     public function __construct(
         private readonly SubscriptionManagerInterface $subscriptionManager,
         private readonly StoreManagerInterface $storeManager,
@@ -37,11 +23,6 @@ class GuestSubscriber
     ) {
     }
 
-    /**
-     * After placing a guest order, subscribe the email if opted in.
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     public function afterSavePaymentInformationAndPlaceOrder(
         GuestPaymentInformationManagementInterface $subject,
         int|string $result,
@@ -70,7 +51,6 @@ class GuestSubscriber
             $storeId = $this->resolveStoreId($cartId);
             $this->subscriptionManager->subscribe($email, $storeId);
         } catch (\Exception $e) {
-            // Newsletter subscription failure should not break the order flow.
             $this->logger->error(
                 'Panth CheckoutExtended: Failed to subscribe guest to newsletter.',
                 ['email' => $email, 'exception' => $e->getMessage()]
@@ -80,15 +60,6 @@ class GuestSubscriber
         return $result;
     }
 
-    /**
-     * Resolve the store id the subscription should be recorded against.
-     *
-     * Prefers the QUOTE's store id (correct for multi-store fronts and headless
-     * API calls where the resolved "current" store may differ from the cart's).
-     * Falls back to the current store when the quote/store id is unavailable.
-     *
-     * @param string $cartId Masked guest cart id
-     */
     private function resolveStoreId(string $cartId): int
     {
         if ($this->guestCartRepository !== null) {
@@ -98,7 +69,6 @@ class GuestSubscriber
                     return $quoteStoreId;
                 }
             } catch (\Exception $e) {
-                // Fall through to the current store below.
             }
         }
 

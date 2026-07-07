@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Plugin\Cart;
@@ -7,36 +6,15 @@ namespace Panth\CheckoutExtended\Plugin\Cart;
 use Magento\Quote\Model\Quote\Item;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 
-/**
- * Plugin to add qty_increments, sku and product_url to quote item array data.
- *
- * Ensures the qty_increments value from the stock item, the item sku and the
- * product URL are available in the frontend quote item data (window.checkoutConfig
- * .quoteItemData, keyed by item_id) for the checkout sidebar.
- */
 class QuoteItemPlugin
 {
-    /**
-     * @var StockRegistryInterface
-     */
     private StockRegistryInterface $stockRegistry;
 
-    /**
-     * @param StockRegistryInterface $stockRegistry
-     */
     public function __construct(StockRegistryInterface $stockRegistry)
     {
         $this->stockRegistry = $stockRegistry;
     }
 
-    /**
-     * Add qty_increments, sku and product_url to the item array.
-     *
-     * @param Item $subject
-     * @param array $result
-     * @param array $arrAttributes
-     * @return array
-     */
     public function afterToArray(Item $subject, array $result, array $arrAttributes = []): array
     {
         try {

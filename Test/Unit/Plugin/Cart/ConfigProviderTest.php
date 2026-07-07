@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Test\Unit\Plugin\Cart;
@@ -10,24 +9,12 @@ use Panth\CheckoutExtended\Plugin\Cart\ConfigProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Unit tests for \Panth\CheckoutExtended\Plugin\Cart\ConfigProvider
- */
 class ConfigProviderTest extends TestCase
 {
-    /**
-     * @var Data|MockObject
-     */
     private $helperMock;
 
-    /**
-     * @var DefaultConfigProvider|MockObject
-     */
     private $subjectMock;
 
-    /**
-     * @var ConfigProvider
-     */
     private ConfigProvider $plugin;
 
     protected function setUp(): void
@@ -118,10 +105,8 @@ class ConfigProviderTest extends TestCase
 
         $result = $this->plugin->afterGetConfig($this->subjectMock, $existing);
 
-        // Unrelated keys are untouched
         $this->assertSame(['entity_id' => 7], $result['quoteData']);
 
-        // panthCheckout is fully rebuilt from helper values
         $this->assertArrayNotHasKey('stale', $result['panthCheckout']);
         $this->assertSame(
             [

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Test\Unit\Plugin;
@@ -9,19 +8,10 @@ use Panth\CheckoutExtended\Plugin\CheckoutLayoutProcessor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Unit tests for \Panth\CheckoutExtended\Plugin\CheckoutLayoutProcessor
- */
 class CheckoutLayoutProcessorTest extends TestCase
 {
-    /**
-     * @var Data|MockObject
-     */
     private $helperMock;
 
-    /**
-     * @var CheckoutLayoutProcessor
-     */
     private CheckoutLayoutProcessor $processor;
 
     protected function setUp(): void
@@ -30,9 +20,6 @@ class CheckoutLayoutProcessorTest extends TestCase
         $this->processor = new CheckoutLayoutProcessor($this->helperMock);
     }
 
-    /**
-     * Build a representative checkout jsLayout fixture.
-     */
     private function getJsLayout(): array
     {
         return [
@@ -249,23 +236,18 @@ class CheckoutLayoutProcessorTest extends TestCase
             ['shipping-step']['children']['shippingAddress']['children']
             ['shipping-address-fieldset']['children'];
 
-        // Leaf field: label copied into both placeholder slots, label preserved
         $this->assertSame('First Name', $shippingFields['firstname']['placeholder']);
         $this->assertSame('First Name', $shippingFields['firstname']['config']['placeholder']);
         $this->assertSame('First Name', $shippingFields['firstname']['label']);
 
-        // Existing config array is preserved while placeholder is added
         $this->assertSame('State/Province', $shippingFields['region_id_input']['config']['placeholder']);
         $this->assertSame('shippingAddress', $shippingFields['region_id_input']['config']['customScope']);
 
-        // Nested children (street lines) are recursed into
         $this->assertSame('Street Address', $shippingFields['street']['children'][0]['placeholder']);
         $this->assertSame('Street Address', $shippingFields['street']['children'][0]['config']['placeholder']);
 
-        // Fields without a label remain untouched
         $this->assertArrayNotHasKey('placeholder', $shippingFields['no_label_field']);
 
-        // Global billing address fieldset
         $billingFields = $result['components']['checkout']['children']['steps']['children']
             ['billing-step']['children']['payment']['children']
             ['afterMethods']['children']['billing-address-form']['children']
@@ -273,7 +255,6 @@ class CheckoutLayoutProcessorTest extends TestCase
         $this->assertSame('Phone Number', $billingFields['telephone']['placeholder']);
         $this->assertSame('Phone Number', $billingFields['telephone']['config']['placeholder']);
 
-        // Per-payment-method billing fieldsets
         $paymentFields = $result['components']['checkout']['children']['steps']['children']
             ['billing-step']['children']['payment']['children']
             ['payments-list']['children']['checkmo-form']['children']
@@ -312,7 +293,6 @@ class CheckoutLayoutProcessorTest extends TestCase
         $this->helperMock->method('isNewsletterCheckedByDefault')->willReturn(false);
         $this->helperMock->method('usePlaceholders')->willReturn(true);
 
-        // No sidebar/summary, no steps, no discount, no fieldsets at all
         $result = $this->processor->process([]);
 
         $this->assertIsArray($result);

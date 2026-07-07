@@ -59,7 +59,6 @@ class Data extends AbstractHelper
         return (string) ($this->getConfigValue('style', 'accent_color', $storeId) ?: '#1a1a2e');
     }
 
-    // Cart features
     public function isQtyIncrementEnabled($storeId = null): bool
     {
         return (bool) $this->getConfigValue('cart', 'qty_increment_enabled', $storeId);
@@ -75,7 +74,6 @@ class Data extends AbstractHelper
         return (bool) $this->getConfigValue('cart', 'product_link_enabled', $storeId);
     }
 
-    // Newsletter
     public function isNewsletterEnabled($storeId = null): bool
     {
         return (bool) $this->getConfigValue('newsletter', 'enabled', $storeId);
@@ -91,7 +89,6 @@ class Data extends AbstractHelper
         return (bool) $this->getConfigValue('newsletter', 'default_checked', $storeId);
     }
 
-    // Form Styles
     public function getFieldMode($storeId = null): string
     {
         return (string) ($this->getConfigValue('form_styles', 'field_mode', $storeId) ?: 'compact');
@@ -107,7 +104,6 @@ class Data extends AbstractHelper
         return (bool) $this->getConfigValue('form_styles', 'show_tooltips', $storeId);
     }
 
-    // Shipping
     public function getDefaultShippingMethod($storeId = null): string
     {
         return (string) ($this->getConfigValue('shipping', 'default_method', $storeId) ?: '');
@@ -123,19 +119,16 @@ class Data extends AbstractHelper
         return (bool) $this->getConfigValue('shipping', 'sort_by_price', $storeId);
     }
 
-    // Payment
     public function getDefaultPaymentMethod($storeId = null): string
     {
         return (string) ($this->getConfigValue('payment', 'default_method', $storeId) ?: '');
     }
 
-    // Billing
     public function showBillingTitle($storeId = null): bool
     {
         return (bool) $this->getConfigValue('billing', 'show_title', $storeId);
     }
 
-    // Custom Code
     public function getCustomCss($storeId = null): string
     {
         return (string) ($this->getConfigValue('custom_code', 'custom_css', $storeId) ?: '');
@@ -146,9 +139,6 @@ class Data extends AbstractHelper
         return (string) ($this->getConfigValue('custom_code', 'custom_js', $storeId) ?: '');
     }
 
-    /**
-     * Get body class based on config
-     */
     public function getCheckoutBodyClass(): string
     {
         if (!$this->isEnabled()) {
@@ -167,7 +157,6 @@ class Data extends AbstractHelper
             $classes[] = 'panth-step-indicators';
         }
 
-        // Form styles
         $classes[] = 'panth-form-' . $this->getFieldMode();
         if ($this->usePlaceholders()) {
             $classes[] = 'panth-form-placeholders';
@@ -176,7 +165,6 @@ class Data extends AbstractHelper
             $classes[] = 'panth-form-tooltips';
         }
 
-        // Billing
         if (!$this->showBillingTitle()) {
             $classes[] = 'panth-billing-title-hidden';
         }

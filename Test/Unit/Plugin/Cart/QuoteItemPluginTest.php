@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Test\Unit\Plugin\Cart;
@@ -12,24 +11,12 @@ use Panth\CheckoutExtended\Plugin\Cart\QuoteItemPlugin;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Unit tests for \Panth\CheckoutExtended\Plugin\Cart\QuoteItemPlugin
- */
 class QuoteItemPluginTest extends TestCase
 {
-    /**
-     * @var StockRegistryInterface|MockObject
-     */
     private $stockRegistryMock;
 
-    /**
-     * @var Item|MockObject
-     */
     private $quoteItemMock;
 
-    /**
-     * @var QuoteItemPlugin
-     */
     private QuoteItemPlugin $plugin;
 
     protected function setUp(): void
@@ -39,9 +26,6 @@ class QuoteItemPluginTest extends TestCase
         $this->plugin = new QuoteItemPlugin($this->stockRegistryMock);
     }
 
-    /**
-     * @return Product|MockObject
-     */
     private function createProductMock(int $productId, string $productUrl)
     {
         $productMock = $this->createMock(Product::class);
@@ -73,7 +57,6 @@ class QuoteItemPluginTest extends TestCase
         $this->assertSame('https://example.com/example-product.html', $result['product_url']);
         $this->assertSame(5.0, $result['qty_increments']);
 
-        // Pre-existing keys remain untouched
         $this->assertSame('10', $result['item_id']);
         $this->assertSame(2, $result['qty']);
     }

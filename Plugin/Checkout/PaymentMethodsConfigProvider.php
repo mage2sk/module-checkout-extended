@@ -42,7 +42,6 @@ class PaymentMethodsConfigProvider
             return $result;
         }
 
-        // Expose newsletter subscription status — must run before early return
         try {
             $result['panthNewsletterSubscribed'] = false;
             $customer = $this->customerSession->getCustomer();

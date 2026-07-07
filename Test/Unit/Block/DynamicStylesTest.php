@@ -8,28 +8,14 @@ use Panth\CheckoutExtended\Block\DynamicStyles;
 use Panth\CheckoutExtended\Helper\Data;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Unit tests for Panth\CheckoutExtended\Block\DynamicStyles
- *
- * The block is a thin pass-through to Helper\Data, so every getter is
- * verified to delegate to the helper exactly once and return its value.
- */
 class DynamicStylesTest extends TestCase
 {
-    /**
-     * @var Data|\PHPUnit\Framework\MockObject\MockObject
-     */
     private $helperMock;
 
-    /**
-     * @var DynamicStyles
-     */
     private $block;
 
     protected function setUp(): void
     {
-        // Template's constructor only pulls collaborators off the context via
-        // getters; a bare mock (all getters return null/auto-mocks) is enough.
         $contextMock = $this->createMock(Context::class);
         $this->helperMock = $this->createMock(Data::class);
 
@@ -41,9 +27,6 @@ class DynamicStylesTest extends TestCase
         $this->assertSame($this->helperMock, $this->block->getHelper());
     }
 
-    /**
-     * @dataProvider isEnabledDataProvider
-     */
     public function testIsEnabledDelegatesToHelper(bool $value): void
     {
         $this->helperMock->expects($this->once())

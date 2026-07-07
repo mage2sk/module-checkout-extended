@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Plugin\Cart;
@@ -7,10 +6,6 @@ namespace Panth\CheckoutExtended\Plugin\Cart;
 use Magento\Checkout\Model\DefaultConfigProvider;
 use Panth\CheckoutExtended\Helper\Data;
 
-/**
- * Plugin to add all CheckoutExtended feature flags to checkout config.
- * Exposes settings at window.checkoutConfig.panthCheckout
- */
 class ConfigProvider
 {
     private Data $helper;

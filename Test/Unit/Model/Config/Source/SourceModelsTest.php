@@ -12,17 +12,8 @@ use Panth\CheckoutExtended\Model\Config\Source\RegistrationMode;
 use Panth\CheckoutExtended\Model\Config\Source\SidebarPosition;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Unit tests for the admin config source models
- */
 class SourceModelsTest extends TestCase
 {
-    /**
-     * Every source model must implement OptionSourceInterface and return
-     * the expected option values in the expected order.
-     *
-     * @dataProvider sourceModelsDataProvider
-     */
     public function testToOptionArrayReturnsExpectedOptions(string $className, array $expectedValues): void
     {
         $source = new $className();
@@ -44,11 +35,6 @@ class SourceModelsTest extends TestCase
         $this->assertSame($expectedValues, array_column($options, 'value'));
     }
 
-    /**
-     * Labels must contain the expected human-readable text.
-     *
-     * @dataProvider sourceLabelsDataProvider
-     */
     public function testToOptionArrayReturnsExpectedLabels(string $className, array $expectedLabels): void
     {
         $source = new $className();
@@ -61,9 +47,6 @@ class SourceModelsTest extends TestCase
         $this->assertSame($expectedLabels, $labels);
     }
 
-    /**
-     * @return array<string, array{string, array<int, string>}>
-     */
     public function sourceModelsDataProvider(): array
     {
         return [
@@ -81,9 +64,6 @@ class SourceModelsTest extends TestCase
         ];
     }
 
-    /**
-     * @return array<string, array{string, array<int, string>}>
-     */
     public function sourceLabelsDataProvider(): array
     {
         return [
@@ -114,11 +94,6 @@ class SourceModelsTest extends TestCase
         ];
     }
 
-    /**
-     * Resolve a label to plain text without requiring a Phrase renderer.
-     *
-     * @param Phrase|string $label
-     */
     private function renderLabel($label): string
     {
         return $label instanceof Phrase ? $label->getText() : (string) $label;

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Test\Unit\Observer;
@@ -14,29 +13,17 @@ use Panth\CheckoutExtended\Observer\AddBodyClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * getFullActionName() lives on \Magento\Framework\App\Request\Http, not on
- * RequestInterface (the observer relies on the concrete request at runtime).
- * Extending the interface keeps the mock type-compatible with the
- * constructor's RequestInterface hint while exposing the extra method.
- */
 interface FullActionRequestStubInterface extends RequestInterface
 {
-    /**
-     * @return string
-     */
     public function getFullActionName();
 }
 
 class AddBodyClassTest extends TestCase
 {
-    /** @var Data&MockObject */
     private Data $helper;
 
-    /** @var FullActionRequestStubInterface&MockObject */
     private FullActionRequestStubInterface $request;
 
-    /** @var PageConfig&MockObject */
     private PageConfig $pageConfig;
 
     private AddBodyClass $observer;
@@ -141,7 +128,7 @@ class AddBodyClassTest extends TestCase
     {
         $this->helper->method('isEnabled')->willReturn(true);
         $this->request->method('getFullActionName')->willReturn('checkout_index_index');
-        // Whitespace-only string must be filtered out entirely.
+
         $this->helper->method('getCheckoutBodyClass')->willReturn('   ');
 
         $update = $this->createMock(ProcessorInterface::class);

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\CheckoutExtended\Test\Unit\Plugin\Newsletter;
@@ -17,33 +16,15 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * Stand-in for the generated \Magento\Quote\Api\Data\PaymentExtensionInterface,
- * which only exists in generated/code and is not autoloadable in plain unit runs.
- */
 interface CustomerPaymentExtensionStubInterface
 {
-    /**
-     * @return bool|null
-     */
     public function getPanthSubscribeNewsletter();
 }
 
-/**
- * Stand-in for the loaded quote. getCustomerId()/getCustomerEmail() are magic
- * (@method) on \Magento\Quote\Model\Quote and CartRepositoryInterface::get()
- * has no PHP return type, so a dedicated stub interface keeps the double strict.
- */
 interface CustomerQuoteStubInterface
 {
-    /**
-     * @return int|string|null
-     */
     public function getCustomerId();
 
-    /**
-     * @return string|null
-     */
     public function getCustomerEmail();
 }
 
@@ -53,25 +34,18 @@ class CustomerSubscriberTest extends TestCase
     private const CART_ID = 42;
     private const ORDER_ID = '100000456';
 
-    /** @var SubscriptionManagerInterface&MockObject */
     private SubscriptionManagerInterface $subscriptionManager;
 
-    /** @var CartRepositoryInterface&MockObject */
     private CartRepositoryInterface $cartRepository;
 
-    /** @var StoreManagerInterface&MockObject */
     private StoreManagerInterface $storeManager;
 
-    /** @var LoggerInterface&MockObject */
     private LoggerInterface $logger;
 
-    /** @var Data&MockObject */
     private Data $helper;
 
-    /** @var PaymentInformationManagementInterface&MockObject */
     private PaymentInformationManagementInterface $subject;
 
-    /** @var PaymentInterface&MockObject */
     private PaymentInterface $paymentMethod;
 
     private CustomerSubscriber $plugin;
@@ -118,7 +92,7 @@ class CustomerSubscriberTest extends TestCase
         $this->helper->method('isNewsletterEnabled')->willReturn(true);
         $this->mockExtensionAttribute(true);
         $this->mockStore();
-        // String value from the quote must be cast to int by the plugin.
+
         $this->mockQuote('15', 'customer@example.com');
 
         $this->subscriptionManager->expects($this->once())
@@ -160,9 +134,6 @@ class CustomerSubscriberTest extends TestCase
         $this->assertSame(self::ORDER_ID, $result);
     }
 
-    /**
-     * @dataProvider notOptedInProvider
-     */
     public function testDoesNotSubscribeWhenAttributeIsFalseOrAbsent(?bool $attributeValue): void
     {
         $this->helper->method('isNewsletterEnabled')->willReturn(true);
@@ -181,9 +152,6 @@ class CustomerSubscriberTest extends TestCase
         $this->assertSame(self::ORDER_ID, $result);
     }
 
-    /**
-     * @return array<string, array{0: bool|null}>
-     */
     public static function notOptedInProvider(): array
     {
         return [
@@ -247,9 +215,6 @@ class CustomerSubscriberTest extends TestCase
         $this->storeManager->method('getStore')->willReturn($store);
     }
 
-    /**
-     * @param int|string|null $customerId
-     */
     private function mockQuote($customerId, ?string $customerEmail): void
     {
         $quote = $this->createMock(CustomerQuoteStubInterface::class);
