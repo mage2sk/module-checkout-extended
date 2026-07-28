@@ -1,4 +1,4 @@
-# Panth Checkout Extended — User Guide
+# Panth Checkout Extended - User Guide
 
 This guide walks a Magento store administrator through every screen
 and setting of the Panth Checkout Extended extension, step by step.
@@ -68,11 +68,11 @@ bin/magento module:status Panth_CheckoutExtended
 
 After installation, two things should be true:
 
-1. **Configuration page exists** — Stores -> Configuration -> Panth
+1. **Configuration page exists** - Stores -> Configuration -> Panth
    Extensions -> Checkout Extended is reachable and shows ten groups:
    General, Layout, Style, Cart & Order Summary, Newsletter Subscription,
    Form Styles, Shipping, Payment, Billing, and Custom Code.
-2. **Checkout page changed** — add any product to the cart on your
+2. **Checkout page changed** - add any product to the cart on your
    storefront and go to checkout. With default settings you should see
    the modern multi-column layout with the order summary in a right-hand
    sidebar.
@@ -100,7 +100,7 @@ on a single store view if you want to A/B compare against the stock
 checkout.
 
 **Verify on the storefront:** Set to No, save, flush cache, and reload
-checkout — it should look like stock Magento again. Set back to Yes
+checkout - it should look like stock Magento again. Set back to Yes
 and the extended layout returns. None of the `panth-*` body classes
 appear while disabled.
 
@@ -119,7 +119,7 @@ structure of the checkout.
 
 **Recommended:**
 
-- **3 columns** for desktop-heavy stores with wide screens — shipping,
+- **3 columns** for desktop-heavy stores with wide screens - shipping,
   payment, and summary are all visible at once, so customers never lose
   sight of the total.
 - **2 columns** is the classic modern checkout and the safest default
@@ -127,13 +127,13 @@ structure of the checkout.
 - **1 column** suits stores with very simple orders or strongly
   mobile-first audiences. (On small screens all layouts collapse to a
   single column automatically.)
-- Turn **Sticky Sidebar** on if your shipping form is long — the
+- Turn **Sticky Sidebar** on if your shipping form is long - the
   place-order button stays reachable.
 
 **Verify on the storefront:** Reload the checkout after saving. With 3
 columns the shipping step, payment step, and summary sit side by side
 on desktop. Switch Sidebar Position to Left and the summary jumps to
-the left edge. With Sticky Sidebar on, scroll down — the summary
+the left edge. With Sticky Sidebar on, scroll down - the summary
 follows you. Resize the browser window to phone width and confirm the
 layout stacks into one column.
 
@@ -149,7 +149,7 @@ the checkout cards.
 | **Card Style** | Elevated (Shadow) | Visual treatment for checkout section cards: **Elevated** (drop shadow), **Bordered** (1px outline), **Flat** (no shadow or border), or **Glassmorphism** (translucent frosted-glass effect). |
 | **Accent Color** | #1a1a2e | Primary accent colour used for buttons, links, focus rings, and highlights. Edited with the built-in admin colour picker. |
 | **Border Radius (px)** | 12 | Corner radius applied to cards and form elements, in pixels. `0` gives sharp corners; `16`+ gives a soft, rounded look. |
-| **Step Indicators** | No | Show numbered step badges (1, 2, 3 …) above each checkout section so customers can see their progress. |
+| **Step Indicators** | No | Show numbered step badges (1, 2, 3 ...) above each checkout section so customers can see their progress. |
 
 **Recommended:** Match your theme. Elevated works on light themes;
 Bordered is the safest on busy backgrounds; Glassmorphism looks best
@@ -157,7 +157,7 @@ over a coloured or image page background. Pick an accent colour with
 good contrast against white text (your primary brand colour is usually
 right). Keep border radius between 8 and 16 unless your theme is
 deliberately sharp-cornered. Enable Step Indicators if your checkout
-has several visible sections — they reduce abandonment by signalling
+has several visible sections - they reduce abandonment by signalling
 progress.
 
 **Notes on the accent colour:** the value is validated server-side.
@@ -188,7 +188,7 @@ order summary sidebar.
 | **Show SKU** | No | Display the product SKU below each item name in the summary. |
 | **Product Link** | No | Make item names in the summary clickable links back to the product page. |
 
-**Recommended:** Enable **Qty Increment Controls** — letting customers
+**Recommended:** Enable **Qty Increment Controls** - letting customers
 fix a quantity mistake at checkout (instead of navigating back to the
 cart) is a proven friction reducer. Enable **Show SKU** for B2B or
 parts stores where customers order by SKU. Leave **Product Link** off
@@ -197,7 +197,7 @@ on for B2B/wholesale buyers who want to double-check specs.
 
 **Qty increment details:** each +/- click updates the cart via AJAX and
 the totals refresh immediately. The step size respects the product's
-inventory `qty_increments` setting — if a product sells in packs of 6,
+inventory `qty_increments` setting - if a product sells in packs of 6,
 clicking **+** adds 6.
 
 **Verify on the storefront:** Add a product (e.g. *example-product*) to
@@ -219,7 +219,7 @@ Open the **Newsletter Subscription** group.
 | **Checkbox Label** | "Subscribe to our newsletter" | The label text shown next to the checkbox. Translatable per store view. |
 | **Checked by Default** | Yes | Whether the checkbox is pre-ticked when the checkout loads. |
 
-**Recommended:** Keep the checkbox enabled — checkout is the highest-
+**Recommended:** Keep the checkbox enabled - checkout is the highest-
 intent moment to grow your list. Write a label that states the benefit,
 e.g. *"Email me order tips and exclusive offers"*. **Check your local
 regulations before pre-ticking:** under GDPR/PECR (EU/UK) and similar
@@ -231,18 +231,18 @@ for region-specific stores).
 
 - The checkbox appears in the order summary sidebar.
 - On order placement the preference travels with the payment request
-  via the `panth_subscribe_newsletter` extension attribute — it works
+  via the `panth_subscribe_newsletter` extension attribute - it works
   for both guests and logged-in customers.
 - If a logged-in customer is already subscribed, the box is pre-ticked
   and no duplicate subscription is created.
 - When the checkbox is disabled (or unticked), no subscription is
   created at all.
-- A newsletter failure never blocks order placement — errors are
+- A newsletter failure never blocks order placement - errors are
   logged silently.
 
 **Verify on the storefront:** Place a test order as a guest with the
 box ticked, then check **Marketing -> Communications -> Newsletter
-Subscribers** in the admin — the guest email appears as Subscribed.
+Subscribers** in the admin - the guest email appears as Subscribed.
 Repeat with the box unticked and confirm no subscriber is created.
 Change the label, flush cache, and confirm the new text shows in the
 sidebar.
@@ -260,7 +260,7 @@ and contact forms render.
 | **Use Placeholders** | No | Show example/placeholder text inside form fields. |
 | **Show Tooltips** | No | Show tooltip icons next to form fields with extra help text. |
 
-**Recommended:** **Compact** for most stores — a shorter-looking form
+**Recommended:** **Compact** for most stores - a shorter-looking form
 converts better. Choose **Full Width** if your audience skews older or
 your theme uses large font sizes. Enable **Use Placeholders** to make
 the form feel lighter, and **Show Tooltips** if customers frequently
@@ -282,12 +282,12 @@ Open the **Shipping** group.
 | Setting | Default | What it does |
 |---|---|---|
 | **Default Shipping Method** | (empty) | Pre-select a shipping method by its code, e.g. `flatrate_flatrate` or `tablerate_bestway`. Leave empty for no pre-selection. |
-| **Hide Single Method** | No | When only one shipping method is available, hide the radio selector and just show the method name — one less click for the customer. |
+| **Hide Single Method** | No | When only one shipping method is available, hide the radio selector and just show the method name - one less click for the customer. |
 | **Sort by Price** | No | Sort available shipping methods by price, lowest first. |
 
 **Recommended:** Set **Default Shipping Method** to your most-used
 method so most customers can skip the choice entirely. The code is
-`carrier_method` — for built-in flat rate it is `flatrate_flatrate`;
+`carrier_method` - for built-in flat rate it is `flatrate_flatrate`;
 for a custom carrier check the carrier's documentation or the value
 attribute of the radio button in your browser's developer tools.
 Enable **Hide Single Method** if you only offer one method. Enable
@@ -297,7 +297,7 @@ always first.
 **Verify on the storefront:** Open checkout with a fresh cart and enter
 a shipping address. The configured method arrives pre-selected. If
 only one method is available and Hide Single Method is on, no radio
-button is shown — just the method name and price. With Sort by Price
+button is shown - just the method name and price. With Sort by Price
 on and multiple methods enabled, they list cheapest-first regardless
 of carrier sort order.
 
@@ -314,7 +314,7 @@ Open the **Payment** group.
 **Recommended:** Pre-select your most popular payment method. Common
 codes: `checkmo` (check/money order), `banktransfer`,
 `cashondelivery`, `free` (zero-total orders). Third-party gateways use
-their own codes — check the gateway's documentation.
+their own codes - check the gateway's documentation.
 
 **Verify on the storefront:** Proceed to the payment step. The
 configured method's radio button is already selected and its form
@@ -348,8 +348,8 @@ Open the **Custom Code** group.
 
 | Setting | Default | What it does |
 |---|---|---|
-| **Custom CSS** | (empty) | CSS injected as an inline `<style>` block on the checkout page. Enter raw CSS only — do **not** include `<style>` tags. |
-| **Custom JS** | (empty) | JavaScript injected via `require([], function () { ... })` on the checkout page. Enter raw JS only — do **not** include `<script>` tags. |
+| **Custom CSS** | (empty) | CSS injected as an inline `<style>` block on the checkout page. Enter raw CSS only - do **not** include `<style>` tags. |
+| **Custom JS** | (empty) | JavaScript injected via `require([], function () { ... })` on the checkout page. Enter raw JS only - do **not** include `<script>` tags. |
 
 **Use cases:**
 
@@ -358,7 +358,7 @@ Open the **Custom Code** group.
 - Inject A/B testing snippets
 - Hide or restyle specific elements
 
-**Example — reuse the extension's CSS variables:**
+**Example - reuse the extension's CSS variables:**
 
 ```css
 .opc-block-summary .place-order-button {
@@ -370,11 +370,11 @@ Open the **Custom Code** group.
 **Security note:** only administrators with the
 `Panth_CheckoutExtended::config` ACL permission can edit these fields.
 The CSS and JS are rendered unescaped because they are admin-authored
-content — never paste code from an untrusted source.
+content - never paste code from an untrusted source.
 
 **Verify on the storefront:** Add an obvious test rule such as
 `body { outline: 4px solid red; }`, save, flush cache, and reload
-checkout — the red outline appears. For JS, add
+checkout - the red outline appears. For JS, add
 `console.log('panth custom js loaded');` and check the browser
 console. Remove the test code afterwards.
 

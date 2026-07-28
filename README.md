@@ -137,15 +137,15 @@ Performance • SEO • Adobe Commerce Cloud
 - **+/- buttons** next to each item in the order summary.
 - Respects product-level `qty_increments` (e.g. 0.5 or 5 step).
 - Updates cart via AJAX with totals refreshing in place.
-- **Stock-aware** — the + button disables at max available stock.
+- **Stock-aware** - the + button disables at max available stock.
 
 ### Modern UI Styling
 
 - **Card styles**: Elevated (shadow), Bordered, Flat, Glassmorphism.
-- **Accent color** — admin color picker with server-side hex validation. Exposed as `--panth-checkout-accent` CSS variable.
-- **Border radius** — pixel-level control. Exposed as `--panth-checkout-radius` CSS variable.
-- **Step indicators** — optional numbered badges above each checkout section.
-- **Field modes** — Compact (multiple fields per row) or Full Width (one field per row).
+- **Accent color** - admin color picker with server-side hex validation. Exposed as `--panth-checkout-accent` CSS variable.
+- **Border radius** - pixel-level control. Exposed as `--panth-checkout-radius` CSS variable.
+- **Step indicators** - optional numbered badges above each checkout section.
+- **Field modes** - Compact (multiple fields per row) or Full Width (one field per row).
 - **Placeholder toggle** and **Tooltip toggle** for form fields.
 - **Billing title visibility** toggle.
 
@@ -165,14 +165,14 @@ Performance • SEO • Adobe Commerce Cloud
 - **Custom CSS textarea** injected inline on the checkout page only.
 - **Custom JS textarea** injected via RequireJS with a `try/catch` wrapper.
 - **ACL resource** `Panth_CheckoutExtended::config` for granular admin permissions.
-- **Per-store-view scope** — all settings respect Magento's standard scope hierarchy.
+- **Per-store-view scope** - all settings respect Magento's standard scope hierarchy.
 
 ### Quality
 
 - **MEQP-compliant** with constructor dependency injection only, no ObjectManager.
-- **No core file modifications** — clean plugin and observer architecture.
+- **No core file modifications** - clean plugin and observer architecture.
 - **Translation ready** using Magento's `__()` function throughout.
-- **Full Page Cache compatible** — the checkout page itself is not cached by default in Magento.
+- **Full Page Cache compatible** - the checkout page itself is not cached by default in Magento.
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Checkout Initializer
+ * Panth CheckoutExtended - Checkout Initializer
  *
  * Pre-loads payment methods from window.checkoutConfig on page load
  * so they're available immediately in one-page checkout mode

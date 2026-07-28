@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Shipping Service Mixin
+ * Panth CheckoutExtended - Shipping Service Mixin
  *
  * Sorts available shipping rates ascending by price before they are
  * published to the UI, when the admin setting

@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Remove Cart Item Action
+ * Panth CheckoutExtended - Remove Cart Item Action
  *
  * DELETEs a cart item via REST API. If the cart becomes empty
  * after removal, reloads the page to redirect away from checkout.
@@ -44,7 +44,7 @@ define([
             // Invalidate local storage sections
             customerData.invalidate(['cart']);
 
-            // Check if cart is now empty — totals items will update after refresh
+            // Check if cart is now empty - totals items will update after refresh
             var items = quote.getItems(),
                 remainingItems;
 
@@ -59,7 +59,7 @@ define([
                 }
             }
 
-            // Cart still has items — refresh rates, payments, totals
+            // Cart still has items - refresh rates, payments, totals
             var address = quote.shippingAddress();
 
             if (address) {

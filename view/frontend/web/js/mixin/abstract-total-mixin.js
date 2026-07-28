@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Abstract Total Mixin
+ * Panth CheckoutExtended - Abstract Total Mixin
  *
  * In one-page checkout, totals must always show (isFullMode = true)
  * because the user never navigates away from the shipping step.

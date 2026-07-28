@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Payment Preselect Mixin
+ * Panth CheckoutExtended - Payment Preselect Mixin
  *
  * Preselects the admin-configured default payment method
  * (window.checkoutConfig.panthCheckout.payment.defaultMethod) when the
@@ -51,7 +51,7 @@ define([
             }
 
             // Only preselect if the configured method is actually available.
-            // Methods can load late — if absent, signal "keep waiting".
+            // Methods can load late - if absent, signal "keep waiting".
             var available = _.find(
                 paymentService.getAvailablePaymentMethods(),
                 function (method) {
@@ -83,7 +83,7 @@ define([
 
         // Payment methods often resolve after the first resolvePaymentMethod
         // pass (async loading). NOTE: paymentService.getAvailablePaymentMethods()
-        // returns a PLAIN ARRAY (no .subscribe) — the KO observableArray that
+        // returns a PLAIN ARRAY (no .subscribe) - the KO observableArray that
         // backs it is Magento_Checkout/js/model/payment/method-list. Subscribe
         // to that so late-loaded methods still trigger the preselect, and guard
         // defensively so a preselect nicety can never break checkout bootstrap.

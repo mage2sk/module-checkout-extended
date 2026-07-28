@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Shipping View Mixin
+ * Panth CheckoutExtended - Shipping View Mixin
  *
  * Overrides setShippingInformation to prevent navigation to payment step
  * in one-page checkout mode. Auto-save logic is in checkout_init.phtml.
@@ -68,7 +68,7 @@ define([
 
         return Component.extend({
             /**
-             * Override initialize — wire up default-method preselection and
+             * Override initialize - wire up default-method preselection and
              * single-method hiding once shipping rates become available.
              */
             initialize: function () {
@@ -141,7 +141,7 @@ define([
             },
 
             /**
-             * Override setShippingInformation — save without navigating
+             * Override setShippingInformation - save without navigating
              * to payment step. In one-page mode both steps are always visible.
              */
             setShippingInformation: function () {

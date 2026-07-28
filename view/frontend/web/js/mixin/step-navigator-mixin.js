@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Step Navigator Mixin
+ * Panth CheckoutExtended - Step Navigator Mixin
  *
  * Converts Magento's multi-step checkout into a one-page checkout
  * by ensuring all steps remain visible without breaking the original
@@ -35,7 +35,7 @@ define([
 
         // Remove any previous active-step class. NOTE: the regex also matches
         // the config-driven 'panth-step-indicators' class (set server-side when
-        // the Step Indicators option is on) — it must be preserved, otherwise
+        // the Step Indicators option is on) - it must be preserved, otherwise
         // the numbered badges disappear on the first step change.
         if (classes) {
             $.each(classes, function (_, cls) {
@@ -57,7 +57,7 @@ define([
         }
 
         // ------------------------------------------------------------------
-        // 1. Override registerStep — force each step visible on registration
+        // 1. Override registerStep - force each step visible on registration
         //    while preserving the original observable and its subscriptions.
         // ------------------------------------------------------------------
         stepNavigator.registerStep = wrapper.wrap(
@@ -112,7 +112,7 @@ define([
         });
 
         // ------------------------------------------------------------------
-        // 3. Override navigateTo — smooth-scroll to the step section instead
+        // 3. Override navigateTo - smooth-scroll to the step section instead
         //    of hiding / showing panels.
         // ------------------------------------------------------------------
         stepNavigator.navigateTo = wrapper.wrap(
@@ -138,15 +138,15 @@ define([
         );
 
         // ------------------------------------------------------------------
-        // 4. Override setHash — prevent URL hash changes so the browser's
+        // 4. Override setHash - prevent URL hash changes so the browser's
         //    back button is not polluted with step hashes.
         // ------------------------------------------------------------------
         stepNavigator.setHash = function (/* hash */) {
-            // intentionally empty — no hash changes in one-page mode
+            // intentionally empty - no hash changes in one-page mode
         };
 
         // ------------------------------------------------------------------
-        // 5. Override handleHash — after the initial hash processing, force
+        // 5. Override handleHash - after the initial hash processing, force
         //    all steps visible again in case the hash handler hid some.
         // ------------------------------------------------------------------
         if (typeof stepNavigator.handleHash === 'function') {

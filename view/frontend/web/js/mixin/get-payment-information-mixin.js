@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Get Payment Information Mixin
+ * Panth CheckoutExtended - Get Payment Information Mixin
  *
  * Prevents "The shipping address is missing" error on page load.
  * In one-page checkout the payment step is forced visible immediately,

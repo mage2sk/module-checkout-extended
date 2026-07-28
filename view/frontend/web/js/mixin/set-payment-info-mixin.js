@@ -29,7 +29,7 @@ define([
                         : quote.guestEmail;
 
                     if (!guestEmail || String(guestEmail).indexOf('@') < 0) {
-                        // Email not yet entered — bail silently
+                        // Email not yet entered - bail silently
                         return $.Deferred().resolve().promise();
                     }
                 }

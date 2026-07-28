@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Panth CheckoutExtended — customer-data section invalidation.
+ * Panth CheckoutExtended - customer-data section invalidation.
  *
  * The one-step checkout places the order through Magento's standard place-order
  * REST action (rest/<store>/V1/(guest-)carts/<id>/payment-information). When that

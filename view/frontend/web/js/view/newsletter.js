@@ -23,11 +23,11 @@ define([
 
             var self = this;
 
-            // Feature disabled via admin config — never subscribe, never pre-check.
+            // Feature disabled via admin config - never subscribe, never pre-check.
             if (this.enabled === false) {
                 this.isSubscribed(false);
             } else {
-                // Logged-in user already subscribed — pre-set true and hide the checkbox
+                // Logged-in user already subscribed - pre-set true and hide the checkbox
                 var loggedIn  = window.checkoutConfig && window.checkoutConfig.isCustomerLoggedIn;
                 var subStatus = window.checkoutConfig && window.checkoutConfig.panthNewsletterSubscribed;
 

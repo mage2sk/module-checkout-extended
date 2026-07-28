@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Cart URL Manager Mixin
+ * Panth CheckoutExtended - Cart URL Manager Mixin
  *
  * Extends Magento_Checkout/js/model/resource-url-manager with methods
  * for updating and removing cart items via REST API.

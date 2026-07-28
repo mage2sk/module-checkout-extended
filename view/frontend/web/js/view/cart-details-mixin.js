@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Cart Details Mixin
+ * Panth CheckoutExtended - Cart Details Mixin
  *
  * Adds qty increment/decrement and item removal to the checkout sidebar.
  * Handles both guest and customer cart REST API endpoints.
@@ -97,7 +97,7 @@ define([
              *
              * Uses the tax-inclusive unit price when available, otherwise the
              * base unit price. This is intentionally the UNIT price, NOT the
-             * row total (qty x unit), so it stays stable when the qty changes —
+             * row total (qty x unit), so it stays stable when the qty changes -
              * the qty drives the cart subtotal / order total in the footer.
              *
              * @param {Object} item

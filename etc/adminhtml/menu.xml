@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Panth Checkout Extended — backend menu entry.
+ * Panth Checkout Extended - backend menu entry.
  *
  * Matches the convention used by every other Panth_* module: a group node
  * under "Panth Infotech" (Panth_Core::panth_extensions) carrying the module's
@@ -10,7 +10,7 @@
  *
  *   Panth Infotech
  *     └── Checkout Extended
- *           └── Configuration  → Stores > Configuration > panth_checkout_extended
+ *           └── Configuration  -> Stores > Configuration > panth_checkout_extended
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

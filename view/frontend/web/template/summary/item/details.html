@@ -5,7 +5,7 @@
  * Layout: [thumbnail (before_details)] [.panth-item-info column].
  * The info column stacks: name (wraps, never truncates) -> sku -> options,
  * then a meta row holding the qty stepper and the per-unit price. The price
- * is the UNIT price (stable across qty changes), not the row total — the qty
+ * is the UNIT price (stable across qty changes), not the row total - the qty
  * drives the cart subtotal / order total in the summary footer instead.
  * Uses text bindings for option values (never html) to prevent rendered
  * image cards; file-upload options collapse to a "file attached" chip.
@@ -25,12 +25,12 @@
         <strong class="panth-item-name" data-bind="html: getNameUnsanitizedHtml($parent)"></strong>
         <!-- /ko -->
 
-        <!-- SKU — small muted, below the name -->
+        <!-- SKU - small muted, below the name -->
         <!-- ko if: getItemSku($parent) -->
         <span class="panth-item-sku" data-bind="text: getItemSku($parent)"></span>
         <!-- /ko -->
 
-        <!-- Options — covers configurable / bundle / downloadable / custom options.
+        <!-- Options - covers configurable / bundle / downloadable / custom options.
              Short lists (1-3) are expanded by default; longer lists collapse behind a toggle. -->
         <!-- ko if: (JSON.parse($parent.options).length > 0) -->
         <div class="panth-item-options-wrap" data-bind="css: { 'panth-opts-open': JSON.parse($parent.options).length <= 3 }">

@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Update Cart Item Action
+ * Panth CheckoutExtended - Update Cart Item Action
  *
  * POSTs to REST API to update cart item quantity, then refreshes
  * shipping rates, payment methods, and cart totals.

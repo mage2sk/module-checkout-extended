@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Full Screen Loader Mixin
+ * Panth CheckoutExtended - Full Screen Loader Mixin
  *
  * In one-page checkout, non-critical operations (address updates,
  * payment-info saves) use a section-level loading indicator instead
@@ -99,7 +99,7 @@ define([
             origStopLoader  = loader.stopLoader;
 
         /**
-         * startLoader — check whether the current operation should be
+         * startLoader - check whether the current operation should be
          * blocked from showing a full-screen loader.
          *
          * Set `quote.panthCheckout.state.preventLoader = true` before
@@ -124,7 +124,7 @@ define([
         };
 
         /**
-         * stopLoader — always clean up both the full-screen overlay
+         * stopLoader - always clean up both the full-screen overlay
          * AND any section-level loading classes.
          */
         loader.stopLoader = function () {

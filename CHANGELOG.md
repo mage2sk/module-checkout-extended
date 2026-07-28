@@ -4,6 +4,13 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.9]
+
+### Changed
+- Replaced typographic characters (em dashes, curly quotes, ellipsis) with plain ASCII punctuation. No functional changes.
+
+---
+
 ## [1.0.8] - 2026-07-07
 
 ### Changed
@@ -20,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [1.0.6] — 2026-06-12
+## [1.0.6] - 2026-06-12
 
 ### Added
 - Previously missing admin configuration groups so every documented
@@ -47,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - Payment method pre-selection
   - Billing address title visibility toggle
   - Admin-defined custom CSS and JS injection at checkout
-- Modern responsive redesign of the checkout — multi-column on desktop,
+- Modern responsive redesign of the checkout - multi-column on desktop,
   collapsing cleanly to a single column on mobile
 
 ### Fixed
@@ -60,15 +67,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [1.0.0] — Initial release
+## [1.0.0] - Initial release
 
-### Added — layout
+### Added - layout
 - Configurable 1/2/3 column checkout layout
 - Sidebar position (left/right)
 - Sticky sidebar option
 - Body class injection via layout handle
 
-### Added — checkout UX
+### Added - checkout UX
 - Auto-save shipping information (address + method) as the customer
   fills in the form, with debounced AJAX and fingerprint deduplication
 - Real-time billing address sync when "same as shipping" is checked
@@ -77,13 +84,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Auto-expand cart items in order summary
 - Auto-expand discount code input
 
-### Added — cart features
+### Added - cart features
 - Qty increment/decrement buttons in order summary with stock-aware
   qty_increments from CatalogInventory
 - Product SKU display in order summary
 - Product name links to product page
 
-### Added — newsletter subscription
+### Added - newsletter subscription
 - Checkbox in checkout sidebar with configurable label and default state
 - Guest subscriber plugin on GuestPaymentInformationManagement
 - Customer subscriber plugin on PaymentInformationManagement
@@ -91,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   API transport
 - Pre-checks the box if logged-in customer is already subscribed
 
-### Added — styling
+### Added - styling
 - Card styles: Elevated (Shadow), Bordered, Flat, Glassmorphism
 - Admin colour picker for accent colour
 - Border radius control
@@ -102,18 +109,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - CSS custom properties for theming (--panth-checkout-accent,
   --panth-checkout-radius)
 
-### Added — custom code
+### Added - custom code
 - Custom CSS textarea injected as inline style at checkout
 - Custom JS textarea injected via RequireJS at checkout
 
-### Added — admin
+### Added - admin
 - Full admin configuration under Stores -> Configuration -> Panth
   Extensions -> Checkout Extended
 - ACL resource Panth_CheckoutExtended::config for granular permissions
 - Colour picker field renderer for accent colour
 
 ### Quality
-- Constructor injection only — zero ObjectManager usage
+- Constructor injection only - zero ObjectManager usage
 - All PHP files lint clean
 - MEQP (Magento2 coding standard) passes with zero errors at
   severity 10

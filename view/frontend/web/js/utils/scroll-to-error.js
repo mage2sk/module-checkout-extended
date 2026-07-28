@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Scroll-to-Error Utility
+ * Panth CheckoutExtended - Scroll-to-Error Utility
  *
  * Finds the first visible validation error within the checkout, smooth-scrolls
  * it into view, focuses the related input, and briefly applies a shake
@@ -7,7 +7,7 @@
  *
  * Exposes a debounced default export (safe for rapid/repeated calls) plus a
  * `.now()` method for a deterministic, immediate scroll right after a failed
- * validation pass — used by sidebar-place-order.js when it blocks an invalid
+ * validation pass - used by sidebar-place-order.js when it blocks an invalid
  * submit.
  */
 define([
@@ -94,7 +94,7 @@ define([
     }
 
     /**
-     * Public API — debounced wrapper around the core routine. Multiple rapid
+     * Public API - debounced wrapper around the core routine. Multiple rapid
      * calls within the debounce window collapse to a single scroll + animation.
      */
     function scrollToError() {

@@ -8,7 +8,7 @@ var config = {
             // (module/template/<path>.html), so the override must be keyed on
             // that exact form. The summary item details template is overridden;
             // the discount block is only RELOCATED (CheckoutLayoutProcessor) and
-            // keeps its core template, styled via CSS — so it is NOT mapped here
+            // keeps its core template, styled via CSS - so it is NOT mapped here
             // (mapping it triggered a doubled-path load error).
             'Magento_Checkout/template/summary/item/details.html':
                 'Panth_CheckoutExtended/template/summary/item/details.html'

@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Sidebar Place Order Button
+ * Panth CheckoutExtended - Sidebar Place Order Button
  *
  * In one-page mode the sidebar "Place Order" button is ALWAYS reachable, so a
  * click must first run full client-side validation (email + shipping address +
@@ -51,12 +51,12 @@ define([
      * completes. That only happens when the active payment method places the
      * order through jQuery ajax (mage/storage). Payment methods that redirect to
      * an off-site PSP, or otherwise navigate away without a jQuery ajaxComplete,
-     * never trigger that invalidation — so the success page reloads the still
+     * never trigger that invalidation - so the success page reloads the still
      * cached 'cart' and shows the ordered items (e.g. "10 Items in Cart").
      *
      * invalidate() bumps the 'cart' version in the persistent `section_data_ids`
      * cookie (and drops the cached copy); the freshly loaded success page reads
-     * that bumped version and re-fetches 'cart' from the server (now empty → 0).
+     * that bumped version and re-fetches 'cart' from the server (now empty -> 0).
      * reload() additionally refreshes it in-place for flows that stay on the
      * checkout page. Both are best-effort and never block the order flow.
      */
@@ -122,7 +122,7 @@ define([
                         return !!$username.valid();
                     }
                 }
-            } catch (e2) { /* uncertainty — block below */ }
+            } catch (e2) { /* uncertainty - block below */ }
 
             // Could not run email validation; prefer blocking an invalid submit.
             return false;
@@ -223,7 +223,7 @@ define([
          *   (a) guest email, (b) shipping address form, (c) shipping method,
          *   (d) payment method.
          *
-         * (a)–(c) are covered by validateShippingAddressAndMethod(). Inline
+         * (a)-(c) are covered by validateShippingAddressAndMethod(). Inline
          * errors are revealed as a side-effect. Wrapped so a validation
          * framework hiccup blocks (never silently submits) an invalid order.
          *
@@ -270,7 +270,7 @@ define([
                 return;
             }
 
-            // ---- 2. EVERYTHING VALID — proceed with the existing flow ----
+            // ---- 2. EVERYTHING VALID - proceed with the existing flow ----
             var $activeMethod = $('.payment-method._active');
 
             // Find the payment method's own Place Order button (hidden via CSS).
@@ -289,7 +289,7 @@ define([
             // Overlay shown ONLY now that validation has passed.
             self.isPlacingOrder(true);
 
-            // Centralised reset — idempotent, cleans up all watchers.
+            // Centralised reset - idempotent, cleans up all watchers.
             var done = false;
             var pollTimer = null;
             var safetyTimer = null;
@@ -308,7 +308,7 @@ define([
                 }
             }
 
-            // Click the real button — payment renderer runs its own validate()
+            // Click the real button - payment renderer runs its own validate()
             // internally (payment-specific fields + agreements).
             $btn.trigger('click');
 
@@ -342,7 +342,7 @@ define([
             // 3. jQuery AJAX error events (server 4xx / 5xx)
             $(document).on('ajax:error.panthOrder', reset);
 
-            // 3b. SUCCESS detection — empty the cart/minicart after placement.
+            // 3b. SUCCESS detection - empty the cart/minicart after placement.
             //     Two complementary signals cover every payment type:
             //       (a) ajaxComplete on a 2xx place-order REST response, for
             //           methods that place the order via jQuery ajax; and
@@ -365,7 +365,7 @@ define([
                 refreshCartSection();
             });
 
-            // 4. Polling fallback — catches async errors the observer may miss
+            // 4. Polling fallback - catches async errors the observer may miss
             //    (e.g. errors shown via KO visibility binding rather than DOM insertion)
             pollTimer = setInterval(function () {
                 if (done) { clearInterval(pollTimer); return; }
@@ -376,7 +376,7 @@ define([
                 }
             }, 400);
 
-            // 5. Safety reset after 8 s — never leave button stuck
+            // 5. Safety reset after 8 s - never leave button stuck
             safetyTimer = setTimeout(reset, 8000);
         }
     });

@@ -1,5 +1,5 @@
 /**
- * Panth CheckoutExtended — Place Order Mixin
+ * Panth CheckoutExtended - Place Order Mixin
  *
  * (1) Injects the newsletter extension attribute into the payment data before
  *     the order is placed.

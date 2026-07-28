@@ -1,5 +1,5 @@
 /* ============================================================
-   Panth CheckoutExtended — Checkout Page Styles
+   Panth CheckoutExtended - Checkout Page Styles
    Target: body.panth-checkout-extended.checkout-index-index
    ============================================================ */
 
@@ -59,7 +59,7 @@ body.panth-checkout-extended #checkout.checkout-container {
 }
 
 /* ----------------------------------------------------------
-   4. CHECKOUT HEADER — Back to Cart inside div.header.content flex row
+   4. CHECKOUT HEADER - Back to Cart inside div.header.content flex row
    ---------------------------------------------------------- */
 /* The block is rendered as a flex child of div.header.content (header-wrapper).
    Use position:absolute so the logo (justify-content:center) stays centred. */
@@ -170,7 +170,7 @@ body.panth-checkout-extended .action.action-show-popup:hover {
 }
 
 /* ----------------------------------------------------------
-   5. LAYOUT — Main wrapper + Sidebar (floats)
+   5. LAYOUT - Main wrapper + Sidebar (floats)
    ---------------------------------------------------------- */
 /* 72% + 28% = 100%; the 24px padding-right IS the column gutter,
    so steps↔summary gap matches the 24px grid gap inside .opc. */
@@ -419,7 +419,7 @@ body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td in
     cursor: pointer;
 }
 
-/* Selected shipping row — faint accent tint + 3px left accent bar */
+/* Selected shipping row - faint accent tint + 3px left accent bar */
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:has(input[type="radio"]:checked) td {
     background-color: rgba(16, 24, 40, 0.035);
     background-color: color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 5%, #ffffff);
@@ -455,7 +455,7 @@ body.panth-checkout-extended .payment-methods .payment-method:hover {
     border-color: #c9ced6;
 }
 
-/* Active payment method — accent ring + faint tint */
+/* Active payment method - accent ring + faint tint */
 body.panth-checkout-extended .payment-methods .payment-method._active {
     border-color: var(--panth-checkout-accent, #1a1a2e);
     box-shadow: 0 0 0 1px var(--panth-checkout-accent, #1a1a2e);
@@ -521,7 +521,7 @@ body.panth-checkout-extended .billing-address-details {
 }
 
 /* Hide the read-only "same as shipping" billing preview until the shipping
-   address is actually filled — otherwise it shows an empty ", United States"
+   address is actually filled - otherwise it shows an empty ", United States"
    box. Class is toggled by checkout_init.phtml. */
 body.panth-billing-preview-empty .billing-address-details {
     display: none;
@@ -712,7 +712,7 @@ body.panth-checkout-extended .product-item-details {
 }
 
 /* Luma OPC sidebar: div.product wraps image + details.
-   Use :not(.options) so div.product.options is NOT turned into a flex container —
+   Use :not(.options) so div.product.options is NOT turned into a flex container -
    that would prevent div.content from stretching to full width. */
 body.panth-checkout-extended ol.minicart-items li.product-item .product:not(.options) {
     display: flex !important;
@@ -745,7 +745,7 @@ body.panth-checkout-extended .subtotal .price {
 }
 
 /* ----------------------------------------------------------
-   17B. PRODUCT OPTIONS — handled by panth template override
+   17B. PRODUCT OPTIONS - handled by panth template override
    ---------------------------------------------------------- */
 /* These are now controlled by panth-item-options-wrap CSS below */
 
@@ -785,7 +785,7 @@ body.panth-checkout-extended .table-totals tr.grand.totals td {
 }
 
 /* ----------------------------------------------------------
-   19. PLACE ORDER — SIDEBAR BUTTON
+   19. PLACE ORDER - SIDEBAR BUTTON
    ---------------------------------------------------------- */
 body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout {
     display: flex !important;
@@ -830,7 +830,7 @@ body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.ch
 }
 
 /* "Secure checkout" reassurance note below the Place Order button.
-   It was unstyled and sat flush against (overlapping) the button — give it
+   It was unstyled and sat flush against (overlapping) the button - give it
    clear separation, centring and muted styling. */
 body.panth-checkout-extended .panth-secure-note {
     display: flex;
@@ -890,7 +890,7 @@ body.panth-checkout-extended .panth-registration-wrap .field {
     margin-bottom: 0;
 }
 
-/* Password fields — side by side in a single row */
+/* Password fields - side by side in a single row */
 body.panth-checkout-extended .panth-password-row {
     display: flex;
     gap: 8px;
@@ -940,7 +940,7 @@ body.panth-checkout-extended .panth-pw-half .field-error {
 }
 
 /* ----------------------------------------------------------
-   21. DISCOUNT CODE — Magento CORE template relocated into the
+   21. DISCOUNT CODE - Magento CORE template relocated into the
    order summary. Force-expanded by JS; rendered as a small
    section title + a single input/button row (see DISCOUNT FORM
    section further down for the form itself).
@@ -951,14 +951,14 @@ body.panth-checkout-extended .payment-option.discount-code {
     overflow: visible !important;
 }
 
-/* Wrapper inside the summary card — separated by a hairline */
+/* Wrapper inside the summary card - separated by a hairline */
 body.panth-checkout-extended .opc-block-summary .payment-option.discount-code {
     margin: 16px 0 0;
     padding: 16px 0 0;
     border-top: 1px solid #eef0f3;
 }
 
-/* Title ("Apply Discount Code") — small static section title.
+/* Title ("Apply Discount Code") - small static section title.
    Block appears always-expanded (JS force-expands), so the title
    must not read as a collapsible toggle. */
 body.panth-checkout-extended .opc-block-summary .payment-option.discount-code > .payment-option-title,
@@ -1109,7 +1109,7 @@ body.panth-checkout-extended .action.secondary:hover {
         margin-top: 20px;
     }
 
-    /* Override modal-slide behaviour — show sidebar inline on mobile */
+    /* Override modal-slide behaviour - show sidebar inline on mobile */
     body.panth-checkout-extended .opc-sidebar.opc-summary-wrapper,
     body.panth-checkout-extended .opc-sidebar.opc-summary-wrapper .modal-inner-wrap {
         visibility: visible !important;
@@ -1210,7 +1210,7 @@ body.panth-checkout-extended .action.secondary:hover {
         margin-left: 0 !important;
     }
 
-    /* Touch-friendly fields — ≥16px font prevents iOS zoom-on-focus.
+    /* Touch-friendly fields - ≥16px font prevents iOS zoom-on-focus.
        Heights are already 44px from the base rules; only the compact
        registration password inputs need a bump. */
     body.panth-checkout-extended .field .control input[type="text"],
@@ -1230,9 +1230,9 @@ body.panth-checkout-extended .action.secondary:hover {
         height: 44px !important;
     }
     /* Discount row stays inline at this size (input keeps flex:1 room);
-       it stacks fully on phones — see Section 24D (≤480px). */
+       it stacks fully on phones - see Section 24D (≤480px). */
 
-    /* Modal popup/slide — content height capped at 75vh, vertically centred */
+    /* Modal popup/slide - content height capped at 75vh, vertically centred */
     body.panth-checkout-extended .modal-popup.modal-slide {
         display: flex !important;
         align-items: center !important;
@@ -1256,7 +1256,7 @@ body.panth-checkout-extended .action.secondary:hover {
     }
 }
 
-/* Authentication wrapper — hide trigger button, keep popup functional */
+/* Authentication wrapper - hide trigger button, keep popup functional */
 body.panth-checkout-extended .authentication-wrapper {
     position: absolute !important;
     right: 0 !important;
@@ -1275,7 +1275,7 @@ body.panth-checkout-extended .authentication-wrapper .block-authentication {
     z-index: 9999 !important;
 }
 
-/* Validation error messages — smaller, inline */
+/* Validation error messages - smaller, inline */
 body.panth-checkout-extended div.mage-error,
 body.panth-checkout-extended div.field-error {
     font-size: 11px !important;
@@ -1284,7 +1284,7 @@ body.panth-checkout-extended div.field-error {
     position: static !important;
 }
 
-/* Auth wrapper — hidden by default, shown when Sign In clicked */
+/* Auth wrapper - hidden by default, shown when Sign In clicked */
 body.panth-checkout-extended .authentication-wrapper {
     display: none;
 }
@@ -1302,7 +1302,7 @@ body.panth-checkout-extended .authentication-wrapper.panth-auth-visible {
 body.panth-checkout-extended .field-tooltip-action > span {
     display: none !important;
 }
-/* Tooltip popup content — hidden by default, shown only when ._active */
+/* Tooltip popup content - hidden by default, shown only when ._active */
 body.panth-checkout-extended .field-tooltip .field-tooltip-content {
     display: none !important;
     position: absolute !important;
@@ -1327,13 +1327,13 @@ body.panth-checkout-extended .field-tooltip .field-tooltip-content::before,
 body.panth-checkout-extended .field-tooltip .field-tooltip-content::after {
     display: none !important;
 }
-/* Ensure tooltip input doesn't overlap with the ? icon —
+/* Ensure tooltip input doesn't overlap with the ? icon -
    only when tooltips are enabled via config (panth-form-tooltips) */
 body.panth-form-tooltips .field._with-tooltip .control input {
     padding-right: 36px !important;
 }
 
-/* ORDER TOTALS — Force visible in sidebar with proper styling */
+/* ORDER TOTALS - Force visible in sidebar with proper styling */
 body.panth-checkout-extended .opc-block-summary > .table-totals,
 body.panth-checkout-extended .opc-block-summary .totals {
     display: table !important;
@@ -1398,7 +1398,7 @@ body.panth-checkout-extended .opc-block-summary .panth-sidebar-place-order {
 }
 
 /* ----------------------------------------------------------
-   CHECKOUT HEADER CLEANUP — hide Luma nav elements on checkout
+   CHECKOUT HEADER CLEANUP - hide Luma nav elements on checkout
    ---------------------------------------------------------- */
 .checkout-index-index .header.content .action.action-auth-toggle,
 .checkout-index-index .authentication-wrapper,
@@ -1438,7 +1438,7 @@ body.panth-checkout-extended .opc-block-summary .panth-sidebar-place-order {
 }
 
 /* ----------------------------------------------------------
-   PAYMENT SECTION — Spacing & Visual Improvements
+   PAYMENT SECTION - Spacing & Visual Improvements
    ---------------------------------------------------------- */
 /* Hide the "Payment Information" fieldset legend */
 body.panth-checkout-extended #co-payment-form .fieldset legend.legend {
@@ -1452,13 +1452,13 @@ body.panth-checkout-extended #co-payment-form .fieldset {
     border: none !important;
 }
 
-/* Payment method title row — consistent padding, clip-safe */
+/* Payment method title row - consistent padding, clip-safe */
 body.panth-checkout-extended .payment-method .payment-method-title.field.choice {
     padding: 12px 16px 12px 14px;
     margin: 0;
 }
 
-/* Radio button inside title — ensure not clipped */
+/* Radio button inside title - ensure not clipped */
 body.panth-checkout-extended .payment-method .payment-method-title input[type="radio"] {
     flex-shrink: 0;
     margin-right: 2px;
@@ -1500,7 +1500,7 @@ body.panth-checkout-extended .payment-method-content .field:last-child {
 }
 
 /* ----------------------------------------------------------
-   SUMMARY ITEM DETAILS — panth custom template
+   SUMMARY ITEM DETAILS - panth custom template
    Structure: [thumbnail] [.panth-item-info column]
      .panth-item-info = name -> sku -> options -> .panth-item-meta (qty + price)
    min-width:0 on the flex children lets the name WRAP instead of forcing
@@ -1514,7 +1514,7 @@ body.panth-checkout-extended .panth-item-details {
     width: 100%;
 }
 
-/* Main info column — flex:1 + min-width:0 is what allows the name to wrap */
+/* Main info column - flex:1 + min-width:0 is what allows the name to wrap */
 body.panth-checkout-extended .panth-item-info {
     flex: 1 1 auto !important;
     min-width: 0 !important;
@@ -1525,7 +1525,7 @@ body.panth-checkout-extended .panth-item-info {
     width: 100%;
 }
 
-/* Product name — wraps up to 2 lines, NEVER truncates to just the SKU */
+/* Product name - wraps up to 2 lines, NEVER truncates to just the SKU */
 body.panth-checkout-extended .panth-item-name {
     width: 100%;
     font-size: 13px;
@@ -1542,7 +1542,7 @@ body.panth-checkout-extended .panth-item-name {
     -webkit-box-orient: vertical;
 }
 
-/* Name rendered as a link (or strong) — text-styled, accent on hover */
+/* Name rendered as a link (or strong) - text-styled, accent on hover */
 body.panth-checkout-extended .panth-item-name a {
     color: inherit;
     font-weight: inherit;
@@ -1579,7 +1579,7 @@ body.panth-checkout-extended .panth-item-sku {
     word-break: break-word;
 }
 
-/* Meta row — qty control on the left, row subtotal/price on the right */
+/* Meta row - qty control on the left, row subtotal/price on the right */
 body.panth-checkout-extended .panth-item-meta {
     display: flex !important;
     flex-direction: row !important;
@@ -1592,7 +1592,7 @@ body.panth-checkout-extended .panth-item-meta {
     flex-wrap: wrap;
 }
 
-/* Static qty (no stepper) — small muted "Qty: N" */
+/* Static qty (no stepper) - small muted "Qty: N" */
 body.panth-checkout-extended .panth-item-meta > .panth-item-qty {
     font-size: 12px;
     color: #6b7280;
@@ -1603,7 +1603,7 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-qty::before {
     content: "Qty: ";
 }
 
-/* Price block (after_details subtotal) — right-aligned, weight 600 */
+/* Price block (after_details subtotal) - right-aligned, weight 600 */
 body.panth-checkout-extended .panth-item-price {
     margin-left: auto;
     text-align: right;
@@ -1620,7 +1620,7 @@ body.panth-checkout-extended .panth-item-price .price {
 }
 
 /* ----------------------------------------------------------
-   QTY STEPPER — compact modern pill (summary item row)
+   QTY STEPPER - compact modern pill (summary item row)
    .panth-item-qty-stepper > .panth-qty-dec | .panth-item-qty | .panth-qty-inc
    ---------------------------------------------------------- */
 body.panth-checkout-extended .panth-item-qty-stepper {
@@ -1674,7 +1674,7 @@ body.panth-checkout-extended .panth-qty-btn[disabled] {
     color: #475569;
 }
 
-/* Qty number between the buttons — no "Qty:" prefix inside the pill */
+/* Qty number between the buttons - no "Qty:" prefix inside the pill */
 body.panth-checkout-extended .panth-item-qty-stepper .panth-item-qty {
     min-width: 22px;
     padding: 0 2px;
@@ -1732,7 +1732,7 @@ body.panth-checkout-extended .panth-item-options-wrap.panth-opts-open .panth-tog
     transform: rotate(180deg);
 }
 
-/* Options list — hidden by default */
+/* Options list - hidden by default */
 body.panth-checkout-extended .panth-options-list {
     display: none;
     margin-top: 6px;
@@ -1802,7 +1802,7 @@ body.panth-checkout-extended .panth-opt-file {
     font-size: 10px;
 }
 
-/* Suppress file attachment preview card — any rendered HTML inside opt-value
+/* Suppress file attachment preview card - any rendered HTML inside opt-value
    that contains an image/link (e.g. Magento file-option full_view HTML) */
 body.panth-checkout-extended .panth-opt-value img,
 body.panth-checkout-extended .panth-opt-value a,
@@ -1810,14 +1810,14 @@ body.panth-checkout-extended .panth-opt-value > div {
     display: none !important;
 }
 
-/* Payment method — remove border-top separator between method rows
+/* Payment method - remove border-top separator between method rows
    (overrides vendor/magento/theme-frontend-luma _payments.less) */
 body.panth-checkout-extended .checkout-payment-method .payment-method + .payment-method .payment-method-title {
     border-top: none !important;
 }
 
 /* ----------------------------------------------------------
-   SHIPPING ADDRESS MODAL — compact popup
+   SHIPPING ADDRESS MODAL - compact popup
    ---------------------------------------------------------- */
 /* Desktop: limit width to 30% so modal is a compact dialog */
 @media screen and (min-width: 769px) {
@@ -1868,12 +1868,12 @@ body.panth-checkout-extended .checkout-payment-method .payment-method + .payment
 }
 
 /* ----------------------------------------------------------
-   THEME COLORS — interactive accents now driven by the
+   THEME COLORS - interactive accents now driven by the
    configurable accent var (--panth-checkout-accent, default #1a1a2e).
    Previously hardcoded teal #0D9488; re-keyed to var so the
    admin "accent" setting controls buttons / links / highlights.
    ---------------------------------------------------------- */
-/* Focus ring on inputs — accent border + matching soft ring */
+/* Focus ring on inputs - accent border + matching soft ring */
 body.panth-checkout-extended .field .control input:focus,
 body.panth-checkout-extended .field .control textarea:focus,
 body.panth-checkout-extended .field .control select:focus {
@@ -1898,7 +1898,7 @@ body.panth-checkout-extended .payment-method-title input[type="radio"] {
     accent-color: var(--panth-checkout-accent, #1a1a2e) !important;
 }
 
-/* Selected shipping address — accent border + indicator */
+/* Selected shipping address - accent border + indicator */
 body.panth-checkout-extended .shipping-address-item.selected-item {
     border-color: var(--panth-checkout-accent, #1a1a2e) !important;
     box-shadow: 0 0 0 1px var(--panth-checkout-accent, #1a1a2e) !important;
@@ -1922,10 +1922,10 @@ body.panth-checkout-extended .payment-method._active .payment-method-content {
    Old fixed-size .panth-discount-* button rules removed. */
 
 /* ----------------------------------------------------------
-   LUMA ITEM STRUCTURE — flex layout since template override
+   LUMA ITEM STRUCTURE - flex layout since template override
    uses .product-item-inner / .product-item-name-block
    ---------------------------------------------------------- */
-/* product-item-inner: flex row — [name-block flex:1] [subtotal] */
+/* product-item-inner: flex row - [name-block flex:1] [subtotal] */
 body.panth-checkout-extended .product-item-inner {
     display: flex !important;
     flex-direction: row !important;
@@ -1935,7 +1935,7 @@ body.panth-checkout-extended .product-item-inner {
     margin: 0 !important;
 }
 
-/* Name block: flex COLUMN — name on line 1, qty on line 2 */
+/* Name block: flex COLUMN - name on line 1, qty on line 2 */
 body.panth-checkout-extended .product-item-name-block {
     flex: 1 !important;
     min-width: 0 !important;
@@ -1946,7 +1946,7 @@ body.panth-checkout-extended .product-item-name-block {
     overflow: hidden !important;
 }
 
-/* Product name — full width, truncate with ellipsis */
+/* Product name - full width, truncate with ellipsis */
 body.panth-checkout-extended .product-item-inner .product-item-name {
     display: block !important;
     width: 100% !important;
@@ -1960,7 +1960,7 @@ body.panth-checkout-extended .product-item-inner .product-item-name {
     min-width: 0;
 }
 
-/* Qty — below name, small gray */
+/* Qty - below name, small gray */
 body.panth-checkout-extended .product-item-inner .details-qty {
     display: flex !important;
     align-items: center !important;
@@ -1986,7 +1986,7 @@ body.panth-checkout-extended .product-item-inner .details-qty .value {
     margin: 0 !important;
 }
 
-/* Subtotal — top-aligned, price at right */
+/* Subtotal - top-aligned, price at right */
 body.panth-checkout-extended .product-item-inner .subtotal {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
@@ -1999,7 +1999,7 @@ body.panth-checkout-extended .product-item-inner .subtotal .price {
     color: #0f172a !important;
 }
 
-/* Product options collapsible — Luma native structure */
+/* Product options collapsible - Luma native structure */
 body.panth-checkout-extended .product.options {
     margin-top: 4px !important;
 }
@@ -2059,7 +2059,7 @@ body.panth-checkout-extended .product.options .content .subtitle {
     display: none !important;
 }
 
-/* Item options dt/dd — CSS grid: label col | value col */
+/* Item options dt/dd - CSS grid: label col | value col */
 body.panth-checkout-extended .item-options {
     display: grid !important;
     grid-template-columns: max-content 1fr !important;
@@ -2105,12 +2105,12 @@ body.panth-checkout-extended .item-options .values img {
 }
 
 /* ----------------------------------------------------------
-   DISCOUNT FORM — single row: input grows, button at its right
+   DISCOUNT FORM - single row: input grows, button at its right
    Core Luma selectors: form#discount-coupon-form (.form-discount),
    input#discount-code / [name="discount_code"],
    buttons .action.action-apply / .action.action-cancel.
    Knockout's visible binding (inline style) decides which button
-   shows — never force display with !important on the buttons, so
+   shows - never force display with !important on the buttons, so
    exactly ONE labeled button is visible at a time.
    ---------------------------------------------------------- */
 body.panth-checkout-extended .form-discount,
@@ -2191,10 +2191,10 @@ body.panth-checkout-extended .form-discount .actions-toolbar .secondary {
     padding: 0 !important;
     float: none !important;
 }
-/* Apply — accent button, real visible label (no font-size:0 / ::after hacks) */
+/* Apply - accent button, real visible label (no font-size:0 / ::after hacks) */
 body.panth-checkout-extended .form-discount .action.action-apply,
 body.panth-checkout-extended #discount-coupon-form .action.action-apply {
-    display: inline-flex; /* no !important — Knockout toggles inline display */
+    display: inline-flex; /* no !important - Knockout toggles inline display */
     align-items: center;
     justify-content: center;
     height: 44px;
@@ -2227,11 +2227,11 @@ body.panth-checkout-extended #discount-coupon-form .action.action-apply:hover {
     background-color: var(--panth-checkout-accent-hover, #16213e);
     border-color: var(--panth-checkout-accent-hover, #16213e);
 }
-/* Cancel / Remove — same size, outline secondary */
+/* Cancel / Remove - same size, outline secondary */
 body.panth-checkout-extended .form-discount .action.action-cancel,
 body.panth-checkout-extended #discount-coupon-form .action.action-cancel,
 body.panth-checkout-extended .form-discount .action.action-cancel-coupon {
-    display: inline-flex; /* no !important — Knockout toggles inline display */
+    display: inline-flex; /* no !important - Knockout toggles inline display */
     align-items: center;
     justify-content: center;
     height: 44px;
@@ -2266,7 +2266,7 @@ body.panth-checkout-extended .form-discount .action.action-cancel-coupon:hover {
     border-color: #c9ced6;
     color: var(--panth-checkout-accent, #1a1a2e);
 }
-/* Disabled (while a request is in flight) — reduced opacity, same colors */
+/* Disabled (while a request is in flight) - reduced opacity, same colors */
 body.panth-checkout-extended .form-discount .action.action-apply:disabled,
 body.panth-checkout-extended .form-discount .action.action-apply[disabled],
 body.panth-checkout-extended .form-discount .action.action-cancel:disabled,
@@ -2280,7 +2280,7 @@ body.panth-checkout-extended .form-discount .payment-option-inner div.mage-error
 }
 
 /* ----------------------------------------------------------
-   SHIPPING MODAL FOOTER — equal-height Cancel + Ship Here buttons
+   SHIPPING MODAL FOOTER - equal-height Cancel + Ship Here buttons
    ---------------------------------------------------------- */
 .modal-popup.new-shipping-address-modal .modal-footer {
     display: flex !important;
@@ -2334,7 +2334,7 @@ body.panth-checkout-extended .form-discount .payment-option-inner div.mage-error
 }
 
 /* ----------------------------------------------------------
-   RADIO BUTTONS — vertical center alignment
+   RADIO BUTTONS - vertical center alignment
    Shipping method table rows + payment method title rows
    ---------------------------------------------------------- */
 body.panth-checkout-extended .table-checkout-shipping-method tbody td {
@@ -2373,7 +2373,7 @@ body.panth-checkout-extended .payment-method-title label {
 }
 
 /* ----------------------------------------------------------
-   ORDER SUMMARY ITEMS — max 3 visible, then scrollbar
+   ORDER SUMMARY ITEMS - max 3 visible, then scrollbar
    Each item ~75px; 3 items ≈ 225px + a bit of breathing room
    ---------------------------------------------------------- */
 body.panth-checkout-extended .opc-block-summary .minicart-items-wrapper {
@@ -2398,7 +2398,7 @@ body.panth-checkout-extended .opc-block-summary .minicart-items-wrapper::-webkit
 }
 
 /* ----------------------------------------------------------
-   ATTACHMENT OPTION VALUES — strip inline card styling
+   ATTACHMENT OPTION VALUES - strip inline card styling
    Attachment modules inject <span style="..."> wrappers
    ---------------------------------------------------------- */
 body.panth-checkout-extended .item-options dd span[style] {
@@ -2418,7 +2418,7 @@ body.panth-checkout-extended .item-options dd > a {
 }
 
 /* ----------------------------------------------------------
-   SHIPPING ADDRESS CARDS — not-selected vs selected
+   SHIPPING ADDRESS CARDS - not-selected vs selected
    ---------------------------------------------------------- */
 /* Not-selected card: light border, subtle bg, extra bottom for button */
 body.panth-checkout-extended .shipping-address-item.not-selected-item {
@@ -2431,7 +2431,7 @@ body.panth-checkout-extended .shipping-address-item.not-selected-item {
     box-shadow: none !important;
 }
 
-/* "Ship Here" button — accent outline, bottom-right of card */
+/* "Ship Here" button - accent outline, bottom-right of card */
 body.panth-checkout-extended .shipping-address-item .action.action-select-shipping-item {
     position: absolute !important;
     bottom: 10px !important;
@@ -2457,7 +2457,7 @@ body.panth-checkout-extended .shipping-address-item .action.action-select-shippi
 }
 
 /* ----------------------------------------------------------
-   ADDRESS FORMAT — Clean, readable, modern
+   ADDRESS FORMAT - Clean, readable, modern
    ---------------------------------------------------------- */
 
 body.panth-checkout-extended .shipping-address-item,
@@ -2474,7 +2474,7 @@ body.panth-checkout-extended .billing-address-details a[href^="tel"] {
     text-decoration: none !important;
 }
 
-/* Billing address details box — padding + subtle background */
+/* Billing address details box - padding + subtle background */
 body.panth-checkout-extended .billing-address-details {
     background: #f8fafc !important;
     border: 1px solid #e2e8f0 !important;
@@ -2500,7 +2500,7 @@ body.panth-checkout-extended .shipping-address-item.selected-item .action.edit-a
 }
 
 /* ----------------------------------------------------------
-   BACK TO CART — accent-driven link color
+   BACK TO CART - accent-driven link color
    ---------------------------------------------------------- */
 body.checkout-index-index .action.back,
 body.checkout-index-index a.action.back,
@@ -2520,7 +2520,7 @@ body.checkout-index-index .action.back span {
 }
 
 /* ----------------------------------------------------------
-   UPDATE/CANCEL BUTTONS — equal height, box-sizing fix
+   UPDATE/CANCEL BUTTONS - equal height, box-sizing fix
    ---------------------------------------------------------- */
 body.panth-checkout-extended .payment-method-content .action.action-update,
 body.panth-checkout-extended .payment-method-content .action.action-cancel {
@@ -2540,14 +2540,14 @@ body.panth-checkout-extended .payment-method-content .actions-toolbar:not(:has(.
 }
 
 /* ----------------------------------------------------------
-   ITEMS WRAPPER — padding so scrollbar doesn't clip price
+   ITEMS WRAPPER - padding so scrollbar doesn't clip price
    ---------------------------------------------------------- */
 body.panth-checkout-extended .opc-block-summary ol.minicart-items {
     padding-right: 10px !important;
 }
 
 /* ----------------------------------------------------------
-   PRODUCT IMAGE — keep at top when options expand (no stretch)
+   PRODUCT IMAGE - keep at top when options expand (no stretch)
    ---------------------------------------------------------- */
 body.panth-checkout-extended ol.minicart-items .product-item-photo {
     align-self: flex-start !important;
@@ -2555,7 +2555,7 @@ body.panth-checkout-extended ol.minicart-items .product-item-photo {
 }
 
 /* ----------------------------------------------------------
-   BILLING ADDRESS DETAILS — clean card + Edit button as link
+   BILLING ADDRESS DETAILS - clean card + Edit button as link
    ---------------------------------------------------------- */
 body.panth-checkout-extended .billing-address-details {
     position: relative !important;
@@ -2581,7 +2581,7 @@ body.panth-checkout-extended .billing-address-details .action.action-edit-addres
 }
 
 /* ----------------------------------------------------------
-   LUMA LAYOUT — remove _layout.less 15px horizontal padding
+   LUMA LAYOUT - remove _layout.less 15px horizontal padding
    on checkout page so our wrapper controls all spacing
    ---------------------------------------------------------- */
 body.checkout-index-index.panth-checkout-extended .page-main,
@@ -2592,7 +2592,7 @@ body.checkout-index-index.panth-checkout-extended .footer.content {
 }
 
 /* ----------------------------------------------------------
-   ITEM SEPARATOR — thin line between items in order summary
+   ITEM SEPARATOR - thin line between items in order summary
    ---------------------------------------------------------- */
 body.panth-checkout-extended ol.minicart-items li.product-item {
     border-bottom: 1px solid #f1f5f9 !important;
@@ -2602,7 +2602,7 @@ body.panth-checkout-extended ol.minicart-items li.product-item:last-child {
 }
 
 /* ----------------------------------------------------------
-   FIELD TOOLTIP CONTENT — styled dark popup
+   FIELD TOOLTIP CONTENT - styled dark popup
    ---------------------------------------------------------- */
 body.panth-checkout-extended .field-tooltip-content {
     background: #1e293b !important;
@@ -2631,7 +2631,7 @@ body.panth-checkout-extended .field-tooltip-toggle._active {
 }
 
 /* ----------------------------------------------------------
-   ORDER NOTE — textarea above Place Order
+   ORDER NOTE - textarea above Place Order
    ---------------------------------------------------------- */
 body.panth-checkout-extended .panth-order-note-wrap {
     margin: 12px 0 0 !important;
@@ -2760,7 +2760,7 @@ body.panth-checkout-extended .field-note span {
    ============================================================ */
 
 /* ----------------------------------------------------------
-   25. LAYOUT — column count (1col / 2col / 3col)
+   25. LAYOUT - column count (1col / 2col / 3col)
    Default (no class) keeps the 3col grid defined in section 5.
    Re-scope the 3col grid additionally to .panth-checkout-3col,
    then override for 1col / 2col.
@@ -2905,7 +2905,7 @@ body.panth-step-indicators .opc .step-title::before {
 }
 
 /* ----------------------------------------------------------
-   30. TOOLTIPS (field-tooltip) — config-gated
+   30. TOOLTIPS (field-tooltip) - config-gated
    Default config is OFF: hide native tooltip icons unless the
    .panth-form-tooltips class is present. The tooltip styling in
    sections 10/11 and below still applies when enabled.
@@ -2915,10 +2915,10 @@ body.panth-checkout-extended:not(.panth-form-tooltips) .field-tooltip {
 }
 
 /* ----------------------------------------------------------
-   31. PLACEHOLDERS — config-gated label de-emphasis
+   31. PLACEHOLDERS - config-gated label de-emphasis
    Placeholder attributes are injected via jsLayout by another
    agent. When enabled, visually-hide the field labels (kept in
-   the DOM for a11y — never display:none). Default unaffected.
+   the DOM for a11y - never display:none). Default unaffected.
    ---------------------------------------------------------- */
 body.panth-form-placeholders .fieldset > .field > .label {
     position: absolute !important;
@@ -2933,7 +2933,7 @@ body.panth-form-placeholders .fieldset > .field > .label {
 }
 
 /* ----------------------------------------------------------
-   32. BILLING TITLE — config-gated hide
+   32. BILLING TITLE - config-gated hide
    ---------------------------------------------------------- */
 body.panth-billing-title-hidden .checkout-billing-address .step-title,
 body.panth-billing-title-hidden .billing-address-form .step-title,
@@ -2942,7 +2942,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
 }
 
 /* ----------------------------------------------------------
-   24B. MOBILE ADDENDUM — disable sticky sidebar under 768px
+   24B. MOBILE ADDENDUM - disable sticky sidebar under 768px
    ---------------------------------------------------------- */
 @media screen and (max-width: 768px) {
     body.panth-sidebar-sticky aside.opc-sidebar .opc-block-summary {
@@ -2953,7 +2953,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
 }
 
 /* ----------------------------------------------------------
-   24C. MID BREAKPOINT (769–1100px) — 3col gracefully degrades:
+   24C. MID BREAKPOINT (769-1100px) - 3col gracefully degrades:
    the two step columns collapse into one, summary stays beside
    and gets a little more room. 1col/2col are already single
    column so this only reshapes the 3col grid.
@@ -3003,10 +3003,10 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
    24D. RESPONSIVE: PHONES (max-width 480px)
    Section 24 (≤768px) already stacks everything single-column;
    this tightens spacing and enlarges touch targets for the
-   320–480px range (360/375/390/414/430 targets).
+   320-480px range (360/375/390/414/430 targets).
    ---------------------------------------------------------- */
 @media screen and (max-width: 480px) {
-    /* Guard rail — no horizontal scroll, ever */
+    /* Guard rail - no horizontal scroll, ever */
     body.panth-checkout-extended.checkout-index-index {
         overflow-x: hidden;
     }
@@ -3035,7 +3035,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
         margin-top: 0;
     }
 
-    /* Order summary item — keep the two-column [thumb][info] layout but make
+    /* Order summary item - keep the two-column [thumb][info] layout but make
        the meta row breathe: qty stepper left, price right, both ≥36px touch.
        min-width:0 + name line-clamp already prevent any horizontal overflow. */
     body.panth-checkout-extended .panth-item-meta {
@@ -3078,7 +3078,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
         height: 32px !important;
     }
 
-    /* Buttons — full-width, ≥44px tap targets */
+    /* Buttons - full-width, ≥44px tap targets */
     body.panth-checkout-extended .action.primary,
     body.panth-checkout-extended .action.secondary {
         min-height: 44px;
@@ -3093,7 +3093,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
         font-size: 16px;
     }
 
-    /* Billing form Update / Cancel — equal big targets sharing the row */
+    /* Billing form Update / Cancel - equal big targets sharing the row */
     body.panth-checkout-extended .payment-method-content .action.action-update,
     body.panth-checkout-extended .payment-method-content .action.action-cancel,
     body.panth-checkout-extended .billing-address-form .actions-toolbar .action.action-update,
@@ -3104,7 +3104,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
         justify-content: center !important;
     }
 
-    /* "Ship Here" — bigger tap target, card reserves the room */
+    /* "Ship Here" - bigger tap target, card reserves the room */
     body.panth-checkout-extended .shipping-address-item.not-selected-item {
         padding: 12px 14px 56px !important;
     }
@@ -3115,7 +3115,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
 
     /* Discount: stack the input above a full-width Apply/Cancel button so
        neither the placeholder nor the button label is ever clipped.
-       NB: no display overrides — Knockout's visible binding decides
+       NB: no display overrides - Knockout's visible binding decides
        which button shows. */
     body.panth-checkout-extended .form-discount,
     body.panth-checkout-extended #discount-coupon-form {
@@ -3140,7 +3140,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
     }
 
     /* Shipping-method rows: radio col collapses to its 32px, method/carrier
-       text wraps, price never breaks — no overflow */
+       text wraps, price never breaks - no overflow */
     body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td {
         padding: 12px 10px;
         white-space: normal;
@@ -3155,7 +3155,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
         padding-right: 12px;
     }
 
-    /* Billing "same as shipping" — checkbox tops the first line, text wraps */
+    /* Billing "same as shipping" - checkbox tops the first line, text wraps */
     body.panth-checkout-extended .billing-address-same-as-shipping-block {
         align-items: flex-start;
         line-height: 1.45;
@@ -3170,7 +3170,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
         flex-direction: column;
     }
 
-    /* Order-placing overlay — centred and readable on small screens */
+    /* Order-placing overlay - centred and readable on small screens */
     .panth-order-overlay {
         padding: 16px;
     }
@@ -3184,7 +3184,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
 /* ----------------------------------------------------------
    24E. RESPONSIVE: SHORT LANDSCAPE VIEWPORTS (max-height 480px)
    Landscape phones: overlays/modals stay scrollable and centred
-   via auto margins — nothing fixed can trap the user.
+   via auto margins - nothing fixed can trap the user.
    ---------------------------------------------------------- */
 @media screen and (max-height: 480px) {
     .panth-order-overlay {
@@ -3208,7 +3208,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
         max-height: 90vh !important;
         overflow-y: auto !important;
     }
-    /* Sticky summary is pointless on short screens — let it flow */
+    /* Sticky summary is pointless on short screens - let it flow */
     body.panth-sidebar-sticky aside.opc-sidebar .opc-block-summary {
         position: static;
         max-height: none;
@@ -3221,7 +3221,7 @@ body.panth-billing-title-hidden .payment-method-billing-address .step-title {
    Body class added by shipping-mixin.js when shipping/hide_single_method is
    on and exactly one rate is available (the method is auto-selected in JS).
    NB: Luma puts .col-method on BOTH the radio cell (1st td) and the method
-   title cell (3rd td) — only the radio cell may be hidden, or the method
+   title cell (3rd td) - only the radio cell may be hidden, or the method
    name disappears. Collapse the radio column entirely (no dead gutter);
    the row stays tinted/selected via the :checked rules in section 12.
    ========================================================================= */
@@ -3238,7 +3238,7 @@ body.panth-hide-single-shipping .table-checkout-shipping-method td.col-method:fi
 }
 
 /* =========================================================================
-   Section 34. MOBILE — kill horizontal overflow from off-screen modals
+   Section 34. MOBILE - kill horizontal overflow from off-screen modals
    Magento's slide/popup modals sit translated off-screen to the right when
    closed; at narrow widths that pushes documentElement scrollWidth past the
    viewport (e.g. 424 > 375). Clip on the root AND drop closed modals from
@@ -3258,10 +3258,10 @@ body.panth-hide-single-shipping .table-checkout-shipping-method td.col-method:fi
 }
 
 /* =========================================================================
-   Section 34B. TABLET/MID GUARD (768–1100px) — extend the Section 34
+   Section 34B. TABLET/MID GUARD (768-1100px) - extend the Section 34
    horizontal-overflow guard upward. Section 34 stops at 767px and the
    phone guard (24D) at 480px, leaving exactly-768px and tablet widths
-   unprotected from the translated-off-screen closed modals. Clip only —
+   unprotected from the translated-off-screen closed modals. Clip only -
    closed modals keep their layout (no display:none) so tablet behaves
    exactly like desktop apart from the scrollbar guard. Desktop ≥1101px
    untouched.
@@ -3275,17 +3275,17 @@ body.panth-hide-single-shipping .table-checkout-shipping-method td.col-method:fi
 }
 
 /* =========================================================================
-   Section 35. SMOOTHNESS — micro-transitions & hover affordances
+   Section 35. SMOOTHNESS - micro-transitions & hover affordances
    Additive polish only: every rule here animates color/border/shadow or a
-   1px translate — never width/height/margin — so there is zero layout
-   shift and desktop structure is untouched. 150–200ms throughout.
+   1px translate - never width/height/margin - so there is zero layout
+   shift and desktop structure is untouched. 150-200ms throughout.
    ========================================================================= */
 /* Shipping address cards animate their selected accent (border + ring) */
 body.panth-checkout-extended .shipping-address-item {
     transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 
-/* Resting → hover → focus affordance on text fields (focus ring already
+/* Resting -> hover -> focus affordance on text fields (focus ring already
    styled in section 8); hover only when not focused/disabled */
 body.panth-checkout-extended .field .control input[type="text"]:hover:not(:focus):not(:disabled),
 body.panth-checkout-extended .field .control input[type="email"]:hover:not(:focus):not(:disabled),
@@ -3296,14 +3296,14 @@ body.panth-checkout-extended .field .control textarea:hover:not(:focus):not(:dis
 body.panth-checkout-extended .field .control select:hover:not(:focus):not(:disabled) {
     border-color: #b6bcc5;
 }
-/* Discount input + order note use !important borders — match them here */
+/* Discount input + order note use !important borders - match them here */
 body.panth-checkout-extended .form-discount input[name="discount_code"]:hover:not(:focus):not(:disabled),
 body.panth-checkout-extended #discount-code:hover:not(:focus):not(:disabled),
 body.panth-checkout-extended .panth-order-note-textarea:hover:not(:focus) {
     border-color: #b6bcc5 !important;
 }
 
-/* "N Items in Cart" collapsible title — hover hints it is clickable */
+/* "N Items in Cart" collapsible title - hover hints it is clickable */
 body.panth-checkout-extended .items-in-cart > .title[data-role="title"] {
     transition: color 0.15s ease;
 }
@@ -3401,8 +3401,8 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
 }
 
 /* =========================================================================
-   Section 39. MOBILE ERGONOMICS — bigger tap targets + overflow hardening
-   Layered on top of sections 24/24B–24E. ≤768px: comfortable 44–48px
+   Section 39. MOBILE ERGONOMICS - bigger tap targets + overflow hardening
+   Layered on top of sections 24/24B-24E. ≤768px: comfortable 44-48px
    touch targets on row controls; ≤480px: belt-and-braces width clamps so
    nothing can push scrollWidth past 320/360/375/390/414px viewports.
    ========================================================================= */
@@ -3411,8 +3411,8 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
        Section 25 (source-order later than section 24's mobile reset, equal
        specificity) was re-applying the 2-column "1fr 1fr" steps grid below
        768px for body.panth-checkout-3col, squeezing shipping/payment into
-       half-width cards and overflowing 320–480px viewports. Mirror the
-       24C tablet override here — this block is last in the file, so it
+       half-width cards and overflowing 320-480px viewports. Mirror the
+       24C tablet override here - this block is last in the file, so it
        wins for every column-config class. */
     body.panth-checkout-extended .opc#checkoutSteps,
     body.panth-checkout-3col .opc#checkoutSteps {
@@ -3426,7 +3426,7 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
         grid-row: auto;
     }
 
-    /* Payment method rows — full-row 48px touch target */
+    /* Payment method rows - full-row 48px touch target */
     body.panth-checkout-extended .payment-method-title.field.choice {
         min-height: 48px !important;
         box-sizing: border-box !important;
@@ -3440,13 +3440,13 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
         height: 18px !important;
     }
 
-    /* Shipping method rows — a touch more vertical padding ≈48px rows */
+    /* Shipping method rows - a touch more vertical padding ≈48px rows */
     body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td {
         padding-top: 16px;
         padding-bottom: 16px;
     }
 
-    /* "Items in Cart" toggle + summary text links — ≥44px touch height */
+    /* "Items in Cart" toggle + summary text links - ≥44px touch height */
     body.panth-checkout-extended .items-in-cart > .title[data-role="title"] {
         padding: 10px 0;
         margin-bottom: 6px;
@@ -3460,7 +3460,7 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
         padding: 6px 0 !important;
     }
 
-    /* Newsletter / create-account checkbox rows — taller touch rows */
+    /* Newsletter / create-account checkbox rows - taller touch rows */
     body.panth-checkout-extended .panth-newsletter-wrap label,
     body.panth-checkout-extended .panth-registration-wrap label {
         padding: 6px 0;
@@ -3468,7 +3468,7 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
 }
 
 @media screen and (max-width: 480px) {
-    /* Width clamps — no descendant may exceed the viewport */
+    /* Width clamps - no descendant may exceed the viewport */
     body.panth-checkout-extended .opc-wrapper,
     body.panth-checkout-extended aside.opc-sidebar,
     body.panth-checkout-extended .opc > li,
@@ -3497,7 +3497,7 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
    Section 40. REDUCED MOTION
    Users with prefers-reduced-motion get instant state changes. The order
    spinners are kept (they communicate "in progress", removing them would
-   look frozen) — everything decorative stops animating.
+   look frozen) - everything decorative stops animating.
    ========================================================================= */
 @media (prefers-reduced-motion: reduce) {
     body.panth-checkout-extended *:not(.panth-order-spinner):not(.panth-btn-spinner),
