@@ -10,6 +10,7 @@
         'use strict';
 
         var saving = false,
+            pendingSave = false,
             lastSavedFingerprint = null,
             shippingInfoSaved = false;
 
@@ -72,13 +73,23 @@
         }
 
         function saveShippingInfo() {
-            if (saving) return;
+            if (saving) {
+                pendingSave = true;
+                console.debug('[panth-checkout] save queued: request already in flight');
+                return;
+            }
 
             var method = quote.shippingMethod();
-            if (!method || !method.carrier_code) return;
+            if (!method || !method.carrier_code) {
+                console.debug('[panth-checkout] save skipped: no shipping method selected');
+                return;
+            }
 
             var address = quote.shippingAddress();
-            if (!address || !address.countryId || !address.firstname || !address.telephone) return;
+            if (!address || !address.countryId || !address.firstname || !address.telephone) {
+                console.debug('[panth-checkout] save skipped: shipping address incomplete');
+                return;
+            }
 
             // Sanitize regionId: must be int or null - empty string causes a 400
             // "int type expected" error. Addresses restored from localStorage may
@@ -89,13 +100,17 @@
             }
 
             var fp = buildFingerprint();
-            if (fp === lastSavedFingerprint) return;
+            if (fp === lastSavedFingerprint) {
+                console.debug('[panth-checkout] save skipped: nothing changed since last save');
+                return;
+            }
 
             saving = true;
+            document.body.classList.add('panth-shipping-saving');
 
             setShippingInformationAction().done(function () {
                 shippingInfoSaved = true;
-                lastSavedFingerprint = buildFingerprint();
+                lastSavedFingerprint = fp;
                 _.each(stepNavigator.steps(), function (step) {
                     step.isVisible(true);
                 });
@@ -103,6 +118,11 @@
                 lastSavedFingerprint = null;
             }).always(function () {
                 saving = false;
+                document.body.classList.remove('panth-shipping-saving');
+                if (pendingSave) {
+                    pendingSave = false;
+                    _.defer(saveShippingInfo);
+                }
             });
         }
 
@@ -149,7 +169,8 @@
 
         // ---- SHIPPING METHOD RADIO CLICK ----
         $(document).on('click', '.table-checkout-shipping-method input[type="radio"]', function () {
-            setTimeout(debouncedSave, 500);
+            lastSavedFingerprint = null;
+            _.defer(saveShippingInfo);
         });
 
         // ---- SHIPPING FORM FIELD CHANGES (guest checkout) ----

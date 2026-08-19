@@ -144,6 +144,8 @@ Performance • SEO • Adobe Commerce Cloud
 - **Card styles**: Elevated (shadow), Bordered, Flat, Glassmorphism.
 - **Accent color** - admin color picker with server-side hex validation. Exposed as `--panth-checkout-accent` CSS variable.
 - **Border radius** - pixel-level control. Exposed as `--panth-checkout-radius` CSS variable.
+- **Shipping row highlight** - the selected shipping-method row gets a background wash, accent edges, and a left accent bar. Rebindable via `--panth-checkout-row-hover` and `--panth-checkout-row-selected` (default to tints of the accent color).
+- **Type scale** - one checkout-wide hierarchy (26/18/16/15/14/13/12px, nothing below 12px), rebindable via `--panth-checkout-fs-title`, `--panth-checkout-fs-section`, `--panth-checkout-fs-total`, `--panth-checkout-fs-button`, `--panth-checkout-fs-body`, `--panth-checkout-fs-label`, `--panth-checkout-fs-action`, `--panth-checkout-fs-hint`.
 - **Step indicators** - optional numbered badges above each checkout section.
 - **Field modes** - Compact (multiple fields per row) or Full Width (one field per row).
 - **Placeholder toggle** and **Tooltip toggle** for form fields.

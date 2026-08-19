@@ -405,7 +405,7 @@ body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td {
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:hover td {
-    background-color: #f8f9fb;
+    background-color: var(--panth-checkout-row-hover, #f8f9fb);
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:last-child td {
@@ -419,14 +419,28 @@ body.panth-checkout-extended table.table-checkout-shipping-method tbody tr td in
     cursor: pointer;
 }
 
-/* Selected shipping row - faint accent tint + 3px left accent bar */
+/* Selected shipping row - accent tint, top/bottom accent edges, 3px left accent bar */
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:has(input[type="radio"]:checked) td {
-    background-color: rgba(16, 24, 40, 0.035);
-    background-color: color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 5%, #ffffff);
+    background-color: rgba(16, 24, 40, 0.06);
+    background-color: var(--panth-checkout-row-selected, color-mix(in srgb, var(--panth-checkout-accent, #1a1a2e) 8%, #ffffff));
+    box-shadow: inset 0 1px 0 var(--panth-checkout-accent, #1a1a2e),
+        inset 0 -1px 0 var(--panth-checkout-accent, #1a1a2e);
+    font-weight: 600;
+}
+
+body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:first-child:has(input[type="radio"]:checked) td {
+    box-shadow: inset 0 -1px 0 var(--panth-checkout-accent, #1a1a2e);
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:has(input[type="radio"]:checked) td:first-child {
-    box-shadow: inset 3px 0 0 var(--panth-checkout-accent, #1a1a2e);
+    box-shadow: inset 3px 0 0 var(--panth-checkout-accent, #1a1a2e),
+        inset 0 1px 0 var(--panth-checkout-accent, #1a1a2e),
+        inset 0 -1px 0 var(--panth-checkout-accent, #1a1a2e);
+}
+
+body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:first-child:has(input[type="radio"]:checked) td:first-child {
+    box-shadow: inset 3px 0 0 var(--panth-checkout-accent, #1a1a2e),
+        inset 0 -1px 0 var(--panth-checkout-accent, #1a1a2e);
 }
 
 body.panth-checkout-extended table.table-checkout-shipping-method tbody tr:has(input[type="radio"]:checked) td .price {
@@ -3513,4 +3527,125 @@ body.panth-checkout-extended .panth-item-meta > .panth-item-price {
     body.panth-checkout-extended .panth-btn-spinner {
         animation-duration: 0.75s !important;
     }
+}
+
+/* =========================================================================
+   Section 36. TYPE SCALE - one hierarchy for the whole checkout
+   Rebindable via CSS custom properties on body.panth-checkout-extended:
+   title 26 / section 18 / total 16 / body+buttons 15 / label 14 /
+   action 13 / hint 12 (WCAG floor - nothing below 12px).
+   ========================================================================= */
+body.panth-checkout-extended {
+    --panth-checkout-fs-title: 26px;
+    --panth-checkout-fs-section: 18px;
+    --panth-checkout-fs-total: 16px;
+    --panth-checkout-fs-button: 15px;
+    --panth-checkout-fs-body: 15px;
+    --panth-checkout-fs-label: 14px;
+    --panth-checkout-fs-action: 13px;
+    --panth-checkout-fs-hint: 12px;
+}
+
+body.panth-checkout-extended .page-title-wrapper .page-title {
+    font-size: var(--panth-checkout-fs-title, 26px);
+    font-weight: 700;
+}
+
+body.panth-checkout-extended .opc > li > .step-title,
+body.panth-checkout-extended .checkout-shipping-method > .step-title,
+body.panth-checkout-extended .checkout-payment-method > .step-title,
+body.panth-checkout-extended li#payment > .step-title,
+body.panth-checkout-extended .step-title {
+    font-size: var(--panth-checkout-fs-section, 18px) !important;
+    font-weight: 700 !important;
+}
+
+body.panth-checkout-extended .opc-block-summary > span.title {
+    font-size: var(--panth-checkout-fs-section, 18px);
+    font-weight: 700;
+}
+
+body.panth-checkout-extended .opc-block-summary .totals th,
+body.panth-checkout-extended .opc-block-summary .totals td {
+    font-size: var(--panth-checkout-fs-label, 14px) !important;
+}
+
+body.panth-checkout-extended .opc-block-summary .grand.totals th,
+body.panth-checkout-extended .opc-block-summary .grand.totals td {
+    font-size: var(--panth-checkout-fs-total, 16px) !important;
+    font-weight: 700 !important;
+}
+
+body.panth-checkout-extended .field .control input[type="text"],
+body.panth-checkout-extended .field .control input[type="email"],
+body.panth-checkout-extended .field .control input[type="tel"],
+body.panth-checkout-extended .field .control input[type="password"],
+body.panth-checkout-extended .field .control input[type="number"],
+body.panth-checkout-extended .field .control textarea,
+body.panth-checkout-extended .field .control select {
+    font-size: var(--panth-checkout-fs-body, 15px);
+    font-weight: 400;
+}
+
+@media (min-width: 768px) {
+    body.panth-checkout-extended .panth-pw-half .input-text {
+        font-size: var(--panth-checkout-fs-body, 15px) !important;
+    }
+}
+
+body.panth-checkout-extended .field .label {
+    font-size: var(--panth-checkout-fs-label, 14px);
+    font-weight: 600;
+}
+
+body.panth-checkout-extended .panth-sidebar-place-order button.action.primary.checkout {
+    font-size: var(--panth-checkout-fs-button, 15px);
+    font-weight: 700;
+}
+
+body.panth-checkout-extended .form-discount .action.action-apply,
+body.panth-checkout-extended #discount-coupon-form .action.action-apply,
+body.panth-checkout-extended .form-discount .action.action-apply span,
+body.panth-checkout-extended .form-discount .action.action-cancel-coupon,
+body.panth-checkout-extended .form-discount .action.action-cancel-coupon span {
+    font-size: var(--panth-checkout-fs-button, 15px);
+    font-weight: 700;
+}
+
+/* 12px WCAG floor for every rule that previously rendered 9-11px text */
+body.panth-checkout-extended .panth-pw-half .label,
+body.panth-checkout-extended .panth-pw-half .field-error,
+body.panth-checkout-extended div.mage-error,
+body.panth-checkout-extended div.field-error,
+body.panth-checkout-extended .panth-options-toggle,
+body.panth-checkout-extended .panth-option-row,
+body.panth-checkout-extended .panth-opt-label,
+body.panth-checkout-extended .panth-opt-file,
+body.panth-checkout-extended .product-item-inner .details-qty,
+body.panth-checkout-extended .product-item-inner .details-qty .label,
+body.panth-checkout-extended .product-item-inner .details-qty .value,
+body.panth-checkout-extended .product.options .toggle,
+body.panth-checkout-extended .item-options dt,
+body.panth-checkout-extended .item-options dd,
+body.panth-checkout-extended .panth-order-note-saving,
+body.panth-checkout-extended .field-note,
+body.panth-checkout-extended .field-note span,
+body.panth-checkout-extended .note,
+body.panth-checkout-extended .field-tooltip .field-tooltip-content {
+    font-size: var(--panth-checkout-fs-hint, 12px) !important;
+}
+
+/* =========================================================================
+   Section 37. SHIPPING SAVE IN-FLIGHT STATE
+   body.panth-shipping-saving is toggled by checkout_init.phtml around the
+   set-shipping-information POST; dim the amounts that are about to change.
+   ========================================================================= */
+body.panth-checkout-extended .opc-block-summary .totals.shipping .price,
+body.panth-checkout-extended .opc-block-summary .grand.totals .price {
+    transition: opacity 0.15s ease;
+}
+
+body.panth-checkout-extended.panth-shipping-saving .opc-block-summary .totals.shipping .price,
+body.panth-checkout-extended.panth-shipping-saving .opc-block-summary .grand.totals .price {
+    opacity: 0.35;
 }

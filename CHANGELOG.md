@@ -4,6 +4,19 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.10] - 2026-08-19
+
+### Fixed
+- **Order Summary shipping amount now updates immediately when the customer picks a different shipping method.** Previously the shipping label updated but the amount could stay at the old method's value (e.g. stuck at 0.00 after choosing a paid rate). Two causes: the save request completed by rebuilding its dedup fingerprint from the live quote observables, so a method chosen while a save was in flight was recorded as already saved and every later save was skipped; and the radio click ran through a 500 ms delay plus a 1200 ms debounce. A method click now bypasses the fingerprint dedup, fires the save on the next tick, and a save requested while one is in flight is queued and re-run instead of dropped.
+- Every early exit in the shipping auto-save now logs a `console.debug` reason (`[panth-checkout] save skipped/queued: ...`) so silent no-saves are diagnosable from the browser console.
+
+### Changed
+- **Selected shipping-method row is clearly highlighted**: stronger background wash, accent top/bottom edges, 3px left accent bar, and semi-bold text. Themes can rebrand via new CSS custom properties `--panth-checkout-row-hover` and `--panth-checkout-row-selected` (both default to tints of `--panth-checkout-accent`).
+- The Order Summary shipping and grand-total amounts dim while a shipping save is in flight (`body.panth-shipping-saving`), so the pending update is visible.
+- **Checkout typography normalised to a single scale** (26 title / 18 section / 16 total / 15 body+buttons / 14 label / 13 action / 12 hint), rebindable via `--panth-checkout-fs-*` custom properties on `body.panth-checkout-extended`. Nothing renders below 12px any more (WCAG 1.4.4): field notes, tooltips, error text, item options and qty labels were raised from 9-11px to 12px.
+
+---
+
 ## [1.0.9]
 
 ### Changed
