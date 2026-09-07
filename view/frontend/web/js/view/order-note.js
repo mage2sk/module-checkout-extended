@@ -15,8 +15,8 @@ define([
             label: '',
             placeholder: '',
             maxLength: DEFAULT_MAX,
-            inputId: 'panth-order-note',
-            counterId: 'panth-order-note-counter'
+            inputId: 'panth-co-order-note',
+            counterId: 'panth-co-order-note-counter'
         },
 
         initialize: function () {

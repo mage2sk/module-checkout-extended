@@ -1,11 +1,11 @@
 <!-- ko if: isVisible() -->
-<div class="panth-order-note-wrap">
-    <label class="panth-order-note-label" data-bind="text: label, attr: {'for': inputId}"></label>
-    <textarea class="panth-order-note-textarea"
+<div class="panth-co-order-note-wrap">
+    <label class="panth-co-order-note-label" data-bind="text: label, attr: {'for': inputId}"></label>
+    <textarea class="panth-co-order-note-textarea"
               rows="3"
               data-bind="value: note,
                          valueUpdate: 'input',
                          attr: {id: inputId, name: 'panth_order_note', placeholder: placeholder, maxlength: maxLength, 'aria-describedby': counterId}"></textarea>
-    <span class="panth-order-note-counter" aria-live="polite" data-bind="text: counterText, attr: {id: counterId}"></span>
+    <span class="panth-co-order-note-counter" aria-live="polite" data-bind="text: counterText, attr: {id: counterId}"></span>
 </div>
 <!-- /ko -->

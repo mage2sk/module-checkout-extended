@@ -37,6 +37,9 @@ var config = {
             'Magento_Checkout/js/view/summary/abstract-total': {
                 'Panth_CheckoutExtended/js/mixin/abstract-total-mixin': true
             },
+            'Magento_Checkout/js/action/set-shipping-information': {
+                'Panth_CheckoutExtended/js/mixin/set-shipping-information-mixin': true
+            },
             'Magento_Checkout/js/action/get-payment-information': {
                 'Panth_CheckoutExtended/js/mixin/get-payment-information-mixin': true
             },

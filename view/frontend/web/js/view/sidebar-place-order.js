@@ -192,12 +192,14 @@ define([
             return !!quote.billingAddress() && component.isAddressDetailsVisible();
         },
 
-        clickWhenIdle: function ($btn, attempts) {
+        clickWhenIdle: function ($btn, attempts, idleChecks) {
             var self = this;
 
-            if ($.active > 0 && attempts < 40) {
+            idleChecks = idleChecks || 0;
+
+            if (attempts < 40 && ($.active > 0 || idleChecks < 2)) {
                 setTimeout(function () {
-                    self.clickWhenIdle($btn, attempts + 1);
+                    self.clickWhenIdle($btn, attempts + 1, $.active > 0 ? 0 : idleChecks + 1);
                 }, 100);
 
                 return;
@@ -298,11 +300,7 @@ define([
                 }
             }
 
-            if (quote.isVirtual()) {
-                this.clickWhenIdle($btn, 0);
-            } else {
-                $btn.trigger('click');
-            }
+            this.clickWhenIdle($btn, 0);
 
             setTimeout(function () {
                 if ($activeMethod.find('.field-error:visible, .mage-error:visible').length > 0) {

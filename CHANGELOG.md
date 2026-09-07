@@ -4,6 +4,17 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-09-07
+
+### Fixed
+- **Order note class collision with Panth_AdvancedCart.** The module's order note used the same `panth-order-note-*` class names as the AdvancedCart order note, so a store running both with the module note enabled got two textareas sharing one stylesheet. The module's own component now uses `panth-co-order-note-wrap`, `-label`, `-textarea` and `-counter` (ids `panth-co-order-note` and `panth-co-order-note-counter`). The `panth-order-note-*` rules stay in the stylesheet on purpose: they style the AdvancedCart note when that module renders it inside this checkout.
+- **Only one order note renders.** When `Panth_AdvancedCart` is installed and its Order Notes feature is on, `Helper\Data::isOrderNoteEnabled()` returns false, so the module's note is not added to the summary and `checkoutConfig.panthCheckout.orderNote.enabled` is false, even if the module's own Order Note setting is Yes. The AdvancedCart note keeps handling the value. New helper method `isOrderNoteHandledByAdvancedCart()`; unit tests cover both states.
+- **Sidebar Place Order waits for pending requests on physical carts too.** When the button commits an unsaved billing form, the billing-address save and the order placement used to leave at the same moment, so the billing save could reach a quote that was already converted and log a 404 in the browser console. The sidebar button now waits until the checkout has no request in flight before it triggers the core Place Order button, for physical carts as it already did for virtual carts.
+
+### Changed
+- **Loading indicator while the shipping information saves.** Saving the shipping address and method (the automatic save after the address is complete, a method change, or Ship Here) and the payment information refresh that follows no longer use Magento's full-page loading mask. The mask is scoped to the payment step and the order summary (`.panth-section-loading`), so the address form stays usable while a slow rate provider or a large cart is recalculated. Placing the order still uses the full-page mask. New RequireJS mixin on `Magento_Checkout/js/action/set-shipping-information`; the page-level state lives in `window.panthCheckoutLoader`.
+- Documentation: the admin Border Radius mapping is spelled out (cards take the admin value, controls take the value minus 2 with a floor of 4, so the design's 12px cards and 10px controls need the admin value 12, which is the default; a store still on 8 gets 6px controls).
+
 ## [1.1.0] - 2026-09-07
 
 ### Added

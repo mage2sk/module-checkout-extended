@@ -144,7 +144,7 @@ Performance • SEO • Adobe Commerce Cloud
 
 ### Order Note and Address Book
 
-- **Order note** (optional, off by default): a textarea with a live character counter in the order summary, with admin-configurable label, placeholder and maximum length.
+- **Order note** (optional, off by default): a textarea with a live character counter in the order summary, with admin-configurable label, placeholder and maximum length. When Panth_AdvancedCart handles order notes, its note is used instead and this one stays hidden.
 - The note is cleaned server-side (tags and control characters stripped, trimmed, clamped to the maximum length) and saved as the order's customer note, so it shows in the admin order view, is added to the order's **Comments History**, and is printed in the order confirmation email.
 - Works for **guest and logged-in customers** through the `panth_order_note` payment extension attribute, the same transport as the newsletter checkbox.
 - **Address book picker**: logged-in customers with saved addresses get an **Address book** button next to **New Address** in the shipping step. It opens a centred popup listing every saved address as a selectable card, with the current address pre-selected, **Save Address** to switch and **Add New Address** to open the standard form.
@@ -298,6 +298,8 @@ Go to **Stores -> Configuration -> Panth Extensions -> Checkout Extended**. All 
 
 The address book picker has no settings: it appears automatically for logged-in customers who have at least one saved address.
 
+If `Panth_AdvancedCart` is installed and its **Order Notes** feature is on, that note is used and this one stays hidden, whatever the Enable Order Note setting says. Only one note textarea ever renders. The module still styles the AdvancedCart note (`panth-order-note-*` classes); its own note uses `panth-co-order-note-*` classes.
+
 ### Form Styles
 
 | Setting | Group | Default | Description |
@@ -339,7 +341,7 @@ The address book picker has no settings: it appears automatically for logged-in 
 
 Every colour, radius, size and font size used by the checkout stylesheet is a `--panth-co-*` custom property declared with its default on `.panth-checkout-extended` (the checkout body, specificity 0,1,0). Every rule in the stylesheet reads those tokens only. A theme overrides them with a plain rule on `body.panth-checkout-extended`, which wins regardless of stylesheet load order; no `!important` and no selector matching is needed. Module selectors are capped at `body.panth-checkout-extended` plus a few further parts, so a theme rule of the same shape placed after the module stylesheet wins for anything that is not covered by a token.
 
-The admin **Accent Color** and **Border Radius (px)** settings keep winning: the dynamic styles block writes `--panth-checkout-accent`, `--panth-checkout-accent-hover`, `--panth-checkout-radius` and `--panth-checkout-radius-sm` on `:root` and on `.panth-checkout-extended`, and the matching tokens default to them (`--panth-co-accent: var(--panth-checkout-accent, #1a1a2e)` and so on). `--panth-checkout-radius-sm` is `max(4, radius - 2)`, so the default radius 12 gives 12px cards and 10px controls. The tint, edge and ring colours are derived from the accent with `color-mix()` (with a plain rgba fallback for older engines), so changing the accent in the admin panel restyles selected rows, the active payment card and the focus ring as well.
+The admin **Accent Color** and **Border Radius (px)** settings keep winning: the dynamic styles block writes `--panth-checkout-accent`, `--panth-checkout-accent-hover`, `--panth-checkout-radius` and `--panth-checkout-radius-sm` on `:root` and on `.panth-checkout-extended`, and the matching tokens default to them (`--panth-co-accent: var(--panth-checkout-accent, #1a1a2e)` and so on). `--panth-checkout-radius-sm` is `max(4, radius - 2)`, so the default radius 12 gives 12px cards and 10px controls. In practice: cards take the admin value and controls take the admin value minus 2. The design is drawn for 12 and 10, so keep the admin value at 12 (the default). A store that still has 8 from an older setup gets 8px cards and 6px controls, which looks subtly tighter than the design. The tint, edge and ring colours are derived from the accent with `color-mix()` (with a plain rgba fallback for older engines), so changing the accent in the admin panel restyles selected rows, the active payment card and the focus ring as well.
 
 The names that shipped in 1.0.10 keep working as inputs: `--panth-checkout-accent`, `-accent-hover`, `-radius`, `-radius-sm`, `-row-hover`, `-row-selected` and the type scale `--panth-checkout-fs-title`, `-fs-section`, `-fs-total`, `-fs-button`, `-fs-body`, `-fs-label`, `-fs-action`, `-fs-hint`. Each one is the default of the matching `--panth-co-*` token, so an existing override on `body.panth-checkout-extended` (or on `body`) still applies. New overrides should target the `--panth-co-*` names.
 

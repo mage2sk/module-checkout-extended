@@ -91,6 +91,9 @@
 
             saving = true;
             document.body.classList.add('panth-shipping-saving');
+            window.panthCheckoutLoader = window.panthCheckoutLoader || {};
+            window.panthCheckoutLoader.preventLoader = true;
+            window.panthCheckoutLoader.activeSection = 'payment';
 
             setShippingInformationAction().done(function () {
                 shippingInfoSaved = true;

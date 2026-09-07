@@ -105,7 +105,7 @@
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Order Note</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Show an optional order note field in the order summary. The note is saved on the order and added to its comment history.</comment>
+                    <comment>Show an optional order note field in the order summary. The note is saved on the order and added to its comment history. If Panth_AdvancedCart handles order notes, its note is used and this one stays hidden.</comment>
                 </field>
                 <field id="label" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Field Label</label>

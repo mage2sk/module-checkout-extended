@@ -5,6 +5,15 @@ define([
 ], function (wrapper, quote, getTotalsAction) {
     'use strict';
 
+    function scopeLoader() {
+        if (!window.panthCheckoutLoader) {
+            window.panthCheckoutLoader = {};
+        }
+
+        window.panthCheckoutLoader.preventLoader = true;
+        window.panthCheckoutLoader.activeSection = 'payment';
+    }
+
     function skip(deferred) {
         if (deferred && typeof deferred.resolve === 'function') {
             getTotalsAction([], deferred);
@@ -20,6 +29,8 @@ define([
             var address = quote.shippingAddress();
 
             if (quote.isVirtual()) {
+                scopeLoader();
+
                 return original(deferred, fromData);
             }
 
@@ -35,6 +46,8 @@ define([
 
                 return;
             }
+
+            scopeLoader();
 
             return original(deferred, fromData);
         });

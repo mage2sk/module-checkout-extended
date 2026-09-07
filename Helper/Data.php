@@ -129,8 +129,22 @@ class Data extends AbstractHelper
         return (bool) $this->getConfigValue('billing', 'show_title', $storeId);
     }
 
+    public function isOrderNoteHandledByAdvancedCart($storeId = null): bool
+    {
+        if (!$this->_moduleManager->isEnabled('Panth_AdvancedCart')) {
+            return false;
+        }
+
+        return $this->scopeConfig->isSetFlag('panth_advancedcart/general/enabled', ScopeInterface::SCOPE_STORE, $storeId)
+            && $this->scopeConfig->isSetFlag('panth_advancedcart/order_notes/enabled', ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
     public function isOrderNoteEnabled($storeId = null): bool
     {
+        if ($this->isOrderNoteHandledByAdvancedCart($storeId)) {
+            return false;
+        }
+
         return (bool) $this->getConfigValue('order_note', 'enabled', $storeId);
     }
 

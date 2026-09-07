@@ -5,6 +5,7 @@ namespace Panth\CheckoutExtended\Test\Unit\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Module\Manager;
 use Magento\Store\Model\ScopeInterface;
 use Panth\CheckoutExtended\Helper\Data;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -13,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 class DataTest extends TestCase
 {
     private $scopeConfigMock;
+    private $moduleManagerMock;
 
     private $helper;
 
@@ -22,6 +24,8 @@ class DataTest extends TestCase
 
         $contextMock = $this->createMock(Context::class);
         $contextMock->method('getScopeConfig')->willReturn($this->scopeConfigMock);
+        $this->moduleManagerMock = $this->createMock(Manager::class);
+        $contextMock->method('getModuleManager')->willReturn($this->moduleManagerMock);
 
         $this->helper = new Data($contextMock);
     }
@@ -244,5 +248,45 @@ class DataTest extends TestCase
                 . ' panth-card-elevated panth-sidebar-sticky panth-form-compact',
             ],
         ];
+    }
+    public function testOrderNoteEnabledWhenAdvancedCartIsNotInstalled(): void
+    {
+        $this->moduleManagerMock->method('isEnabled')->with('Panth_AdvancedCart')->willReturn(false);
+        $this->scopeConfigMock->method('getValue')
+            ->with('panth_checkout_extended/order_note/enabled', ScopeInterface::SCOPE_STORE, null)
+            ->willReturn('1');
+
+        $this->assertFalse($this->helper->isOrderNoteHandledByAdvancedCart());
+        $this->assertTrue($this->helper->isOrderNoteEnabled());
+    }
+
+    public function testOrderNoteDisabledWhenAdvancedCartOrderNotesAreActive(): void
+    {
+        $this->moduleManagerMock->method('isEnabled')->with('Panth_AdvancedCart')->willReturn(true);
+        $this->scopeConfigMock->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => in_array(
+                $path,
+                ['panth_advancedcart/general/enabled', 'panth_advancedcart/order_notes/enabled'],
+                true
+            )
+        );
+        $this->scopeConfigMock->method('getValue')->willReturn('1');
+
+        $this->assertTrue($this->helper->isOrderNoteHandledByAdvancedCart());
+        $this->assertFalse($this->helper->isOrderNoteEnabled());
+    }
+
+    public function testOrderNoteEnabledWhenAdvancedCartOrderNotesAreOff(): void
+    {
+        $this->moduleManagerMock->method('isEnabled')->with('Panth_AdvancedCart')->willReturn(true);
+        $this->scopeConfigMock->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => $path === 'panth_advancedcart/general/enabled'
+        );
+        $this->scopeConfigMock->method('getValue')
+            ->with('panth_checkout_extended/order_note/enabled', ScopeInterface::SCOPE_STORE, null)
+            ->willReturn('1');
+
+        $this->assertFalse($this->helper->isOrderNoteHandledByAdvancedCart());
+        $this->assertTrue($this->helper->isOrderNoteEnabled());
     }
 }

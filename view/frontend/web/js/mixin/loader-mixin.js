@@ -3,65 +3,46 @@ define([
 ], function ($) {
     'use strict';
 
-    function getQuote() {
-        try {
-            return require('Magento_Checkout/js/model/quote');
-        } catch (e) {
-            return {};
-        }
-    }
-
-    var SECTION_LOADING_CLASS = '_block-content-loading',
-        sectionSelectors      = {
+    var SECTION_LOADING_CLASS = 'panth-section-loading',
+        sectionSelectors = {
             shipping: '#checkout-step-shipping',
-            payment:  '#checkout-step-payment',
-            summary:  '.opc-block-summary'
+            payment: '#checkout-step-payment',
+            summary: '.opc-block-summary'
+        },
+        sectionGroups = {
+            shipping: ['shipping'],
+            payment: ['payment', 'summary'],
+            summary: ['summary']
         };
 
     function ensureState() {
-        var quote = getQuote();
-
-        if (!quote.panthCheckout) {
-            quote.panthCheckout = {};
+        if (!window.panthCheckoutLoader) {
+            window.panthCheckoutLoader = {};
         }
 
-        if (!quote.panthCheckout.state) {
-            quote.panthCheckout.state = {};
-        }
-
-        return quote.panthCheckout.state;
+        return window.panthCheckoutLoader;
     }
 
-    function addSectionLoading() {
-        var state   = ensureState(),
-            section = state.activeSection || 'shipping',
-            sel     = sectionSelectors[section],
-            $el;
+    function addSectionLoading(section) {
+        var names = sectionGroups[section] || sectionGroups.payment,
+            marked = 0;
 
-        if (sel) {
-            $el = $(sel);
+        $.each(names, function (_, name) {
+            var $el = $(sectionSelectors[name]);
 
             if ($el.length) {
                 $el.addClass(SECTION_LOADING_CLASS);
-                return $el;
+                marked++;
             }
-        }
+        });
 
-        $el = $('#checkout');
-
-        if ($el.length) {
-            $el.addClass(SECTION_LOADING_CLASS);
-        }
-
-        return $el;
+        return marked;
     }
 
     function clearSectionLoading() {
         $.each(sectionSelectors, function (_, sel) {
             $(sel).removeClass(SECTION_LOADING_CLASS);
         });
-
-        $('#checkout').removeClass(SECTION_LOADING_CLASS);
     }
 
     return function (loader) {
@@ -70,23 +51,26 @@ define([
         }
 
         var origStartLoader = loader.startLoader,
-            origStopLoader  = loader.stopLoader;
+            origStopLoader = loader.stopLoader;
 
         loader.startLoader = function () {
             var state = ensureState();
 
             if (state.preventLoader) {
-                addSectionLoading();
-
                 state.preventLoader = false;
 
-                return;
+                if (addSectionLoading(state.activeSection || 'payment') > 0) {
+                    return;
+                }
             }
 
             return origStartLoader.apply(this, arguments);
         };
 
         loader.stopLoader = function () {
+            var state = ensureState();
+
+            state.preventLoader = false;
             clearSectionLoading();
 
             return origStopLoader.apply(this, arguments);
