@@ -7,7 +7,6 @@
             <tab>panth</tab>
             <resource>Panth_CheckoutExtended::config</resource>
 
-            <!-- General -->
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -17,7 +16,6 @@
                 </field>
             </group>
 
-            <!-- Layout -->
             <group id="layout" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Layout</label>
                 <field id="columns" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -37,7 +35,6 @@
                 </field>
             </group>
 
-            <!-- Style -->
             <group id="style" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Style</label>
                 <field id="card_style" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -62,7 +59,6 @@
                 </field>
             </group>
 
-            <!-- Cart / Order Summary -->
             <group id="cart" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cart &amp; Order Summary</label>
                 <field id="qty_increment_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -82,7 +78,6 @@
                 </field>
             </group>
 
-            <!-- Newsletter Subscription -->
             <group id="newsletter" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Newsletter Subscription</label>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -105,7 +100,35 @@
                 </field>
             </group>
 
-            <!-- Form Styles -->
+            <group id="order_note" translate="label" type="text" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Order Note</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Order Note</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show an optional order note field in the order summary. The note is saved on the order and added to its comment history.</comment>
+                </field>
+                <field id="label" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Field Label</label>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="placeholder" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Placeholder</label>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="max_length" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum Length</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Maximum number of characters accepted, enforced in the browser and on the server.</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+
             <group id="form_styles" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Form Styles</label>
                 <field id="field_mode" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -125,7 +148,6 @@
                 </field>
             </group>
 
-            <!-- Shipping -->
             <group id="shipping" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Shipping</label>
                 <field id="default_method" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -144,7 +166,6 @@
                 </field>
             </group>
 
-            <!-- Payment -->
             <group id="payment" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Payment</label>
                 <field id="default_method" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -153,7 +174,6 @@
                 </field>
             </group>
 
-            <!-- Billing -->
             <group id="billing" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Billing</label>
                 <field id="show_title" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -163,7 +183,6 @@
                 </field>
             </group>
 
-            <!-- Custom Code -->
             <group id="custom_code" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Custom Code</label>
                 <field id="custom_css" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">

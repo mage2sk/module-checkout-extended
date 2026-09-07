@@ -6,6 +6,7 @@ namespace Panth\CheckoutExtended\Test\Unit\Block;
 use Magento\Framework\View\Element\Template\Context;
 use Panth\CheckoutExtended\Block\DynamicStyles;
 use Panth\CheckoutExtended\Helper\Data;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class DynamicStylesTest extends TestCase
@@ -27,6 +28,7 @@ class DynamicStylesTest extends TestCase
         $this->assertSame($this->helperMock, $this->block->getHelper());
     }
 
+    #[DataProvider('isEnabledDataProvider')]
     public function testIsEnabledDelegatesToHelper(bool $value): void
     {
         $this->helperMock->expects($this->once())
@@ -36,7 +38,7 @@ class DynamicStylesTest extends TestCase
         $this->assertSame($value, $this->block->isEnabled());
     }
 
-    public function isEnabledDataProvider(): array
+    public static function isEnabledDataProvider(): array
     {
         return [
             'enabled' => [true],

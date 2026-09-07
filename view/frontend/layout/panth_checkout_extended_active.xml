@@ -3,5 +3,6 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <attribute name="class" value="panth-checkout-extended"/>
+        <move element="logo" destination="panth.checkout.header.links" as="logo"/>
     </body>
 </page>

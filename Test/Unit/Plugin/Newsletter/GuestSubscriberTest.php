@@ -12,6 +12,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Panth\CheckoutExtended\Helper\Data;
 use Panth\CheckoutExtended\Plugin\Newsletter\GuestSubscriber;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -97,6 +98,7 @@ class GuestSubscriberTest extends TestCase
         $this->assertSame(self::ORDER_ID, $result);
     }
 
+    #[DataProvider('notOptedInProvider')]
     public function testDoesNotSubscribeWhenAttributeIsFalseOrAbsent(?bool $attributeValue): void
     {
         $this->helper->method('isNewsletterEnabled')->willReturn(true);

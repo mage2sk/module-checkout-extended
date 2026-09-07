@@ -41,6 +41,17 @@ class CheckoutLayoutProcessor implements LayoutProcessorInterface
             ],
         ];
 
+        $summary['panth-order-note'] = [
+            'component' => 'Panth_CheckoutExtended/js/view/order-note',
+            'sortOrder' => 30,
+            'config' => [
+                'enabled' => $this->helper->isOrderNoteEnabled(),
+                'label' => $this->helper->getOrderNoteLabel(),
+                'placeholder' => $this->helper->getOrderNotePlaceholder(),
+                'maxLength' => $this->helper->getOrderNoteMaxLength(),
+            ],
+        ];
+
         if (isset($jsLayout['components']['checkout']['children']['steps']['children']
             ['billing-step']['children']['payment']['children']
             ['afterMethods']['children']['discount'])) {

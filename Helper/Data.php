@@ -129,6 +129,30 @@ class Data extends AbstractHelper
         return (bool) $this->getConfigValue('billing', 'show_title', $storeId);
     }
 
+    public function isOrderNoteEnabled($storeId = null): bool
+    {
+        return (bool) $this->getConfigValue('order_note', 'enabled', $storeId);
+    }
+
+    public function getOrderNoteLabel($storeId = null): string
+    {
+        return (string) ($this->getConfigValue('order_note', 'label', $storeId) ?: 'Order note');
+    }
+
+    public function getOrderNotePlaceholder($storeId = null): string
+    {
+        $value = $this->getConfigValue('order_note', 'placeholder', $storeId);
+
+        return $value === null ? 'Anything we should know about your order?' : (string) $value;
+    }
+
+    public function getOrderNoteMaxLength($storeId = null): int
+    {
+        $value = (int) $this->getConfigValue('order_note', 'max_length', $storeId);
+
+        return $value > 0 ? $value : 500;
+    }
+
     public function getCustomCss($storeId = null): string
     {
         return (string) ($this->getConfigValue('custom_code', 'custom_css', $storeId) ?: '');

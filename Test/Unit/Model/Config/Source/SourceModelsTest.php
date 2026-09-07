@@ -10,10 +10,12 @@ use Panth\CheckoutExtended\Model\Config\Source\ColumnLayout;
 use Panth\CheckoutExtended\Model\Config\Source\FieldMode;
 use Panth\CheckoutExtended\Model\Config\Source\RegistrationMode;
 use Panth\CheckoutExtended\Model\Config\Source\SidebarPosition;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SourceModelsTest extends TestCase
 {
+    #[DataProvider('sourceModelsDataProvider')]
     public function testToOptionArrayReturnsExpectedOptions(string $className, array $expectedValues): void
     {
         $source = new $className();
@@ -35,6 +37,7 @@ class SourceModelsTest extends TestCase
         $this->assertSame($expectedValues, array_column($options, 'value'));
     }
 
+    #[DataProvider('sourceLabelsDataProvider')]
     public function testToOptionArrayReturnsExpectedLabels(string $className, array $expectedLabels): void
     {
         $source = new $className();
@@ -47,7 +50,7 @@ class SourceModelsTest extends TestCase
         $this->assertSame($expectedLabels, $labels);
     }
 
-    public function sourceModelsDataProvider(): array
+    public static function sourceModelsDataProvider(): array
     {
         return [
             'column layout 1/2/3' => [ColumnLayout::class, ['1', '2', '3']],
@@ -64,7 +67,7 @@ class SourceModelsTest extends TestCase
         ];
     }
 
-    public function sourceLabelsDataProvider(): array
+    public static function sourceLabelsDataProvider(): array
     {
         return [
             'column layout labels' => [

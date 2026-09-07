@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <!-- DynamicStyles is intentionally NOT block-cached: it emits config-driven
-         CSS variables (accent color, radius) plus custom CSS/JS, so any Style or
-         Custom Code change must reflect on the next request. The block only does
-         a few (config-cached) scopeConfig reads, so caching it buys nothing and
-         would stale admin changes for up to an hour. -->
-
     <type name="Magento\Checkout\Api\GuestPaymentInformationManagementInterface">
+        <plugin name="panth_checkout_order_note_guest"
+                type="Panth\CheckoutExtended\Plugin\OrderNote\SaveGuestOrderNote"
+                sortOrder="20"/>
         <plugin name="panth_checkout_newsletter_guest"
                 type="Panth\CheckoutExtended\Plugin\Newsletter\GuestSubscriber"
                 sortOrder="30"/>
     </type>
 
     <type name="Magento\Checkout\Api\PaymentInformationManagementInterface">
+        <plugin name="panth_checkout_order_note_customer"
+                type="Panth\CheckoutExtended\Plugin\OrderNote\SaveOrderNote"
+                sortOrder="20"/>
         <plugin name="panth_checkout_newsletter_customer"
                 type="Panth\CheckoutExtended\Plugin\Newsletter\CustomerSubscriber"
                 sortOrder="30"/>

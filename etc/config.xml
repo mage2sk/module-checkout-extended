@@ -27,6 +27,12 @@
                 <field_label>Subscribe to our newsletter</field_label>
                 <default_checked>1</default_checked>
             </newsletter>
+            <order_note>
+                <enabled>0</enabled>
+                <label>Order note</label>
+                <placeholder>Anything we should know about your order?</placeholder>
+                <max_length>500</max_length>
+            </order_note>
             <form_styles>
                 <field_mode>compact</field_mode>
                 <use_placeholders>0</use_placeholders>

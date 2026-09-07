@@ -25,13 +25,14 @@ the storefront.
 5. [Style](#5-style)
 6. [Cart & Order Summary](#6-cart--order-summary)
 7. [Newsletter Subscription](#7-newsletter-subscription)
-8. [Form Styles](#8-form-styles)
-9. [Shipping](#9-shipping)
-10. [Payment](#10-payment)
-11. [Billing](#11-billing)
-12. [Custom Code](#12-custom-code)
-13. [Recommended starter setup](#13-recommended-starter-setup)
-14. [Troubleshooting](#14-troubleshooting)
+8. [Order Note](#8-order-note)
+9. [Form Styles](#9-form-styles)
+10. [Shipping](#10-shipping)
+11. [Payment](#11-payment)
+12. [Billing](#12-billing)
+13. [Custom Code](#13-custom-code)
+14. [Recommended starter setup](#14-recommended-starter-setup)
+15. [Troubleshooting](#15-troubleshooting)
 
 ---
 
@@ -69,9 +70,9 @@ bin/magento module:status Panth_CheckoutExtended
 After installation, two things should be true:
 
 1. **Configuration page exists** - Stores -> Configuration -> Panth
-   Extensions -> Checkout Extended is reachable and shows ten groups:
+   Extensions -> Checkout Extended is reachable and shows eleven groups:
    General, Layout, Style, Cart & Order Summary, Newsletter Subscription,
-   Form Styles, Shipping, Payment, Billing, and Custom Code.
+   Order Note, Form Styles, Shipping, Payment, Billing, and Custom Code.
 2. **Checkout page changed** - add any product to the cart on your
    storefront and go to checkout. With default settings you should see
    the modern multi-column layout with the order summary in a right-hand
@@ -83,7 +84,7 @@ active it carries classes such as `panth-checkout-extended`,
 `panth-checkout-3col`, `panth-sidebar-right`, and `panth-card-elevated`
 that reflect your configuration.
 
-If neither works, see [Troubleshooting](#14-troubleshooting).
+If neither works, see [Troubleshooting](#15-troubleshooting).
 
 ---
 
@@ -130,6 +131,27 @@ structure of the checkout.
 - Turn **Sticky Sidebar** on if your shipping form is long - the
   place-order button stays reachable.
 
+**Checkout header:** while the extension is active the page header is
+replaced by a slim bar with three cells: a **Back to Cart** link on the
+left, your store logo in the centre, and a "Secure checkout" note on
+the right (hidden on narrow phones). The logo is the same logo block
+your theme renders on other pages, so changing it in
+**Content -> Design -> Configuration** changes it here too. The bar is
+48px tall with a 30px logo (26px on narrow phones); the height, side
+inset and width are theme-overridable through `--panth-co-header-h`,
+`--panth-co-page-pad` and `--panth-co-page-max`.
+
+**Page heading:** the "Checkout" title is followed by an item count
+("3 Items in Cart") that follows the live cart totals, so it updates
+when the customer changes a quantity in the summary and disappears
+when the cart is empty. Logged-in customers also see a "Signed in as
+<email>" line with a **Sign out** link at the top of the shipping step.
+
+**Page width:** the checkout is 1440px wide at most with 40px side
+insets (16px on tablets, 12px on phones); the summary column is 380px.
+Both are theme-overridable through `--panth-co-page-max`,
+`--panth-co-page-pad` and `--panth-co-sidebar-w`.
+
 **Verify on the storefront:** Reload the checkout after saving. With 3
 columns the shipping step, payment step, and summary sit side by side
 on desktop. Switch Sidebar Position to Left and the summary jumps to
@@ -148,7 +170,7 @@ the checkout cards.
 |---|---|---|
 | **Card Style** | Elevated (Shadow) | Visual treatment for checkout section cards: **Elevated** (drop shadow), **Bordered** (1px outline), **Flat** (no shadow or border), or **Glassmorphism** (translucent frosted-glass effect). |
 | **Accent Color** | #1a1a2e | Primary accent colour used for buttons, links, focus rings, and highlights. Edited with the built-in admin colour picker. |
-| **Border Radius (px)** | 12 | Corner radius applied to cards and form elements, in pixels. `0` gives sharp corners; `16`+ gives a soft, rounded look. |
+| **Border Radius (px)** | 12 | Corner radius applied to cards, in pixels. Inputs, buttons and rows use a slightly smaller radius (the value minus 2, never below 4), so the default 12 gives 12px cards and 10px controls. `0` gives sharp corners; `16`+ gives a soft, rounded look. |
 | **Step Indicators** | No | Show numbered step badges (1, 2, 3 ...) above each checkout section so customers can see their progress. |
 
 **Recommended:** Match your theme. Elevated works on light themes;
@@ -166,6 +188,26 @@ values fall back to the default `#1a1a2e`. The colour and radius are
 exposed to the page as CSS custom properties
 (`--panth-checkout-accent`, `--panth-checkout-radius`), so your theme
 or Custom CSS can reuse them.
+
+**Going further with variables:** the accent colour and radius feed
+the `--panth-co-*` design tokens (page and card colours, borders,
+font sizes, control height, header height, page width, and so on). A
+developer can override any of them on `body.panth-checkout-extended`
+in the theme or in Custom CSS without `!important`. The full table
+with defaults is in the README section "Theming with CSS Variables".
+The admin Accent Color and Border Radius values are the defaults of
+`--panth-co-accent`, `--panth-co-card-radius` and
+`--panth-co-ctl-radius`, so they keep winning unless the theme
+overrides those tokens.
+
+**Design defaults:** out of the box the checkout uses a 1440px page
+(`--panth-co-page-max`), a 48px header (`--panth-co-header-h`), 46px
+inputs, selects and buttons (`--panth-co-ctl-h`), 46px shipping method
+rows and a 380px summary column (`--panth-co-sidebar-w`). Radio buttons
+and checkboxes are drawn by the extension so they follow the accent
+colour in every browser. The stylesheet does not need `!important` to
+beat a theme: the few it keeps only counter inline styles and
+third-party layers that use `!important` themselves.
 
 **Verify on the storefront:** Reload checkout. Buttons and links use
 your accent colour, card corners match your radius, and the card
@@ -195,10 +237,38 @@ parts stores where customers order by SKU. Leave **Product Link** off
 for most B2C stores: a link out of checkout is an exit point. Turn it
 on for B2B/wholesale buyers who want to double-check specs.
 
-**Qty increment details:** each +/- click updates the cart via AJAX and
-the totals refresh immediately. The step size respects the product's
+**Qty increment details:** the step size respects the product's
 inventory `qty_increments` setting - if a product sells in packs of 6,
-clicking **+** adds 6.
+clicking **+** adds 6. The controls behave as follows:
+
+- **Optimistic update.** The displayed quantity changes the moment the
+  button is clicked; the row is marked busy (`panth-qty-busy`) while
+  the request runs, and the buttons stay usable. No full-screen loader
+  is shown.
+- **One request at a time per item.** Rapid clicks are coalesced: the
+  first click sends a request, further clicks update the display, and
+  the latest target is sent once the first request has finished. Each
+  item is independent.
+- **Server reconciliation.** After every response the quantity and the
+  totals are re-read from the server, so the summary always ends on the
+  value the cart actually holds.
+- **Rejected quantities.** If the server refuses a value (not enough
+  stock, below the minimum, not a multiple of the increment) the row
+  reverts to the last accepted quantity and the server message (for
+  example "Not enough items for sale") appears next to the stepper. It
+  disappears on the next successful change.
+- **Removing an item.** Clicking **-** at the minimum quantity opens a
+  styled confirmation ("Remove item" with **Cancel** / **Remove**).
+  Cancel changes nothing and returns focus to the button; Remove drops
+  the row, refreshes the totals and the "N Items in Cart" title, and
+  reloads the page if the cart becomes empty.
+- **Accessibility.** Both buttons are real buttons with labels
+  ("Decrease quantity" / "Increase quantity"), the quantity is a live
+  region, and the error message is announced.
+
+**Item thumbnails:** the summary thumbnails are refreshed from the cart
+data after every quantity change or removal. An item without an image
+shows the catalog placeholder image instead of a broken picture.
 
 **Verify on the storefront:** Add a product (e.g. *example-product*) to
 the cart and open checkout. Expand the items in the order summary:
@@ -249,7 +319,56 @@ sidebar.
 
 ---
 
-## 8. Form Styles
+## 8. Order Note
+
+Open the **Order Note** group. This optional feature lets the customer
+leave a message with the order. It is **off by default**; nothing is
+rendered or stored until you enable it.
+
+| Setting | Default | What it does |
+|---|---|---|
+| **Enable Order Note** | No | Show an optional note textarea in the order summary sidebar. The three settings below only appear while this is **Yes**. |
+| **Field Label** | "Order note" | Label shown above the textarea. Translatable per store view. |
+| **Placeholder** | "Anything we should know about your order?" | Hint text shown inside the empty textarea. |
+| **Maximum Length** | 500 | Maximum number of characters. Enforced in the browser (the textarea stops accepting input at the limit and a live counter shows the characters used, e.g. "12/500") and again on the server. |
+
+**Recommended:** Enable it if your customers regularly need to pass on
+delivery instructions, gift messages or references (B2B purchase
+details, "leave the parcel with the neighbour", and so on). Keep the
+label short and put the guidance in the placeholder, e.g. label
+*"Delivery instructions"* and placeholder *"Gate code, safe place,
+preferred time..."*. 500 characters is enough for a paragraph; raise it
+only if your team reads long notes.
+
+**How it works:**
+
+- The textarea sits in the order summary between the newsletter
+  checkbox and the discount code, with the counter underneath.
+- On order placement the note travels with the payment request via the
+  `panth_order_note` extension attribute, for guests and logged-in
+  customers alike.
+- The server strips HTML tags and control characters, trims whitespace
+  and cuts the note to the configured maximum before saving it as the
+  order's **customer note**.
+- The note appears in the admin order view, is added to the order's
+  **Comments History** as "Customer note: ..." (an internal comment,
+  not shown to the customer), and is printed in the order confirmation
+  email in the place Magento reserves for the customer note.
+- An empty note stores nothing. A failure to save the note is logged
+  and never blocks order placement.
+- While the feature is disabled, the field is not rendered and any
+  value sent by a customised frontend is ignored.
+
+**Verify on the storefront:** Enable the group, save, flush cache and
+open checkout. Type a note and watch the counter ("12/500"). Place a
+test order, then open it in **Sales -> Orders**: the note is shown in
+the order view and under **Comments History**. Check the order
+confirmation email for the same text. Disable the group and confirm
+the textarea disappears.
+
+---
+
+## 9. Form Styles
 
 Open the **Form Styles** group. These settings control how the address
 and contact forms render.
@@ -275,7 +394,7 @@ appears next to applicable fields. The body class reflects the mode
 
 ---
 
-## 9. Shipping
+## 10. Shipping
 
 Open the **Shipping** group.
 
@@ -294,6 +413,25 @@ Enable **Hide Single Method** if you only offer one method. Enable
 **Sort by Price** when you offer several methods, so the cheapest is
 always first.
 
+**Address book for logged-in customers:** this has no setting; it
+appears automatically when a logged-in customer has at least one saved
+address. Next to the **New Address** button in the shipping step an
+**Address book** button opens a centred popup titled "Shipping Address
+Book". Every saved address is listed as a card with a radio button, the
+address currently used for shipping is pre-selected, and:
+
+- **Save Address** switches the shipping address to the chosen card and
+  closes the popup (nothing is sent when the chosen card is already the
+  selected one).
+- **Add New Address** closes the popup and opens Magento's standard
+  new-address form.
+- **Cancel**, the close button, the Escape key or a click outside the
+  popup close it without changes.
+
+The popup traps keyboard focus while open and locks the page scroll,
+and every label is translatable. Guests and customers without saved
+addresses never see the button.
+
 **Verify on the storefront:** Open checkout with a fresh cart and enter
 a shipping address. The configured method arrives pre-selected. If
 only one method is available and Hide Single Method is on, no radio
@@ -303,7 +441,7 @@ of carrier sort order.
 
 ---
 
-## 10. Payment
+## 11. Payment
 
 Open the **Payment** group.
 
@@ -316,6 +454,12 @@ codes: `checkmo` (check/money order), `banktransfer`,
 `cashondelivery`, `free` (zero-total orders). Third-party gateways use
 their own codes - check the gateway's documentation.
 
+**Bank transfer note:** when the built-in **Bank Transfer Payment**
+method is enabled, its title carries the subtitle "Payment details are
+sent with your order confirmation." so customers know where to find the
+bank details. The text is translatable (`Payment details are sent with
+your order confirmation.` in the extension's translation file).
+
 **Verify on the storefront:** Proceed to the payment step. The
 configured method's radio button is already selected and its form
 (if any) is expanded. Customers can still pick a different method
@@ -323,7 +467,7 @@ freely.
 
 ---
 
-## 11. Billing
+## 12. Billing
 
 Open the **Billing** group.
 
@@ -342,7 +486,7 @@ gains `panth-billing-title-hidden`); with it on, the heading is back.
 
 ---
 
-## 12. Custom Code
+## 13. Custom Code
 
 Open the **Custom Code** group.
 
@@ -362,8 +506,18 @@ Open the **Custom Code** group.
 
 ```css
 .opc-block-summary .place-order-button {
-    background: var(--panth-checkout-accent);
-    border-radius: var(--panth-checkout-radius);
+    background: var(--panth-co-accent);
+    border-radius: var(--panth-co-card-radius);
+}
+```
+
+**Example - retune the design tokens without a theme change:**
+
+```css
+body.panth-checkout-extended {
+    --panth-co-page-max: 1200px;
+    --panth-co-header-h: 64px;
+    --panth-co-ctl-h: 48px;
 }
 ```
 
@@ -380,7 +534,7 @@ console. Remove the test code afterwards.
 
 ---
 
-## 13. Recommended starter setup
+## 14. Recommended starter setup
 
 A sensible configuration for a typical store (e.g. *Acme Store*):
 
@@ -391,6 +545,7 @@ A sensible configuration for a typical store (e.g. *Acme Store*):
 | Style | Card / Accent / Radius / Steps | Elevated / your brand colour / 12 / Yes |
 | Cart & Order Summary | Qty / SKU / Link | Yes / No / No |
 | Newsletter | Enable / Checked | Yes / No (EU/UK) or Yes (where lawful) |
+| Order Note | Enable / Max Length | Yes if you take delivery instructions, otherwise No / 500 |
 | Form Styles | Mode / Placeholders / Tooltips | Compact / Yes / No |
 | Shipping | Default / Hide Single / Sort | your top method / Yes / Yes |
 | Payment | Default | your top method |
@@ -402,7 +557,7 @@ a logged-in customer to confirm everything end to end.
 
 ---
 
-## 14. Troubleshooting
+## 15. Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
@@ -411,11 +566,16 @@ a logged-in customer to confirm everything end to end.
 | Config saved but storefront unchanged | Wrong scope | Check you saved at the same website/store-view scope the storefront uses |
 | Newsletter checkbox not visible | Checkbox disabled in config | Set Newsletter Subscription -> Enable Newsletter Checkbox to Yes |
 | Qty +/- buttons missing | Cart feature disabled | Set Cart & Order Summary -> Qty Increment Controls to Yes |
+| Qty reverts after clicking + | Server rejected the value | Read the message shown next to the stepper: stock, minimum qty or qty increment settings on the product decide what is accepted |
+| Theme overrides need `!important` | Theme rule is placed before the module stylesheet or is less specific | Use a `body.panth-checkout-extended` selector after the module CSS, or override the `--panth-co-*` tokens (see README, Theming with CSS Variables) |
 | Shipping info not auto-saving | JavaScript error | Check the browser console. Redeploy static content: `bin/magento setup:static-content:deploy -f` |
 | Accent colour not applying | Invalid hex value | Use the colour picker or enter a valid hex value like `#1a1a2e` |
 | Custom CSS/JS not appearing | Cache | Flush full page cache and the browser cache |
 | Coupon code not in sidebar | Extension disabled | Enable the extension in General. The discount code moves to the sidebar only while Checkout Extended is active. |
 | Default shipping/payment not pre-selected | Wrong method code | Use the full `carrier_method` code (e.g. `flatrate_flatrate`), and confirm the method is enabled and available for the address |
+| Order note field not visible | Feature disabled | Set Order Note -> Enable Order Note to Yes at the scope the storefront uses, then flush cache |
+| Order note missing from the order | Note was empty, or the feature is disabled at the scope the storefront uses | Only non-empty notes are stored and only while the group is enabled. A save failure is written to `var/log/system.log` with the prefix `Panth CheckoutExtended` |
+| Address book button missing | Customer has no saved address or is a guest | The button appears only for logged-in customers with at least one address in their address book |
 
 ---
 

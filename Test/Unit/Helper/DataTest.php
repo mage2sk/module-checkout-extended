@@ -7,6 +7,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\Context;
 use Magento\Store\Model\ScopeInterface;
 use Panth\CheckoutExtended\Helper\Data;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class DataTest extends TestCase
@@ -81,6 +82,43 @@ class DataTest extends TestCase
         $this->assertFalse($this->helper->showBillingTitle());
         $this->assertSame('', $this->helper->getCustomCss());
         $this->assertSame('', $this->helper->getCustomJs());
+        $this->assertFalse($this->helper->isOrderNoteEnabled());
+        $this->assertSame('Order note', $this->helper->getOrderNoteLabel());
+        $this->assertSame('Anything we should know about your order?', $this->helper->getOrderNotePlaceholder());
+        $this->assertSame(500, $this->helper->getOrderNoteMaxLength());
+    }
+
+    public function testOrderNoteGettersReturnConfiguredValues(): void
+    {
+        $this->scopeConfigMock->method('getValue')->willReturnMap([
+            ['panth_checkout_extended/order_note/enabled', ScopeInterface::SCOPE_STORE, null, '1'],
+            ['panth_checkout_extended/order_note/label', ScopeInterface::SCOPE_STORE, null, 'Delivery instructions'],
+            ['panth_checkout_extended/order_note/placeholder', ScopeInterface::SCOPE_STORE, null, ''],
+            ['panth_checkout_extended/order_note/max_length', ScopeInterface::SCOPE_STORE, null, '120'],
+        ]);
+
+        $this->assertTrue($this->helper->isOrderNoteEnabled());
+        $this->assertSame('Delivery instructions', $this->helper->getOrderNoteLabel());
+        $this->assertSame('', $this->helper->getOrderNotePlaceholder());
+        $this->assertSame(120, $this->helper->getOrderNoteMaxLength());
+    }
+
+    #[DataProvider('orderNoteMaxLengthProvider')]
+    public function testOrderNoteMaxLengthFallsBackTo500ForInvalidValues($configured): void
+    {
+        $this->scopeConfigMock->method('getValue')->willReturn($configured);
+
+        $this->assertSame(500, $this->helper->getOrderNoteMaxLength());
+    }
+
+    public static function orderNoteMaxLengthProvider(): array
+    {
+        return [
+            'zero' => ['0'],
+            'negative' => ['-5'],
+            'text' => ['abc'],
+            'empty' => [''],
+        ];
     }
 
     public function testTypedGettersReturnDefaultsWhenConfigIsEmptyString(): void
@@ -131,6 +169,7 @@ class DataTest extends TestCase
         $this->assertSame('alert(1);', $this->helper->getCustomJs());
     }
 
+    #[DataProvider('checkoutBodyClassDataProvider')]
     public function testGetCheckoutBodyClass(array $config, string $expected): void
     {
         $this->scopeConfigMock->method('getValue')
@@ -143,7 +182,7 @@ class DataTest extends TestCase
         $this->assertSame($expected, $this->helper->getCheckoutBodyClass());
     }
 
-    public function checkoutBodyClassDataProvider(): array
+    public static function checkoutBodyClassDataProvider(): array
     {
         $prefix = 'panth_checkout_extended/';
 

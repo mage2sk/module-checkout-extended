@@ -1,25 +1,19 @@
-/**
- * Panth CheckoutExtended - Remove Cart Item Action
- *
- * DELETEs a cart item via REST API. If the cart becomes empty
- * after removal, reloads the page to redirect away from checkout.
- */
 define([
+    'jquery',
     'Magento_Checkout/js/model/resource-url-manager',
     'Magento_Checkout/js/model/quote',
     'mage/storage',
     'Magento_Checkout/js/model/error-processor',
-    'Magento_Checkout/js/model/full-screen-loader',
     'Magento_Checkout/js/action/get-totals',
     'Magento_Checkout/js/action/get-payment-information',
     'Magento_Checkout/js/model/shipping-rate-registry',
     'Magento_Customer/js/customer-data'
 ], function (
+    $,
     resourceUrlManager,
     quote,
     storage,
     errorProcessor,
-    fullScreenLoader,
     getTotalsAction,
     getPaymentInformationAction,
     rateRegistry,
@@ -27,51 +21,79 @@ define([
 ) {
     'use strict';
 
-    /**
-     * Remove a cart item.
-     *
-     * @param {Number|String} itemId
-     * @returns {jQuery.Deferred}
-     */
+    function currentItems() {
+        var totals = quote.totals();
+
+        if (totals && Array.isArray(totals.items)) {
+            return totals.items;
+        }
+
+        return quote.getItems() || [];
+    }
+
+    function refreshTotals() {
+        var done = $.Deferred(),
+            paymentDeferred = $.Deferred(),
+            address = quote.shippingAddress();
+
+        if (address && typeof address.getCacheKey === 'function') {
+            rateRegistry.set(address.getCacheKey(), null);
+        }
+
+        paymentDeferred.done(function () {
+            done.resolve();
+        }).fail(function () {
+            var totalsDeferred = $.Deferred();
+
+            totalsDeferred.always(function () {
+                done.resolve();
+            });
+
+            try {
+                getTotalsAction([], totalsDeferred);
+            } catch (e) {
+                totalsDeferred.reject();
+            }
+        });
+
+        try {
+            getPaymentInformationAction(paymentDeferred);
+        } catch (e) {
+            paymentDeferred.reject();
+        }
+
+        return done.promise();
+    }
+
     return function (itemId) {
-        var url = resourceUrlManager.getUrlForRemoveCartItem(itemId);
+        var result = $.Deferred(),
+            url = resourceUrlManager.getUrlForRemoveCartItem(itemId);
 
-        fullScreenLoader.startLoader();
-
-        return storage.delete(
-            url
+        storage.delete(
+            url,
+            false
         ).done(function (response) {
-            // Invalidate local storage sections
+            var remaining = currentItems().filter(function (item) {
+                return String(item.item_id) !== String(itemId);
+            });
+
             customerData.invalidate(['cart']);
 
-            // Check if cart is now empty - totals items will update after refresh
-            var items = quote.getItems(),
-                remainingItems;
+            if (remaining.length === 0) {
+                window.location.reload();
+                result.resolve(response);
 
-            if (items) {
-                remainingItems = items.filter(function (item) {
-                    return parseInt(item.item_id, 10) !== parseInt(itemId, 10);
-                });
-
-                if (remainingItems.length === 0) {
-                    window.location.reload();
-                    return;
-                }
+                return;
             }
 
-            // Cart still has items - refresh rates, payments, totals
-            var address = quote.shippingAddress();
-
-            if (address) {
-                rateRegistry.set(address.getCacheKey(), null);
-            }
-
-            getPaymentInformationAction();
-            getTotalsAction([]);
+            refreshTotals().always(function () {
+                result.resolve(response);
+            });
         }).fail(function (response) {
             errorProcessor.process(response);
-        }).always(function () {
-            fullScreenLoader.stopLoader();
+            result.reject(response);
         });
+
+        return result.promise();
     };
 });

@@ -1,42 +1,33 @@
 <?php
-/** @var \Panth\CheckoutExtended\Block\DynamicStyles $block */
 if (!$block->isEnabled()) {
     return;
 }
-$borderRadius = $block->getBorderRadius();
-$customCss = $block->getCustomCss();
-$customJs = $block->getCustomJs();
-
-// Sanitize accent color: allow only valid hex (#rrggbb or #rgb) or named CSS colors
-// (letters only). Anything else is stripped to prevent CSS injection.
+$borderRadius = (int) $block->getBorderRadius();
+$customCssHtml = str_ireplace('</style', '<\/style', (string) $block->getCustomCss());
+$customJsHtml = str_ireplace('</script', '<\/script', (string) $block->getCustomJs());
 $rawAccent = $block->getAccentColor();
-$accentColor = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawAccent)
-    ? $rawAccent
-    : '#1a1a2e'; // safe fallback
-
-// Append alpha only to a full 6-digit hex; otherwise fall back to the base color
-// so non-6-digit values (e.g. #rgb) don't produce invalid 4/5-digit hex.
+$accentColor = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawAccent) ? $rawAccent : '#1a1a2e';
 $accentHover = strlen($accentColor) === 7 ? $accentColor . 'dd' : $accentColor;
+$radiusSm = max(4, $borderRadius - 2);
+$variablesHtml = '--panth-checkout-accent: ' . $accentColor . ';'
+    . ' --panth-checkout-accent-hover: ' . $accentHover . ';'
+    . ' --panth-checkout-radius: ' . $borderRadius . 'px;'
+    . ' --panth-checkout-radius-sm: ' . $radiusSm . 'px;';
 ?>
 <style>
-    :root {
-        --panth-checkout-accent: <?= /* @noEscape */ $accentColor ?>;
-        --panth-checkout-accent-hover: <?= /* @noEscape */ $accentHover ?>;
-        --panth-checkout-radius: <?= (int) $borderRadius ?>px;
-        --panth-checkout-radius-sm: <?= /* @noEscape */ max(4, (int) $borderRadius - 4) ?>px;
-    }
+    :root { <?= $variablesHtml ?> }
+    .panth-checkout-extended { <?= $variablesHtml ?> }
 </style>
-<?php if ($customCss): ?>
+<?php if ($customCssHtml !== ''): ?>
 <style>
-    /* Panth Checkout Extended - Custom CSS */
-    <?= /* @noEscape */ str_ireplace('</style', '<\/style', $customCss) ?>
+    <?= $customCssHtml ?>
 </style>
 <?php endif; ?>
-<?php if ($customJs): ?>
+<?php if ($customJsHtml !== ''): ?>
 <script>
     require([], function () {
         try {
-            <?= /* @noEscape */ str_ireplace('</script', '<\/script', $customJs) ?>
+            <?= $customJsHtml ?>
         } catch (e) {
             console.error('[Panth Checkout custom JS]', e);
         }

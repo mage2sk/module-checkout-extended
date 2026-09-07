@@ -1,23 +1,275 @@
-/**
- * Panth CheckoutExtended - Cart Details Mixin
- *
- * Adds qty increment/decrement and item removal to the checkout sidebar.
- * Handles both guest and customer cart REST API endpoints.
- *
- * Display flags are read from window.checkoutConfig.panthCheckout.cart
- * (injected by Plugin/Cart/ConfigProvider.php). Per-item data (sku,
- * product_url, qty_increments) is read from window.checkoutConfig.quoteItemData,
- * keyed by item_id (injected by Plugin/Cart/QuoteItemPlugin.php).
- */
 define([
+    'jquery',
     'ko',
+    'underscore',
     'Magento_Checkout/js/model/quote',
     'Magento_Catalog/js/price-utils',
     'Panth_CheckoutExtended/js/action/update-cart-item',
     'Panth_CheckoutExtended/js/action/remove-cart-item',
+    'Magento_Ui/js/modal/confirm',
     'mage/translate'
-], function (ko, quote, priceUtils, updateCartItemAction, removeCartItemAction, $t) {
+], function ($, ko, _, quote, priceUtils, updateCartItemAction, removeCartItemAction, confirm, $t) {
     'use strict';
+
+    var BODY_SAVING_CLASS = 'panth-qty-saving',
+        FALLBACK_ERROR = 'The requested quantity is not available.',
+        qtyMap = {},
+        busyMap = {},
+        errorMap = {},
+        stateMap = {},
+        warnedPairs = {},
+        inFlightCount = 0,
+        totalsSubscribed = false;
+
+    function toNumber(value) {
+        var n = parseFloat(value);
+
+        return isNaN(n) ? null : n;
+    }
+
+    function totalsItems() {
+        var totals = quote.totals();
+
+        if (totals && _.isArray(totals.items)) {
+            return totals.items;
+        }
+
+        return [];
+    }
+
+    function configItems() {
+        var cfg = window.checkoutConfig || {};
+
+        if (cfg.totalsData && _.isArray(cfg.totalsData.items)) {
+            return cfg.totalsData.items;
+        }
+
+        return [];
+    }
+
+    function findById(list, id) {
+        return _.find(list, function (row) {
+            return row && String(row.item_id) === String(id);
+        });
+    }
+
+    function serverQty(id, fallbackItem) {
+        var row = findById(totalsItems(), id) || findById(configItems(), id),
+            qty = row ? toNumber(row.qty) : null;
+
+        if (qty === null && fallbackItem) {
+            qty = toNumber(fallbackItem.qty);
+        }
+
+        return qty === null ? 0 : qty;
+    }
+
+    function state(id) {
+        if (!stateMap[id]) {
+            stateMap[id] = {
+                inFlight: false,
+                target: null,
+                confirmed: null
+            };
+        }
+
+        return stateMap[id];
+    }
+
+    function setBodySaving(delta) {
+        inFlightCount = Math.max(0, inFlightCount + delta);
+
+        if (inFlightCount > 0) {
+            document.body.classList.add(BODY_SAVING_CLASS);
+        } else {
+            document.body.classList.remove(BODY_SAVING_CLASS);
+        }
+    }
+
+    function formatServerMessage(response) {
+        var data = response && response.responseJSON,
+            message,
+            params;
+
+        if (!data && response && response.responseText) {
+            try {
+                data = JSON.parse(response.responseText);
+            } catch (e) {
+                data = null;
+            }
+        }
+
+        if (!data || !data.message) {
+            return $t(FALLBACK_ERROR);
+        }
+
+        message = String(data.message);
+        params = data.parameters;
+
+        if (_.isArray(params)) {
+            _.each(params, function (value, index) {
+                message = message.split('%' + (index + 1)).join(String(value));
+            });
+        } else if (_.isObject(params)) {
+            _.each(params, function (value, key) {
+                message = message.split('%' + key).join(String(value));
+            });
+        }
+
+        return message;
+    }
+
+    function resyncFromTotals() {
+        _.each(totalsItems(), function (row) {
+            var id = row && row.item_id,
+                st,
+                qty;
+
+            if (!id || !qtyMap[id]) {
+                return;
+            }
+
+            st = state(id);
+            qty = toNumber(row.qty);
+
+            if (qty === null || st.inFlight || st.target !== null) {
+                return;
+            }
+
+            st.confirmed = qty;
+
+            if (qtyMap[id]() !== qty) {
+                qtyMap[id](qty);
+            }
+        });
+    }
+
+    function checkSubtotal() {
+        var totals = quote.totals(),
+            items,
+            mode,
+            inclTax,
+            sum = 0,
+            reported,
+            tolerance,
+            key;
+
+        try {
+            if (!totals || !_.isArray(totals.items) || !totals.items.length) {
+                return;
+            }
+
+            items = totals.items;
+            mode = window.checkoutConfig ? window.checkoutConfig.reviewTotalsDisplayMode : null;
+            inclTax = mode === 'including';
+
+            _.each(items, function (row) {
+                var value = inclTax ? row.row_total_incl_tax : row.row_total;
+
+                if (value === undefined || value === null || value === '') {
+                    value = row.row_total;
+                }
+
+                sum += toNumber(value) || 0;
+            });
+
+            reported = toNumber(inclTax ? totals.subtotal_incl_tax : totals.subtotal);
+
+            if (reported === null) {
+                reported = toNumber(totals.subtotal);
+            }
+
+            if (reported === null) {
+                return;
+            }
+
+            sum = Math.round(sum * 100) / 100;
+            tolerance = 0.01 * items.length;
+
+            if (Math.abs(sum - reported) <= tolerance + 0.000001) {
+                return;
+            }
+
+            key = reported + '|' + sum;
+
+            if (warnedPairs[key]) {
+                return;
+            }
+
+            warnedPairs[key] = true;
+            console.warn('[panth-checkout] order summary subtotal ' + reported +
+                ' differs from the sum of the line items ' + sum);
+        } catch (e) {
+            return;
+        }
+    }
+
+    function checkSegments() {
+        var totals = quote.totals(),
+            seen = {};
+
+        try {
+            if (!totals || !_.isArray(totals['total_segments'])) {
+                return;
+            }
+
+            _.each(totals['total_segments'], function (segment) {
+                var code = segment && segment.code ? String(segment.code) : '(no code)',
+                    title = segment && segment.title !== undefined && segment.title !== null ?
+                        String(segment.title).trim() : '',
+                    value = segment ? toNumber(segment.value) : null,
+                    rounded,
+                    key;
+
+                if (!segment || value === null || value === 0 || code === 'grand_total') {
+                    return;
+                }
+
+                rounded = String(Math.round(value * 100) / 100);
+
+                if (title === '') {
+                    key = 'untitled|' + code + '|' + rounded;
+
+                    if (!warnedPairs[key]) {
+                        warnedPairs[key] = true;
+                        console.warn('[panth-checkout] total segment "' + code + '" (' + rounded +
+                            ') has no title and is not rendered');
+                    }
+                }
+
+                if (seen[rounded] && seen[rounded] !== code) {
+                    key = 'dup|' + seen[rounded] + '|' + code + '|' + rounded;
+
+                    if (!warnedPairs[key]) {
+                        warnedPairs[key] = true;
+                        console.warn('[panth-checkout] total segments "' + seen[rounded] + '" and "' + code +
+                            '" carry the same value ' + rounded);
+                    }
+
+                    return;
+                }
+
+                seen[rounded] = code;
+            });
+        } catch (e) {
+            return;
+        }
+    }
+
+    function subscribeOnce() {
+        if (totalsSubscribed) {
+            return;
+        }
+
+        totalsSubscribed = true;
+        quote.totals.subscribe(function () {
+            resyncFromTotals();
+            checkSubtotal();
+            checkSegments();
+        });
+        checkSubtotal();
+        checkSegments();
+    }
 
     return function (Component) {
         if (!document.body.classList.contains('panth-checkout-extended')) {
@@ -31,15 +283,12 @@ define([
                 panth_show_link: false
             },
 
-            /**
-             * Read display flags from checkoutConfig on init.
-             *
-             * @returns {Object}
-             */
             initialize: function () {
+                var cfg;
+
                 this._super();
 
-                var cfg = (window.checkoutConfig &&
+                cfg = (window.checkoutConfig &&
                     window.checkoutConfig.panthCheckout &&
                     window.checkoutConfig.panthCheckout.cart) || {};
 
@@ -47,29 +296,19 @@ define([
                 this.panth_show_sku = !!cfg.showSku;
                 this.panth_show_link = !!cfg.showLink;
 
+                subscribeOnce();
+
                 return this;
             },
 
-            /**
-             * Look up the quoteItemData entry for a totals item by item_id.
-             *
-             * @param {Object} item
-             * @returns {Object}
-             */
             getQuoteItem: function (item) {
                 var id = item.item_id || item['item_id'];
 
-                return (window.checkoutConfig.quoteItemData || []).find(function (q) {
-                    return q.item_id == id; //eslint-disable-line eqeqeq
+                return _.find(window.checkoutConfig.quoteItemData || [], function (q) {
+                    return String(q.item_id) === String(id);
                 }) || {};
             },
 
-            /**
-             * Get product URL for the item if link display is enabled.
-             *
-             * @param {Object} item
-             * @returns {String|Boolean}
-             */
             getProductUrl: function (item) {
                 if (!this.panth_show_link) {
                     return false;
@@ -78,12 +317,6 @@ define([
                 return this.getQuoteItem(item).product_url || false;
             },
 
-            /**
-             * Get item SKU if display is enabled.
-             *
-             * @param {Object} item
-             * @returns {String|Boolean}
-             */
             getItemSku: function (item) {
                 if (!this.panth_show_sku) {
                     return false;
@@ -92,22 +325,11 @@ define([
                 return this.getQuoteItem(item).sku || false;
             },
 
-            /**
-             * Format the per-unit (single item) price for display.
-             *
-             * Uses the tax-inclusive unit price when available, otherwise the
-             * base unit price. This is intentionally the UNIT price, NOT the
-             * row total (qty x unit), so it stays stable when the qty changes -
-             * the qty drives the cart subtotal / order total in the footer.
-             *
-             * @param {Object} item
-             * @returns {String}
-             */
             getUnitPrice: function (item) {
                 var format = (window.checkoutConfig && window.checkoutConfig.priceFormat) || {},
-                    raw = (item.price_incl_tax !== undefined && item.price_incl_tax !== null && item.price_incl_tax !== '')
-                        ? item.price_incl_tax
-                        : item.price,
+                    raw = item.price_incl_tax !== undefined && item.price_incl_tax !== null && item.price_incl_tax !== '' ?
+                        item.price_incl_tax :
+                        item.price,
                     price = parseFloat(raw);
 
                 if (isNaN(price)) {
@@ -117,35 +339,16 @@ define([
                 return priceUtils.formatPrice(price, format);
             },
 
-            /**
-             * Whether qty increment/decrement controls should be shown.
-             *
-             * @returns {Boolean}
-             */
             canChangeQty: function () {
                 return this.panth_qty_increment === true;
             },
 
-            /**
-             * Get the qty increment step for an item.
-             * Falls back to 1 if not set.
-             *
-             * @param {Object} item
-             * @returns {Number}
-             */
             getQtyStep: function (item) {
                 var step = parseFloat(this.getQuoteItem(item).qty_increments);
 
                 return step > 0 ? step : 1;
             },
 
-            /**
-             * Validate that the new qty is acceptable.
-             *
-             * @param {Number} oldQty
-             * @param {Number} newQty
-             * @returns {Boolean}
-             */
             isValidQty: function (oldQty, newQty) {
                 newQty = parseFloat(newQty);
 
@@ -160,66 +363,160 @@ define([
                 return true;
             },
 
-            /**
-             * Increment item quantity by one step.
-             *
-             * @param {Object} item
-             */
+            qtyFor: function (item) {
+                var id = item.item_id,
+                    st;
+
+                if (!qtyMap[id]) {
+                    st = state(id);
+                    st.confirmed = serverQty(id, item);
+                    qtyMap[id] = ko.observable(st.confirmed);
+                }
+
+                return qtyMap[id];
+            },
+
+            busyFor: function (item) {
+                var id = item.item_id;
+
+                if (!busyMap[id]) {
+                    busyMap[id] = ko.observable(false);
+                }
+
+                return busyMap[id];
+            },
+
+            errorFor: function (item) {
+                var id = item.item_id;
+
+                if (!errorMap[id]) {
+                    errorMap[id] = ko.observable('');
+                }
+
+                return errorMap[id];
+            },
+
             incQty: function (item) {
                 var step = this.getQtyStep(item),
-                    currentQty = parseFloat(item.qty),
-                    newQty = currentQty + step;
+                    obs = this.qtyFor(item);
 
-                this.applyQty(item, newQty);
+                this.applyQty(item, obs() + step);
             },
 
-            /**
-             * Decrement item quantity by one step.
-             * Will not go below a single step; if the resulting qty would be
-             * 0 or below, the item is removed instead.
-             *
-             * @param {Object} item
-             */
-            decQty: function (item) {
+            decQty: function (item, event) {
                 var step = this.getQtyStep(item),
-                    currentQty = parseFloat(item.qty),
-                    newQty = currentQty - step;
+                    obs = this.qtyFor(item),
+                    newQty = obs() - step;
 
                 if (newQty <= 0 || newQty < step) {
-                    this.removeItem(item);
+                    this.removeItem(item, event);
+
                     return;
                 }
 
                 this.applyQty(item, newQty);
             },
 
-            /**
-             * Apply a new quantity to the cart item via REST API.
-             *
-             * @param {Object} item
-             * @param {Number} newQty
-             */
             applyQty: function (item, newQty) {
-                var oldQty = parseFloat(item.qty);
+                var id = item.item_id,
+                    obs = this.qtyFor(item),
+                    st = state(id);
 
-                if (!this.isValidQty(oldQty, newQty)) {
+                newQty = parseFloat(newQty);
+
+                if (!this.isValidQty(obs(), newQty)) {
                     return;
                 }
 
-                updateCartItemAction(item.item_id, newQty);
+                obs(newQty);
+                st.target = newQty;
+
+                if (st.inFlight) {
+                    return;
+                }
+
+                this.flushQty(item);
             },
 
-            /**
-             * Remove item from cart with confirmation dialog.
-             *
-             * @param {Object} item
-             */
-            removeItem: function (item) {
-                if (!confirm($t('Are you sure you want to remove this item from your cart?'))) { //eslint-disable-line no-alert
+            flushQty: function (item) {
+                var self = this,
+                    id = item.item_id,
+                    obs = this.qtyFor(item),
+                    busy = this.busyFor(item),
+                    error = this.errorFor(item),
+                    st = state(id),
+                    target = st.target;
+
+                st.target = null;
+
+                if (target === null || target === st.confirmed) {
+                    st.inFlight = false;
+                    busy(false);
+                    resyncFromTotals();
+
                     return;
                 }
 
-                removeCartItemAction(item.item_id);
+                st.inFlight = true;
+                busy(true);
+                setBodySaving(1);
+
+                updateCartItemAction(id, target).done(function () {
+                    st.confirmed = target;
+                    error('');
+                }).fail(function (response) {
+                    st.target = null;
+                    obs(st.confirmed);
+                    error(formatServerMessage(response));
+                }).always(function () {
+                    st.inFlight = false;
+                    setBodySaving(-1);
+
+                    if (st.target !== null && st.target !== st.confirmed) {
+                        self.flushQty(item);
+
+                        return;
+                    }
+
+                    st.target = null;
+                    busy(false);
+                    resyncFromTotals();
+                });
+            },
+
+            removeItem: function (item, event) {
+                var opener = event && event.currentTarget ? event.currentTarget : document.activeElement;
+
+                confirm({
+                    title: $t('Remove item'),
+                    content: $t('Are you sure you want to remove this item from your cart?'),
+                    modalClass: 'confirm panth-confirm-modal',
+                    buttons: [{
+                        text: $t('Cancel'),
+                        class: 'action-secondary action-dismiss',
+                        click: function (e) {
+                            this.closeModal(e);
+                        }
+                    }, {
+                        text: $t('Remove'),
+                        class: 'action-primary action-accept',
+                        click: function (e) {
+                            this.closeModal(e, true);
+                        }
+                    }],
+                    actions: {
+                        confirm: function () {
+                            removeCartItemAction(item.item_id);
+                        },
+                        always: function () {
+                            _.defer(function () {
+                                if (opener && opener.isConnected && typeof opener.focus === 'function') {
+                                    opener.focus();
+                                }
+                            });
+                        }
+                    }
+                });
             }
         });
     };

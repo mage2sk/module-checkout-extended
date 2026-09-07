@@ -165,6 +165,37 @@ class CheckoutLayoutProcessorTest extends TestCase
         );
     }
 
+    public function testProcessInjectsOrderNoteComponentWithHelperValues(): void
+    {
+        $this->helperMock->method('isEnabled')->willReturn(true);
+        $this->helperMock->method('isOrderNoteEnabled')->willReturn(true);
+        $this->helperMock->method('getOrderNoteLabel')->willReturn('Delivery instructions');
+        $this->helperMock->method('getOrderNotePlaceholder')->willReturn('Gate code, floor, anything else');
+        $this->helperMock->method('getOrderNoteMaxLength')->willReturn(250);
+        $this->helperMock->method('usePlaceholders')->willReturn(false);
+
+        $result = $this->processor->process($this->getJsLayout());
+
+        $summary = $result['components']['checkout']['children']['sidebar']['children']['summary']['children'];
+
+        $this->assertArrayHasKey('panth-order-note', $summary);
+        $this->assertSame(
+            [
+                'component' => 'Panth_CheckoutExtended/js/view/order-note',
+                'sortOrder' => 30,
+                'config' => [
+                    'enabled' => true,
+                    'label' => 'Delivery instructions',
+                    'placeholder' => 'Gate code, floor, anything else',
+                    'maxLength' => 250,
+                ],
+            ],
+            $summary['panth-order-note']
+        );
+        $this->assertGreaterThan($summary['panth-newsletter']['sortOrder'], $summary['panth-order-note']['sortOrder']);
+        $this->assertLessThan($summary['panth-place-order']['sortOrder'], $summary['panth-order-note']['sortOrder']);
+    }
+
     public function testProcessSetsSortOrdersOnExistingSummaryChildren(): void
     {
         $this->helperMock->method('isEnabled')->willReturn(true);

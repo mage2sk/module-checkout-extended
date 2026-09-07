@@ -1,4 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_place_after">
+        <observer name="panth_checkout_extended_order_note_history"
+                  instance="Panth\CheckoutExtended\Observer\AddOrderNoteHistory"/>
+    </event>
 </config>

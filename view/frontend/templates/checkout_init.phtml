@@ -14,21 +14,12 @@
             lastSavedFingerprint = null,
             shippingInfoSaved = false;
 
-        // Expose flag so get-payment-information-mixin and set-payment-info-mixin
-        // can gate their API calls until shipping is saved on the server.
         window.panthShippingInfoSaved = function () { return shippingInfoSaved; };
 
         var isLoggedIn = !!(window.checkoutConfig && window.checkoutConfig.isCustomerLoggedIn);
 
-        // ---- BILLING REAL-TIME SYNC ----
-        // When "same as shipping" is checked, Magento's billing component
-        // subscribes to quote.shippingAddress but the subscription may not
-        // always fire for plain-object updates. Force-sync by directly calling
-        // selectBillingAddress whenever shipping address changes.
         quote.shippingAddress.subscribe(function (newAddress) {
-            if (!newAddress) return;
-            // Build the checkbox selector dynamically from the active payment method code.
-            // Falls back to the generic Magento class that all payment methods share.
+            if (!newAddress || quote.isVirtual()) return;
             var method = quote.paymentMethod();
             var $checkbox = method
                 ? $('[name="billing-address-same-as-shipping-' + method.method + '"]')
@@ -41,13 +32,8 @@
             }
         });
 
-        // ---- HIDE EMPTY "SAME AS SHIPPING" BILLING PREVIEW ----
-        // When the shipping address has not been filled yet, the read-only
-        // billing-address preview (shown because "same as shipping" is checked)
-        // renders an ugly near-empty box (", United States" + Edit). Toggle a
-        // body class so CSS can hide that preview until a real address exists.
         function isShippingAddressFilled() {
-            var a = quote.shippingAddress();
+            var a = quote.isVirtual() ? quote.billingAddress() : quote.shippingAddress();
             if (!a) { return false; }
             var street = a.street || [];
             return !!(a.firstname && a.lastname && street[0] && a.city && a.postcode);
@@ -56,6 +42,7 @@
             document.body.classList.toggle('panth-billing-preview-empty', !isShippingAddressFilled());
         }
         quote.shippingAddress.subscribe(syncBillingPreviewVisibility);
+        quote.billingAddress.subscribe(syncBillingPreviewVisibility);
         syncBillingPreviewVisibility();
 
         function buildFingerprint() {
@@ -91,9 +78,6 @@
                 return;
             }
 
-            // Sanitize regionId: must be int or null - empty string causes a 400
-            // "int type expected" error. Addresses restored from localStorage may
-            // carry regionId: "" if the country has no region dropdown.
             if (address.regionId === '' || address.regionId === undefined) {
                 var sanitized = _.extend({}, address, { regionId: null });
                 quote.shippingAddress(sanitized);
@@ -128,11 +112,6 @@
 
         var debouncedSave = _.debounce(saveShippingInfo, 1200);
 
-        // ---- AUTO-SAVE ON PAGE LOAD (guests + logged-in) ----
-        // checkoutDataResolver restores address + shipping method from localStorage.
-        // We wait until both are available, then save once to the server. Instead
-        // of a long-lived poll we subscribe to the relevant KO observables so the
-        // save fires the moment the data lands (and the watcher tears itself down).
         var autoSaveDone = false;
         function tryInitialAutoSave() {
             if (autoSaveDone) return true;
@@ -151,12 +130,8 @@
             saveShippingInfo();
             return true;
         }
-        // Fire as soon as either observable updates with usable restored data.
         var autoSaveMethodSub  = quote.shippingMethod.subscribe(tryInitialAutoSave);
         var autoSaveAddressSub = quote.shippingAddress.subscribe(tryInitialAutoSave);
-        // Tight bounded safety net: data may already be present synchronously, or
-        // restored without a fresh notification. Self-terminates the instant it
-        // succeeds and gives up well before the old 20s window.
         var autoSaveSafety = 0;
         var autoSaveSafetyIv = setInterval(function () {
             if (tryInitialAutoSave() || ++autoSaveSafety > 20) {
@@ -164,20 +139,13 @@
                 autoSaveSafetyIv = null;
             }
         }, 300);
-        // Attempt once immediately in case both values are already resolved.
         tryInitialAutoSave();
 
-        // ---- SHIPPING METHOD RADIO CLICK ----
         $(document).on('click', '.table-checkout-shipping-method input[type="radio"]', function () {
             lastSavedFingerprint = null;
             _.defer(saveShippingInfo);
         });
 
-        // ---- SHIPPING FORM FIELD CHANGES (guest checkout) ----
-        // `input`  -> update quote.shippingAddress() immediately so billing
-        //            address (same-as-shipping) reflects changes while typing.
-        // `change` -> also trigger the debounced server save (on blur/select).
-        // Both handlers build a NEW object reference so KO subscribers fire.
         function wireFormWatch($form) {
             function readFormIntoQuote() {
                 var current = quote.shippingAddress() || {};
@@ -199,7 +167,6 @@
                     if (!$el.length) return;
                     var val = $el.val();
                     if (addrKey === 'regionId') {
-                        // API expects int or null - empty string causes "int type expected" 400 error
                         updated[addrKey] = val ? (parseInt(val, 10) || null) : null;
                     } else {
                         updated[addrKey] = val || updated[addrKey] || '';
@@ -212,16 +179,13 @@
                 if ($s0.length) updated.street[0] = $s0.val() || '';
                 if ($s1.length) updated.street[1] = $s1.val() || '';
 
-                // New reference triggers all KO subscribers (billing same-as-shipping, etc.)
                 quote.shippingAddress(updated);
             }
 
-            // Real-time: update quote model while user types (no save)
             $form.on('input', 'input[type="text"], input[type="tel"], input[type="email"], textarea', function () {
                 readFormIntoQuote();
             });
 
-            // On blur / select change: update quote + trigger debounced server save
             $form.on('change', 'input, select', function () {
                 if (!quote.shippingMethod()) return;
                 setTimeout(function () {
@@ -231,9 +195,6 @@
             });
         }
 
-        // Bind once #co-shipping-form exists. Short, self-terminating wait - the
-        // form is plain DOM (no KO observable) so a brief bounded poll is used,
-        // clearing itself the instant the form is found.
         var formWatchAttempts = 0;
         var formWatchInterval = setInterval(function () {
             var $form = $('#co-shipping-form');
@@ -245,31 +206,49 @@
             }
         }, 300);
 
-        // ---- SAVED ADDRESS SELECTION (logged-in customer) ----
         $(document).on('click', '.shipping-address-item.selected, .action-select-shipping-item', function () {
             setTimeout(debouncedSave, 1000);
         });
 
-        // ---- "SHIP HERE" BUTTON ----
         $(document).on('click', '.action-save-address, [data-action="select-shipping-address"]', function () {
             setTimeout(debouncedSave, 1000);
         });
 
-        // ---- AUTO-EXPAND ITEMS IN CART ----
+        function openItemsWithoutScrolling($toggle, widget) {
+            var $block = $toggle.closest('.items-in-cart'),
+                original = typeof widget._scrollToTopIfNotVisible === 'function' ? widget._scrollToTopIfNotVisible : null,
+                restored = false;
+
+            function restore() {
+                if (restored || !original) { return; }
+                restored = true;
+                widget._scrollToTopIfNotVisible = original;
+            }
+
+            if (original) {
+                widget._scrollToTopIfNotVisible = function () {};
+                $block.one('dimensionsChanged', function () { setTimeout(restore, 0); });
+                setTimeout(restore, 2000);
+            }
+
+            $toggle.trigger('click');
+        }
+
         var itemsAttempts = 0;
         var itemsInterval = setInterval(function () {
             itemsAttempts++;
             if (itemsAttempts > 40) { clearInterval(itemsInterval); return; }
             var $toggle = $('.items-in-cart .title[data-role="title"]');
             if (!$toggle.length) return;
+            var widget = $toggle.closest('.items-in-cart').data('mage-collapsible');
+            if (!widget) return;
             clearInterval(itemsInterval);
             var $content = $('.items-in-cart .content.minicart-items');
             if ($content.length && !$content.is(':visible')) {
-                $toggle.trigger('click');
+                openItemsWithoutScrolling($toggle, widget);
             }
         }, 400);
 
-        // ---- AUTO-EXPAND DISCOUNT CODE ----
         var discountAttempts = 0;
         var discountInterval = setInterval(function () {
             discountAttempts++;
@@ -282,16 +261,9 @@
             $content.show().removeAttr('aria-hidden');
             $discount.find('[data-role="title"]').attr('aria-expanded', 'true');
         }, 600);
-
     });
 </script>
 <script>
-    // ---- FORM PLACEHOLDERS ----
-    // Checkout address fields are generated at runtime from customer address
-    // attribute metadata, so server-side jsLayout injection cannot reach them.
-    // When the "Use Placeholders" option is on (body.panth-form-placeholders),
-    // copy each field's visible label text into the input's placeholder so the
-    // CSS that visually hides labels still leaves the field self-describing.
     require(['jquery'], function ($) {
         'use strict';
         if (!document.body.classList.contains('panth-form-placeholders')) {
@@ -308,8 +280,6 @@
 
         var SELECTOR = 'input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea';
 
-        // Returns true once every visible field in scope already has a placeholder,
-        // so the observer/poll can stop early instead of running for a fixed window.
         function apply() {
             var $fields = $(SCOPE).find(SELECTOR);
             if (!$fields.length) { return false; }
@@ -321,7 +291,6 @@
                 if (txt) {
                     el.setAttribute('placeholder', txt);
                 } else if (el.offsetParent !== null) {
-                    // Visible field still missing a usable label - keep watching.
                     allFilled = false;
                 }
             });
@@ -337,8 +306,6 @@
             if (obs) { try { obs.disconnect(); } catch (e) {} obs = null; }
         }
 
-        // Debounce the observer callback so a burst of KO-driven mutations during
-        // checkout load triggers at most one scan per trailing window (protects INP).
         var debounceTimer = null;
         function scheduleApply() {
             if (done) { return; }
@@ -349,12 +316,9 @@
             }, 180);
         }
 
-        // Initial pass (fields may already be present).
         if (apply()) {
             finish();
         } else {
-            // Bounded interval fallback, capped tighter than the old 20s window and
-            // self-terminating the instant all visible fields are covered.
             var ticks = 0;
             iv = setInterval(function () {
                 if (apply() || ++ticks > 16) { finish(); }
@@ -362,7 +326,17 @@
             try {
                 obs = new MutationObserver(scheduleApply);
                 obs.observe(document.getElementById('checkout') || document.body, { childList: true, subtree: true });
-            } catch (e) { /* MutationObserver unsupported - interval still covers it */ }
+            } catch (e) {  }
         }
+    });
+</script>
+<script>
+    require([
+        'Panth_CheckoutExtended/js/view/page-extras',
+        'Panth_CheckoutExtended/js/view/address-book'
+    ], function (pageExtras, addressBook) {
+        'use strict';
+        pageExtras();
+        addressBook();
     });
 </script>
