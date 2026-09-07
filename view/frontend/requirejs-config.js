@@ -49,6 +49,9 @@ var config = {
             'Magento_Checkout/js/model/shipping-service': {
                 'Panth_CheckoutExtended/js/model/shipping-service-mixin': true
             },
+            'Magento_SalesRule/js/view/payment/discount-messages': {
+                'Panth_CheckoutExtended/js/mixin/discount-messages-mixin': true
+            },
             'Magento_Checkout/js/model/checkout-data-resolver': {
                 'Panth_CheckoutExtended/js/mixin/payment-preselect-mixin': true
             }

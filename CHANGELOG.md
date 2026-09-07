@@ -4,6 +4,17 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.2] - 2026-09-07
+
+### Fixed
+- **"Add New Address" in the address book opened nothing, and body classes stayed behind after the book closed.** Magento's modal widget only finishes closing (`_close`, which fires `modalclosed`, drops `_has-modal` and removes the overlay) on a CSS `transitionend` event. When a theme gives `.modal-popup` no transition, that event never fires, the book never fully closed, `panth-ab-open` and `_has-modal` stayed on `body` with `overflow: hidden`, and the hand-off that opens the new-address form (or saves the chosen address) never ran. The address book now tracks whether `modalclosed` arrived and forces the widget's close routine after 700 ms when it did not, and a small modal watchdog (`js/view/modal-watchdog`) does the same for every other checkout modal (the new-address form, the remove-item confirm), so a missing transition can no longer leave a modal half closed. Verified with transitions disabled and with the normal Luma transitions.
+- **Invalid coupon message could stay hidden.** The core messages view hides its block after five seconds with a page-wide jQuery `hide()`, which leaves an inline `display: none` that Knockout does not clear when the next message arrives in an unchanged state. A mixin on `Magento_SalesRule/js/view/payment/discount-messages` keeps the discount message visible while a message exists, drops the auto-hide, and resets the inline display when a new error or success message is added, so "The coupon code isn't valid" is shown every time.
+- **Centred modals had no scrim on some themes.** The overlay rule now sets the scrim's display, position, size, z-index and colour itself (`display` and `background` with `!important`, to beat theme layers that hide `.modals-overlay`), so the address book, the new-address form and the remove-item confirm always open over `--panth-co-scrim`.
+- **Accent hover lightened instead of darkening.** The hover colour was the accent with an alpha suffix, which reads lighter on a white ground. It is now a shade 15 percent darker than the accent (`Model\Color\Shade`), or the new **Accent Hover Color** setting (`panth_checkout_extended/style/accent_hover_color`, leave empty to derive). Unit tests cover the derivation.
+
+### Changed
+- The address-book close path and the modal watchdog unbind the pending `transitionend` handler before forcing a close, so the widget's close routine never runs twice.
+
 ## [1.1.1] - 2026-09-07
 
 ### Fixed

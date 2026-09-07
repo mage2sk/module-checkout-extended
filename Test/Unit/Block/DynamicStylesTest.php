@@ -141,4 +141,35 @@ class DynamicStylesTest extends TestCase
 
         $this->assertSame($bodyClass, $this->block->getCheckoutBodyClass());
     }
+    public function testAccentHoverIsDerivedDarkerWhenNotConfigured(): void
+    {
+        $this->helperMock->method('getAccentColor')->willReturn('#EA580C');
+        $this->helperMock->method('getAccentHoverColor')->willReturn('');
+
+        $this->assertSame('#c74b0a', $this->block->getAccentHoverColor());
+    }
+
+    public function testAccentHoverUsesConfiguredValueWhenValid(): void
+    {
+        $this->helperMock->method('getAccentColor')->willReturn('#EA580C');
+        $this->helperMock->method('getAccentHoverColor')->willReturn('#C2410C');
+
+        $this->assertSame('#c2410c', $this->block->getAccentHoverColor());
+    }
+
+    public function testAccentHoverIgnoresInvalidConfiguredValue(): void
+    {
+        $this->helperMock->method('getAccentColor')->willReturn('#1a1a2e');
+        $this->helperMock->method('getAccentHoverColor')->willReturn('not-a-colour');
+
+        $this->assertSame('#161627', $this->block->getAccentHoverColor());
+    }
+
+    public function testAccentHoverFallsBackToDefaultAccentWhenAccentInvalid(): void
+    {
+        $this->helperMock->method('getAccentColor')->willReturn('nope');
+        $this->helperMock->method('getAccentHoverColor')->willReturn('');
+
+        $this->assertSame('#161627', $this->block->getAccentHoverColor());
+    }
 }

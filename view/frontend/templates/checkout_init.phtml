@@ -336,10 +336,12 @@
 <script>
     require([
         'Panth_CheckoutExtended/js/view/page-extras',
-        'Panth_CheckoutExtended/js/view/address-book'
-    ], function (pageExtras, addressBook) {
+        'Panth_CheckoutExtended/js/view/address-book',
+        'Panth_CheckoutExtended/js/view/modal-watchdog'
+    ], function (pageExtras, addressBook, modalWatchdog) {
         'use strict';
         pageExtras();
         addressBook();
+        modalWatchdog();
     });
 </script>

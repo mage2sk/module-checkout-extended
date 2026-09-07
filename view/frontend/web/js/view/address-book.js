@@ -13,7 +13,9 @@ define([
         $content = null,
         content = null,
         listEl = null,
-        afterClose = null;
+        afterClose = null,
+        closedFired = false,
+        closeTimer = null;
 
     function cards() {
         return Array.prototype.slice.call(
@@ -124,7 +126,10 @@ define([
         $content.off('modalclosed.' + ROOT).on('modalclosed.' + ROOT, function () {
             var fn = afterClose;
 
+            closedFired = true;
             afterClose = null;
+            window.clearTimeout(closeTimer);
+            closeTimer = null;
             document.body.classList.remove(BODY_OPEN);
 
             if (fn) {
@@ -280,23 +285,28 @@ define([
         var widget = $content ? $content.data('mage-modal') : null,
             root = modalRoot()[0];
 
-        if (!widget || widget.options.isOpen || !document.body.classList.contains(BODY_OPEN)) {
+        if (!widget || widget.options.isOpen || closedFired || !root || root.classList.contains('_show')) {
             return;
         }
 
-        if (root && window.getComputedStyle(root).display === 'none' && typeof widget._close === 'function') {
-            if (widget.options.transitionEvent) {
-                $(root).off(widget.options.transitionEvent);
-            }
-
-            widget._close();
+        if (typeof widget._close !== 'function') {
+            return;
         }
+
+        if (widget.options.transitionEvent) {
+            $(root).off(widget.options.transitionEvent);
+        }
+
+        widget._close();
     }
 
     function open() {
         build();
         populate();
         afterClose = null;
+        closedFired = false;
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
         document.body.classList.add(BODY_OPEN);
         $content.modal('openModal');
     }
@@ -319,7 +329,10 @@ define([
             return;
         }
 
+        closedFired = false;
         $content.modal('closeModal');
+        window.clearTimeout(closeTimer);
+        closeTimer = window.setTimeout(ensureClosed, 700);
     }
 
     function addNew() {

@@ -7,7 +7,7 @@ $customCssHtml = str_ireplace('</style', '<\/style', (string) $block->getCustomC
 $customJsHtml = str_ireplace('</script', '<\/script', (string) $block->getCustomJs());
 $rawAccent = $block->getAccentColor();
 $accentColor = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawAccent) ? $rawAccent : '#1a1a2e';
-$accentHover = strlen($accentColor) === 7 ? $accentColor . 'dd' : $accentColor;
+$accentHover = $block->getAccentHoverColor();
 $radiusSm = max(4, $borderRadius - 2);
 $variablesHtml = '--panth-checkout-accent: ' . $accentColor . ';'
     . ' --panth-checkout-accent-hover: ' . $accentHover . ';'

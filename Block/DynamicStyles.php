@@ -6,18 +6,24 @@ namespace Panth\CheckoutExtended\Block;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Panth\CheckoutExtended\Helper\Data;
+use Panth\CheckoutExtended\Model\Color\Shade;
 
 class DynamicStyles extends Template
 {
+    public const HOVER_DARKEN_RATIO = 0.15;
+
     private Data $helper;
+    private Shade $shade;
 
     public function __construct(
         Context $context,
         Data $helper,
-        array $data = []
+        array $data = [],
+        ?Shade $shade = null
     ) {
         parent::__construct($context, $data);
         $this->helper = $helper;
+        $this->shade = $shade ?? new Shade();
     }
 
     public function getHelper(): Data
@@ -34,6 +40,26 @@ class DynamicStyles extends Template
     {
         return $this->helper->getAccentColor();
     }
+
+    public function getAccentHoverColor(): string
+
+    {
+
+        $configured = $this->shade->normalize($this->helper->getAccentHoverColor());
+
+        if ($configured !== null) {
+
+            return $configured;
+
+        }
+
+        $accent = $this->shade->normalize($this->getAccentColor()) ?? '#1a1a2e';
+
+
+        return $this->shade->darken($accent, self::HOVER_DARKEN_RATIO) ?? $accent;
+
+    }
+
 
     public function getBorderRadius(): int
     {

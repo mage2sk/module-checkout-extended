@@ -170,6 +170,7 @@ the checkout cards.
 |---|---|---|
 | **Card Style** | Elevated (Shadow) | Visual treatment for checkout section cards: **Elevated** (drop shadow), **Bordered** (1px outline), **Flat** (no shadow or border), or **Glassmorphism** (translucent frosted-glass effect). |
 | **Accent Color** | #1a1a2e | Primary accent colour used for buttons, links, focus rings, and highlights. Edited with the built-in admin colour picker. |
+| **Accent Hover Color** | empty | Colour of primary buttons on hover (hex). Leave empty to use a shade 15 percent darker than the Accent Color. Set it when your brand has a fixed hover colour. |
 | **Border Radius (px)** | 12 | Corner radius applied to cards, in pixels. Inputs, buttons and rows use a slightly smaller radius (the value minus 2, never below 4), so the default 12 gives 12px cards and 10px controls. The checkout design is drawn for 12 and 10, so keep 12 unless you want a different look. A store still on 8 from an older setup gets 8px cards and 6px controls. `0` gives sharp corners; `16`+ gives a soft, rounded look. |
 | **Step Indicators** | No | Show numbered step badges (1, 2, 3 ...) above each checkout section so customers can see their progress. |
 
@@ -442,6 +443,10 @@ on and multiple methods enabled, they list cheapest-first regardless
 of carrier sort order.
 
 ---
+
+### Modals without a CSS transition
+
+Magento only finishes closing a modal when the browser fires a transition event. Some themes remove transitions from `.modal-popup`, which left the address book half closed and the "Add New Address" hand-off dead. From 1.1.2 the address book and a small watchdog for the other checkout modals force the close after 700 ms when the event does not arrive, so the checkout behaves the same with or without modal transitions.
 
 ### Loading indicator
 

@@ -59,6 +59,11 @@ class Data extends AbstractHelper
         return (string) ($this->getConfigValue('style', 'accent_color', $storeId) ?: '#1a1a2e');
     }
 
+    public function getAccentHoverColor($storeId = null): string
+    {
+        return trim((string) $this->getConfigValue('style', 'accent_hover_color', $storeId));
+    }
+
     public function isQtyIncrementEnabled($storeId = null): bool
     {
         return (bool) $this->getConfigValue('cart', 'qty_increment_enabled', $storeId);
