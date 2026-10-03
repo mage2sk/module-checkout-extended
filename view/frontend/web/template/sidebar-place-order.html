@@ -1,0 +1,30 @@
+<div class="panth-sidebar-place-order">
+    <!-- ko if: isPlacingOrder() -->
+    <div class="panth-order-overlay" aria-live="polite" aria-busy="true" role="status">
+        <div class="panth-order-overlay-inner">
+            <div class="panth-order-spinner"></div>
+            <p class="panth-order-overlay-title" data-bind="i18n: 'Placing Your Order'"></p>
+            <p class="panth-order-overlay-sub" data-bind="i18n: 'Please wait and do not close or refresh this page...'"></p>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <button type="button"
+            class="action primary checkout"
+            data-bind="click: placeOrder,
+                       css: { 'disabled': !isReady() || isPlacingOrder() },
+                       attr: { disabled: !isReady() || isPlacingOrder() }">
+        <!-- ko if: !isPlacingOrder() -->
+        <span data-bind="i18n: 'Place Order'"></span>
+        <!-- /ko -->
+        <!-- ko if: isPlacingOrder() -->
+        <span class="panth-btn-spinner"></span>
+        <span data-bind="i18n: 'Processing...'"></span>
+        <!-- /ko -->
+    </button>
+
+    <span class="panth-secure-note">
+        <svg class="panth-secure-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 1a3.5 3.5 0 0 0-3.5 3.5V6H4a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 12 6h-.5V4.5A3.5 3.5 0 0 0 8 1zm2 5H6V4.5a2 2 0 1 1 4 0V6z"/></svg>
+        <span class="panth-secure-text" data-bind="i18n: 'Secure checkout'"></span>
+    </span>
+</div>

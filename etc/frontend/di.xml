@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Block\Onepage">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="panth_checkout_extended" xsi:type="object">Panth\CheckoutExtended\Plugin\CheckoutLayoutProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="panth_checkout_cart_config_provider"
+                type="Panth\CheckoutExtended\Plugin\Cart\ConfigProvider"
+                sortOrder="10"/>
+        <plugin name="panth_checkout_payment_methods_provider"
+                type="Panth\CheckoutExtended\Plugin\Checkout\PaymentMethodsConfigProvider"
+                sortOrder="20"/>
+    </type>
+    <type name="Magento\Quote\Model\Quote\Item">
+        <plugin name="panth_checkout_quote_item_qty_increments"
+                type="Panth\CheckoutExtended\Plugin\Cart\QuoteItemPlugin"
+                sortOrder="10"/>
+    </type>
+</config>

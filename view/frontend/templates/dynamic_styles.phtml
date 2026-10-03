@@ -1,0 +1,37 @@
+<?php
+if (!$block->isEnabled()) {
+    return;
+}
+$borderRadius = (int) $block->getBorderRadius();
+$customCssHtml = str_ireplace('</style', '<\/style', (string) $block->getCustomCss());
+$customJsHtml = str_ireplace('</script', '<\/script', (string) $block->getCustomJs());
+$rawAccent = $block->getAccentColor();
+$accentColor = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawAccent) ? $rawAccent : '';
+$accentHover = $block->getAccentHoverColor();
+$accentHover = preg_match('/^#[0-9a-fA-F]{3,8}$/', $accentHover) ? $accentHover : '';
+$radiusSm = max(4, min($borderRadius, 8));
+$variablesHtml = ($accentColor !== '' ? '--panth-checkout-accent: ' . $accentColor . '; ' : '')
+    . ($accentHover !== '' ? '--panth-checkout-accent-hover: ' . $accentHover . '; ' : '')
+    . '--panth-checkout-radius: ' . $borderRadius . 'px;'
+    . ' --panth-checkout-radius-sm: ' . $radiusSm . 'px;';
+?>
+<style>
+    :root { <?= $variablesHtml ?> }
+    .panth-checkout-extended { <?= $variablesHtml ?> }
+</style>
+<?php if ($customCssHtml !== ''): ?>
+<style>
+    <?= $customCssHtml ?>
+</style>
+<?php endif; ?>
+<?php if ($customJsHtml !== ''): ?>
+<script>
+    require([], function () {
+        try {
+            <?= $customJsHtml ?>
+        } catch (e) {
+            console.error('[Panth Checkout custom JS]', e);
+        }
+    });
+</script>
+<?php endif; ?>
